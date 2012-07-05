@@ -1,0 +1,20 @@
+--- axis2c-1.6.0/samples/server/axis2.xml.orig	2012-03-20 12:09:21.111213059 -0400
++++ axis2c-1.6.0/samples/server/axis2.xml	2012-03-20 12:09:40.495213405 -0400
+@@ -102,7 +102,7 @@
+         <phase name="PreDispatch"/>
+         <phase name="Dispatch"/>
+         <phase name="PostDispatch"/>
+-        <!--phase name="Security"/-->
++        <phase name="Security"/>
+         <!-- End system pre defined phases       -->
+         <!-- After PostDispatch phase, module or service author can add any phase as required  -->
+         <!-- User defined phases could be added here -->
+@@ -113,7 +113,7 @@
+         <!--phase name="userphase1"/-->
+         <!--system predefined phase-->
+         <phase name="MessageOut"/>
+-        <!--phase name="Security"/-->
++        <phase name="Security"/>
+     </phaseOrder>
+     <phaseOrder type="INfaultflow">
+         <!-- User defined phases could be added here -->

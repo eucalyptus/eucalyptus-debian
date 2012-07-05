@@ -1,0 +1,33 @@
+Source: netty3.1
+Section: java
+Priority: optional
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org> 
+DM-Upload-Allowed: yes
+Uploaders: Brian Thomason <brian.thomason@eucalyptus.com>,
+           Graziano Obertelli <graziano@eucalyptus.com>,
+           Kyo Lee <kyo.lee@eucalyptus.com>,
+           Charles Plessy <plessy@debian.org>,
+Build-Depends-Indep: default-jdk,
+  libcommons-logging-java,
+  liblog4j1.2-java,
+  libslf4j-java,
+  libservlet2.5-java
+Build-Depends: ant, debhelper (>= 5), cdbs (>= 0.4.5.3)
+Standards-Version: 3.9.3
+Vcs-Browser: http://git.debian.org/?p=pkg-eucalyptus/netty3.1.git
+Vcs-Git: git://git.debian.org/pkg-eucalyptus/netty3.1.git
+Homepage: http://www.jboss.org/netty
+
+Package: libnetty3.1-java
+Architecture: all
+Depends: ${misc:Depends}
+Description: Java NIO client/server socket framework
+ Netty is a Java NIO client/server framework which enables quick and easy
+ development of network applications such as protocol servers and clients.
+ It greatly simplifies and streamlines network programming such as TCP and UDP
+ socket server.
+ .
+ This package tracks the version 3.1 of Netty, and exists only to support
+ packages that do not work with ulterior versions.  Once they are corrected,
+ we intend to drop libnetty3.1-java.  Please contact us before depending on
+ this package.

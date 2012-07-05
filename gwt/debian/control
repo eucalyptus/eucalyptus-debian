@@ -1,0 +1,54 @@
+Source: gwt
+Section: java
+Priority: optional
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org>
+Uploaders: Brian Thomason <brian.thomason@eucalyptus.com>, Chris Halls <halls@debian.org>
+DM-Upload-Allowed: yes
+Build-Depends-Indep: default-jdk,
+ libcommons-collections3-java,
+ libservlet2.5-java,
+ libjetty-java,
+ libecj-java,
+ libswt-gtk-3-java,
+ libswt-gtk-3-java-gcj,
+ junit,
+ eclipse-jdt,
+ libguava-java,
+ libhtmlunit-java,
+ libhtmlunit-core-js-java,
+ libprotobuf-java,
+ protobuf-compiler,
+ libcommons-logging-java,
+ libgeronimo-validation-1.0-spec-java,
+ libicu4j-java,
+ libjson-simple-java,
+ libflute-java,
+ libhibernate-validator-java,
+ libhibernate3-java,
+ libjsilver-java,
+ libxerces2-java
+Build-Depends: ant, ant-contrib, debhelper (>= 5), cdbs (>= 0.4.5.3), javahelper
+Standards-Version: 3.9.3
+Vcs-Svn: svn://svn.debian.org/pkg-eucalyptus/gwt/trunk
+Vcs-Browser: http://svn.debian.org/websvn/pkg-eucalyptus/gwt
+Homepage: http://google-web-toolkit.googlecode.com
+
+Package: libgwt-user-java
+Architecture: all
+Depends: ${misc:Depends}, ${java:Depends}
+Recommends: ${java:Recommends}
+Description: Google Web Toolkit (GWT) runtime libs
+ Google Web Toolkit (GWT) allows developers to quickly build and maintain
+ complex JavaScript front-end applications in the Java programming language.
+ .
+ This package contains the runtime libraries (gwt-user and gwt-servlet).
+
+Package: libgwt-dev-java
+Architecture: all
+Depends: ${misc:Depends}, ${java:Depends}
+Recommends: ${java:Recommends}
+Description: Google Web Toolkit (GWT) dev libs
+ Google Web Toolkit (GWT) allows developers to quickly build and maintain
+ complex JavaScript front-end applications in the Java programming language.
+ .
+ This package contains the buildtime library (gwt-dev).

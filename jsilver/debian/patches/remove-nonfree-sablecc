@@ -1,0 +1,30 @@
+--- a/build.xml
++++ b/build.xml
+@@ -17,8 +17,6 @@
+       <arg value="${gen}" />
+     </exec>
+ 
+-    <copy file="sablecc/optimizations/AOptimizedMultipleCommand.java"
+-          todir="${gen}/com/google/clearsilver/jsilver/syntax/node" />
+   </target>
+ 
+   <target name="compile" description="Compile Java source." depends="gen">
+--- a/src/com/google/clearsilver/jsilver/syntax/SyntaxTreeOptimizer.java
++++ b/src/com/google/clearsilver/jsilver/syntax/SyntaxTreeOptimizer.java
+@@ -18,7 +18,6 @@
+ 
+ import com.google.clearsilver.jsilver.syntax.analysis.DepthFirstAdapter;
+ import com.google.clearsilver.jsilver.syntax.node.AMultipleCommand;
+-import com.google.clearsilver.jsilver.syntax.node.AOptimizedMultipleCommand;
+ 
+ /**
+  * Visitor that can be applied to the AST to optimize it by replacing nodes with more efficient
+@@ -35,8 +34,6 @@
+     // Recurse through child nodes first. Because the optimised node doesn't
+     // handle replacement, go leaves-first.
+     super.caseAMultipleCommand(originalNode);
+-    // Replace this node with the optimized version.
+-    originalNode.replaceBy(new AOptimizedMultipleCommand(originalNode));
+   }
+ 
+ }

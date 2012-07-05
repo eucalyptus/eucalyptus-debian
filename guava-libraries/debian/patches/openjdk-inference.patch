@@ -1,0 +1,20 @@
+Description: Disables workaround for compilation failures on sun-jdk
+ which openjdk does not appear to have issues with.
+Author: James Page <james.page@canonical.com>
+Bug: http://code.google.com/p/guava-libraries/issues/detail?id=635
+
+Index: guava-libraries/src/main/java/com/google/common/collect/Maps.java
+===================================================================
+--- guava-libraries.orig/src/main/java/com/google/common/collect/Maps.java	2011-06-01 14:09:15.078044106 +0100
++++ guava-libraries/src/main/java/com/google/common/collect/Maps.java	2011-06-01 14:13:37.678044066 +0100
+@@ -224,8 +224,8 @@
+    * @param comparator the comparator to sort the keys with
+    * @return a new, empty {@code TreeMap}
+    */
+-  public static <C, K extends C, V> TreeMap<K, V> newTreeMap(
+-      @Nullable Comparator<C> comparator) {
++  public static <K, V> TreeMap<K, V> newTreeMap(
++      @Nullable Comparator<? super K> comparator) {
+     // Ideally, the extra type parameter "C" shouldn't be necessary. It is a
+     // work-around of a compiler type inference quirk that prevents the
+     // following code from being compiled:

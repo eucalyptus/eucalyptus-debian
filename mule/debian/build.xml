@@ -1,0 +1,160 @@
+<project name="base" default="build" basedir="..">
+  <property name="mule.basename" value="${artifactId}" />
+  <property name="mule.version" value="${artifactVersion}" />
+  <property name="build.dir" value="build"/>
+  <property name="src.dir" value="src/main/java"/>
+  <property name="rsrc.dir" value="src/main/resources"/>
+  <property name="lib.dir" value="${basedir}/lib"/>
+  <property name="target.dir" value="target"/>
+  <property name="basedir.core" value="core/"/>
+  <property name="basedir.modules.spring.config" value="modules/spring-config/"/>
+  <property name="basedir.modules.xml" value="modules/xml/"/>
+  <property name="basedir.modules.client" value="modules/client/"/>
+  <property name="basedir.modules.builders" value="modules/builders/"/>
+  <property name="basedir.transports.vm" value="transports/vm/"/>
+  <path id="classpath">
+    <fileset dir="${target.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <macrodef name="clean-sub">
+    <attribute name="dir"/>
+    <attribute name="jar"/>
+    <sequential>
+      <delete dir="@{dir}/build"/>
+      <delete file="${target.dir}/@{jar}-${mule.version}.jar"/>
+    </sequential>    
+  </macrodef>
+  <macrodef name="build-sub">
+    <attribute name="dir"/>
+    <attribute name="jar"/>
+    <sequential>
+      <mkdir dir="@{dir}/build"/>
+      <javac     srcdir="@{dir}/${src.dir}"
+                 classpathref="classpath"
+                 destdir="@{dir}/${build.dir}"
+                 deprecation="false"
+                 failonerror="false"
+                 debug="true"
+                 target="1.5"
+                 listfiles="true"/>
+      <jar destfile="${target.dir}/${mule.basename}-@{jar}-${mule.version}.jar">
+        <fileset dir="@{dir}/${rsrc.dir}">
+          <include name="**/*"/>
+        </fileset>
+        <fileset dir="@{dir}/${build.dir}">
+          <include name="**/*"/>
+        </fileset>
+      </jar>
+    </sequential>
+  </macrodef>
+  
+  <target name="build">
+  	<mkdir dir="target"/>
+    <build-sub dir="core" jar="core"/>
+    <build-sub dir="modules/spring-config" jar="module-spring-config"/>
+    <build-sub dir="modules/xml" jar="module-xml"/>
+    <build-sub dir="modules/client" jar="module-client"/>
+    <build-sub dir="modules/builders" jar="module-builders"/>
+		<!--build-sub dir="modules/acegi" jar="module-acegi"/-->
+		<!--build-sub dir="modules/boot" jar="module-boot"/-->
+		<!--build-sub dir="modules/jboss-transactions" jar="module-jboss-transactions"/-->
+		<!--build-sub dir="modules/jca/jca-core" jar="module-jca-core"/-->
+		<!--build-sub dir="modules/osgi" jar="module-osgi"/-->
+		<!--build-sub dir="modules/persistence" jar="module-persistence"/-->
+		<!--build-sub dir="modules/pgp" jar="module-pgp"/-->
+		<!--build-sub dir="transports/cxf" jar="transport-cxf"/-->
+		<!--build-sub dir="transports/email" jar="transport-email"/--> 
+		<!--build-sub dir="transports/file" jar="transport-file"/-->
+		<!--build-sub dir="transports/ftp" jar="transport-ftp"/ missing: ibid-file-->
+		<!--build-sub dir="transports/http" jar="transport-http"/ missing: jettyX? -->
+		<!-- build-sub dir="transports/axis" jar="transport-axis"/ missing: ibid-http -->
+		<!--build-sub dir="transports/jbpm" jar="transport-jbpm"/ missing: jbpm-->
+		<!--build-sub dir="transports/jdbc" jar="transport-jdbc"/ missing: commons-dbutils -->
+		<build-sub dir="transports/stdio" jar="transport-stdio"/>
+		<build-sub dir="transports/tcp" jar="transport-tcp"/>
+		<build-sub dir="transports/udp" jar="transport-udp"/>
+		<build-sub dir="transports/ssl" jar="transport-ssl"/>
+		<build-sub dir="transports/quartz" jar="transport-quartz"/>
+		<build-sub dir="transports/rmi" jar="transport-rmi"/>
+
+		<!--build-sub dir="modules/management" jar="module-management"/-->
+                <!--Management module must be built manually as to properly exclude YourKit, sourcepath must be unset-->
+                <mkdir dir="modules/management/build"/>
+                <javac     sourcepath="" srcdir="modules/management/${src.dir}"
+                           classpathref="classpath"
+                           destdir="modules/management/${build.dir}"
+                           deprecation="false"
+                           failonerror="false"
+                           debug="true"
+                           target="1.5"
+                           listfiles="true"
+                           includesfile="debian/management-includesfile"/>
+                <jar destfile="${target.dir}/${mule.basename}-management-${mule.version}.jar">
+                  <fileset dir="modules/management/${rsrc.dir}">
+                    <include name="**/*"/>
+                  </fileset>
+                  <fileset dir="modules/management/${build.dir}">
+                    <include name="**/*"/>
+                  </fileset>
+                </jar>
+
+		<build-sub dir="modules/ognl" jar="module-ognl"/>
+		<build-sub dir="modules/scripting" jar="module-scripting"/>
+		<build-sub dir="modules/spring-extras" jar="module-spring-extras"/>
+		<build-sub dir="transports/multicast" jar="transport-multicast"/>
+		<build-sub dir="transports/bpm" jar="transport-bpm"/>
+		<build-sub dir="modules/jaas" jar="module-jaas"/>
+		<build-sub dir="transports/ejb" jar="transport-ejb"/>
+		<build-sub dir="transports/soap" jar="transport-soap"/>
+		<build-sub dir="transports/jms" jar="transport-jms"/>
+    <build-sub dir="transports/vm" jar="transport-vm"/>
+		<!--build-sub dir="transports/xmpp" jar="transport-xmpp"/ missing: smack -->
+  </target>
+   
+
+  <target name="clean">
+    <clean-sub dir="core" jar="core"/>
+    <clean-sub dir="modules/spring-config" jar="module-spring-config"/>
+    <clean-sub dir="modules/xml" jar="module-xml"/>
+    <clean-sub dir="modules/client" jar="module-client"/>
+    <clean-sub dir="modules/builders" jar="module-builders"/>
+		<clean-sub dir="modules/acegi" jar="module-acegi"/>
+		<clean-sub dir="modules/boot" jar="module-boot"/>
+		<clean-sub dir="modules/jboss-transactions" jar="module-jboss-transactions"/>
+		<clean-sub dir="modules/jca" jar="module-jca"/>
+		<clean-sub dir="modules/management" jar="module-management"/>
+		<clean-sub dir="modules/osgi" jar="module-osgi"/>
+		<clean-sub dir="modules/persistence" jar="module-persistence"/>
+		<clean-sub dir="modules/pgp" jar="module-pgp"/>
+		<clean-sub dir="transports/axis" jar="transport-axis"/>
+		<clean-sub dir="transports/cxf" jar="transport-cxf"/>
+		<clean-sub dir="transports/email" jar="transport-email"/>
+		<clean-sub dir="transports/file" jar="transport-file"/>
+		<clean-sub dir="transports/ftp" jar="transport-ftp"/>
+		<clean-sub dir="transports/http" jar="transport-http"/>
+		<clean-sub dir="transports/jdbc" jar="transport-jdbc"/>
+		<clean-sub dir="transports/bpm" jar="transport-bpm"/>
+		<clean-sub dir="transports/stdio" jar="transport-stdio"/>
+		<clean-sub dir="transports/tcp" jar="transport-tcp"/>
+		<clean-sub dir="transports/udp" jar="transport-udp"/>
+		<clean-sub dir="transports/ssl" jar="transport-ssl"/>
+		<clean-sub dir="transports/quartz" jar="transport-quartz"/>
+		<clean-sub dir="transports/rmi" jar="transport-rmi"/>
+		<clean-sub dir="modules/ognl" jar="module-ognl"/>
+		<clean-sub dir="modules/scripting" jar="module-scripting"/>
+		<clean-sub dir="modules/spring-extras" jar="module-spring-extras"/>
+		<clean-sub dir="transports/multicast" jar="transport-multicast"/>
+		<clean-sub dir="transports/jbpm" jar="transport-jbpm"/>
+		<clean-sub dir="modules/jaas" jar="module-jaas"/>
+		<clean-sub dir="transports/ejb" jar="transport-ejb"/>
+		<clean-sub dir="transports/soap" jar="transport-soap"/>
+		<clean-sub dir="transports/jms" jar="transport-jms"/>
+		<clean-sub dir="transports/vm" jar="transport-vm"/>
+		<clean-sub dir="transports/xmpp" jar="transport-xmpp"/>
+    <delete dir="${target.dir}"/>
+  </target>
+  
+</project>
+

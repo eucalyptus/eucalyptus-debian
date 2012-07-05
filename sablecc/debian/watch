@@ -1,0 +1,4 @@
+version=3
+
+http://sf.net/sablecc/sablecc-([0-9.]+)-src\.tar\.gz debian
+

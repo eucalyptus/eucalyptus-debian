@@ -1,0 +1,34 @@
+Index: gwt-debian.git/user/src/com/google/gwt/safehtml/rebind/HtmlTemplateParser.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/gwt/safehtml/rebind/HtmlTemplateParser.java	2011-09-05 10:28:53.026643210 +0200
++++ gwt-debian.git/user/src/com/google/gwt/safehtml/rebind/HtmlTemplateParser.java	2011-09-05 10:29:36.042643760 +0200
+@@ -20,9 +20,9 @@
+ import com.google.gwt.dev.util.Preconditions;
+ import com.google.gwt.safehtml.rebind.ParsedHtmlTemplate.HtmlContext;
+ import com.google.gwt.safehtml.rebind.ParsedHtmlTemplate.ParameterChunk;
+-import com.google.gwt.thirdparty.streamhtmlparser.HtmlParser;
+-import com.google.gwt.thirdparty.streamhtmlparser.HtmlParserFactory;
+-import com.google.gwt.thirdparty.streamhtmlparser.ParseException;
++import com.google.streamhtmlparser.HtmlParser;
++import com.google.streamhtmlparser.HtmlParserFactory;
++import com.google.streamhtmlparser.ParseException;
+ 
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+Index: gwt-debian.git/user/src/com/google/gwt/safehtml/shared/SafeHtmlHostedModeUtils.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/gwt/safehtml/shared/SafeHtmlHostedModeUtils.java	2011-09-05 10:29:36.022643018 +0200
++++ gwt-debian.git/user/src/com/google/gwt/safehtml/shared/SafeHtmlHostedModeUtils.java	2011-09-05 10:29:36.042643760 +0200
+@@ -17,9 +17,9 @@
+ 
+ import com.google.gwt.core.client.GWT;
+ import com.google.common.base.Preconditions;
+-import com.google.gwt.thirdparty.streamhtmlparser.HtmlParser;
+-import com.google.gwt.thirdparty.streamhtmlparser.HtmlParserFactory;
+-import com.google.gwt.thirdparty.streamhtmlparser.ParseException;
++import com.google.streamhtmlparser.HtmlParser;
++import com.google.streamhtmlparser.HtmlParserFactory;
++import com.google.streamhtmlparser.ParseException;
+ 
+ /**
+  * SafeHtml utilities whose implementation differs between Development and

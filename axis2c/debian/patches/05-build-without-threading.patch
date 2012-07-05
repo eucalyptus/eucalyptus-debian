@@ -1,0 +1,60 @@
+Index: axis2c-1.6.0/src/core/clientapi/listener_manager.c
+===================================================================
+--- axis2c-1.6.0.orig/src/core/clientapi/listener_manager.c	2009-09-14 22:31:02.314335127 +0200
++++ axis2c-1.6.0/src/core/clientapi/listener_manager.c	2009-09-14 22:31:25.358336594 +0200
+@@ -127,7 +127,6 @@
+                 listener = axis2_transport_in_desc_get_recv(transport_in, env);
+                 if (listener)
+                 {
+-                    axutil_thread_t *worker_thread = NULL;
+                     axis2_listener_manager_worker_func_args_t *arg_list = NULL;
+                     arg_list = AXIS2_MALLOC(env->allocator,
+                                             sizeof
+@@ -144,6 +143,7 @@
+ #ifdef AXIS2_SVR_MULTI_THREADED
+                     if (env->thread_pool)
+                     {
++                        axutil_thread_t *worker_thread = NULL;
+                         worker_thread =
+                             axutil_thread_pool_get_thread(env->thread_pool,
+                                                           axis2_listener_manager_worker_func,
+Index: axis2c-1.6.0/src/core/clientapi/op_client.c
+===================================================================
+--- axis2c-1.6.0.orig/src/core/clientapi/op_client.c	2009-09-14 22:31:48.183352004 +0200
++++ axis2c-1.6.0/src/core/clientapi/op_client.c	2009-09-14 22:32:10.814362496 +0200
+@@ -531,7 +531,6 @@
+         }
+         else
+         {
+-            axutil_thread_t *worker_thread = NULL;
+             axis2_op_client_worker_func_args_t *arg_list = NULL;
+             arg_list = AXIS2_MALLOC(env->allocator,
+                                     sizeof(axis2_op_client_worker_func_args_t));
+@@ -549,6 +548,7 @@
+ #ifdef AXIS2_SVR_MULTI_THREADED
+             if (env->thread_pool)
+             {
++                axutil_thread_t *worker_thread = NULL;
+                 worker_thread = axutil_thread_pool_get_thread(env->thread_pool,
+                                                               axis2_op_client_worker_func,
+                                                               (void *)
+Index: axis2c-1.6.0/src/core/transport/http/receiver/http_svr_thread.c
+===================================================================
+--- axis2c-1.6.0.orig/src/core/transport/http/receiver/http_svr_thread.c	2009-09-14 22:48:58.803334566 +0200
++++ axis2c-1.6.0/src/core/transport/http/receiver/http_svr_thread.c	2009-09-14 22:49:15.826362903 +0200
+@@ -123,7 +123,6 @@
+     {
+         int socket = -1;
+         axis2_http_svr_thd_args_t *arg_list = NULL;
+-        axutil_thread_t *worker_thread = NULL;
+ 
+         socket = (int)axutil_network_handler_svr_socket_accept(env,
+                                                           svr_thread->
+@@ -148,6 +147,7 @@
+         arg_list->socket = socket;
+         arg_list->worker = svr_thread->worker;
+ #ifdef AXIS2_SVR_MULTI_THREADED
++        axutil_thread_t *worker_thread = NULL;
+         worker_thread = axutil_thread_pool_get_thread(env->thread_pool,
+                                                       axis2_svr_thread_worker_func,
+                                                       (void *) arg_list);

@@ -1,0 +1,16 @@
+sablecc (3.2-1) sid; urgency=low
+
+  * Upload to Debian. Sablecc was removed previously in #508361
+    (Closes: #677567)
+  * Set maintainer to Eucalyptus packaging team with Alexandre & myself
+    as uploaders
+  * Add watch file
+  * Standards version 3.9.3 (no changes required)
+
+ -- Chris Halls <halls@debian.org>  Thu, 14 Jun 2012 22:57:13 +0100
+
+sablecc (3.2-0ubuntu1) precise; urgency=low
+
+  * Initial release
+
+ -- Alexandre Rossi <alexandre.rossi@gmail.com>  Thu, 26 May 2011 15:05:58 +0200

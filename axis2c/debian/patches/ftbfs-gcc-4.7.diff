@@ -1,0 +1,13 @@
+Index: axis2c-1.6.0/axiom/src/xpath/xpath_internals_engine.c
+===================================================================
+--- axis2c-1.6.0.orig/axiom/src/xpath/xpath_internals_engine.c	2009-04-16 04:28:14.000000000 +0000
++++ axis2c-1.6.0/axiom/src/xpath/xpath_internals_engine.c	2012-05-10 02:13:47.588789385 +0000
+@@ -415,7 +415,7 @@
+     axiom_xpath_operation_t * op)
+ {
+     axiom_xpath_result_node_t *node;
+-    int n_nodes[2];
++    int n_nodes[2] = { 0, 0 };
+     int i, j;
+     int op12[2];
+     axutil_array_list_t *arr[2];

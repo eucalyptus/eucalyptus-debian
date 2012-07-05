@@ -1,0 +1,23 @@
+Source: sablecc
+Section: java
+Priority: extra
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org>
+Uploaders: Alexandre Rossi <alexandre.rossi@gmail.com>, Chris Halls <halls@debian.org>
+Build-Depends: debhelper (>= 7.0.50~), default-jdk, javahelper (>=0.20), ant
+Standards-Version: 3.9.3
+Homepage: http://sablecc.org/
+
+Package: sablecc
+Architecture: all
+Depends: ${misc:Depends}, ${java:Depends}
+Description: Object-oriented fully featured parser generator
+ SableCC is a parser generator which generates fully featured
+ object-oriented frameworks for building compilers, interpreters and
+ other text parsers.
+ .
+ In particular, generated frameworks include intuitive strictly-typed
+ abstract syntax trees and tree walkers. SableCC also keeps a clean
+ separation between machine-generated code and user-written code.
+ .
+ This package also contains AntTask, a task to invoke SableCC on grammar 
+ files.

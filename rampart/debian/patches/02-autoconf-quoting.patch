@@ -1,0 +1,26 @@
+--- rampart-1.3.0.orig/configure.ac
++++ rampart-1.3.0/configure.ac
+@@ -80,8 +80,8 @@
+     if test -d $withval; then
+         axis2inc="-I$withval"
+     dnl else find the axis2inc include dir in $(AXIS2C_HOME)/include
+-    elif test -d '$(AXIS2C_HOME)/include/axis2-1.6.0'; then
+-        axis2inc="-I$(AXIS2C_HOME)/include/axis2-1.6.0"
++    elif test -d "${AXIS2C_HOME}/include/axis2-1.6.0"; then
++        axis2inc='-I$(AXIS2C_HOME)/include/axis2-1.6.0'
+     else
+         AC_MSG_ERROR(could not find axis2inc. stop)
+     fi
+--- rampart-1.3.0.orig/configure
++++ rampart-1.3.0/configure
+@@ -20495,8 +20495,8 @@
+ echo "${ECHO_T}$withval" >&6; }
+         if test -d $withval; then
+         axis2inc="-I$withval"
+-        elif test -d '$(AXIS2C_HOME)/include/axis2-1.6.0'; then
+-        axis2inc="-I$(AXIS2C_HOME)/include/axis2-1.6.0"
++        elif test -d "${AXIS2C_HOME}/include/axis2-1.6.0"; then
++        axis2inc='-I$(AXIS2C_HOME)/include/axis2-1.6.0'
+     else
+         { { echo "$as_me:$LINENO: error: could not find axis2inc. stop" >&5
+ echo "$as_me: error: could not find axis2inc. stop" >&2;}

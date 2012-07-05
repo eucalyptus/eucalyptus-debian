@@ -1,0 +1,23 @@
+For running the unit tests, use the same classpath as that used to run the build. This
+means it is no longer necessary to create a mega jar copy of the dependent libraries.
+--- a/dev/build.xml
++++ b/dev/build.xml
+@@ -236,7 +236,7 @@
+         test.jvmargs="${test.jvmargs}"
+         test.cases="tests.dev.core" >
+       <extraclasspaths>
+-        <pathelement location="${alldeps.jar}" />
++        <path refid="gwt.dev.build.classpath" />
+         <!-- TODO: the following six items are needed because dev (alone) does
+             not adhere to the .../{src,super,test} convention, having a split
+             between core and (historically) oophm and the OS platforms.  When
+--- a/user/build.xml
++++ b/user/build.xml
+@@ -138,6 +138,7 @@
+     <mkdir dir="${javac.junit.out}" />
+     <gwt.javac srcdir="test" excludes="com/google/gwt/langtest/**" destdir="${javac.junit.out}">
+       <classpath>
++        <path refid="gwt.user.build.classpath" />
+         <pathelement location="${javac.out}" />
+         <pathelement location="${gwt.tools.lib}/junit/junit-4.8.2.jar" />
+         <pathelement location="${gwt.tools.lib}/selenium/selenium-java-client-driver.jar" />

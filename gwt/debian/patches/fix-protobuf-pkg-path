@@ -1,0 +1,13 @@
+Index: gwt-2.4.0/dev/core/src/com/google/gwt/dev/shell/remoteui/ViewerServiceClient.java
+===================================================================
+--- gwt-2.4.0.orig/dev/core/src/com/google/gwt/dev/shell/remoteui/ViewerServiceClient.java	2011-08-31 11:03:33.334643306 +0200
++++ gwt-2.4.0/dev/core/src/com/google/gwt/dev/shell/remoteui/ViewerServiceClient.java	2011-08-31 11:04:27.578641364 +0200
+@@ -18,7 +18,7 @@
+ import com.google.gwt.core.ext.TreeLogger;
+ import com.google.gwt.core.ext.TreeLogger.HelpInfo;
+ import com.google.gwt.core.ext.TreeLogger.Type;
+-import com.google.gwt.dev.protobuf.ByteString;
++import com.google.protobuf.ByteString;
+ import com.google.gwt.dev.shell.remoteui.MessageTransport.RequestException;
+ import com.google.gwt.dev.shell.remoteui.RemoteMessageProto.Message.Request;
+ import com.google.gwt.dev.shell.remoteui.RemoteMessageProto.Message.Response;

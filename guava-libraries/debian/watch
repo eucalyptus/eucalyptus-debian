@@ -1,0 +1,3 @@
+version=3
+opts=uversionmangle=s/r// \
+ http://repo1.maven.org/maven2/com/google/guava/guava/([\d][\d\.]+)/guava-([\d\.]+)-sources.jar debian debian/orig-tar.sh

@@ -1,0 +1,74 @@
+Description: support XML security signatures.
+Author: Neil Soman <neil@eucalyptus.com>
+
+Index: rampart-1.3.0/src/omxmlsec/c14n/c14n.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/c14n/c14n.c	2011-04-26 15:40:58.518406296 -0700
++++ rampart-1.3.0/src/omxmlsec/c14n/c14n.c	2011-04-26 15:41:22.518703783 -0700
+@@ -32,6 +32,7 @@
+ #include <oxs_constants.h>
+ #include <oxs_c14n.h>
+ #include "c14n_sorted_list.h"
++#include <axiom_data_source.h>
+ 
+ #define N_C14N_DEBUG
+ 
+@@ -727,6 +728,35 @@
+     return AXIS2_SUCCESS;
+ }
+ 
++
++static axis2_status_t
++c14n_apply_on_data_source (
++   const axiom_node_t *node,
++   const c14n_ctx_t *ctx
++)
++{
++  axiom_data_source_t *src = NULL;
++  src = (axiom_data_source_t *)axiom_node_get_data_element((axiom_node_t *)node,
++						     ctx->env);
++
++  if (src)
++    {
++      axutil_stream_t *stream = axiom_data_source_get_stream(src, ctx->env);
++
++      if(stream == NULL)
++	return AXIS2_FAILURE;
++
++      axis2_char_t*  buf =  axutil_stream_get_buffer(stream, ctx->env);
++      if(buf == NULL)
++	return AXIS2_FAILURE;
++
++      c14n_output(buf, ctx);
++      buf = NULL;
++    }
++
++return AXIS2_SUCCESS;
++}
++
+ static axis2_status_t
+ c14n_apply_on_node (
+     const axiom_node_t *node,
+@@ -748,6 +778,9 @@
+             c14n_apply_on_comment(node, ctx);
+             break;
+         }
++    case AXIOM_DATA_SOURCE:
++      c14n_apply_on_data_source(node, ctx);
++      break;
+     case AXIOM_DOCTYPE:
+     case AXIOM_PROCESSING_INSTRUCTION:
+     default:
+Index: rampart-1.3.0/src/util/rampart_timestamp_token.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_timestamp_token.c	2011-04-26 15:41:13.698594433 -0700
++++ rampart-1.3.0/src/util/rampart_timestamp_token.c	2011-04-26 15:41:49.619039939 -0700
+@@ -207,7 +207,7 @@
+     rampart_set_security_processed_result(env, msg_ctx,RAMPART_SPR_TS_EXPIRES, expires_val);
+ 
+     /* Check whether time has expired or not */
+-    validity = rampart_compare_date_time(env, created_val, expires_val);
++    validity = rampart_compare_date_time(env, current_val, expires_val);
+     if (validity == AXIS2_FAILURE)
+     {
+         /* this means created_value > expires_value. Which is not valid */

@@ -1,0 +1,127 @@
+rampart (1.3.0-3) unstable; urgency=low
+
+  * Reintroducing libaxis2c-dev as build-dep (Closes: #657124)
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Fri, 10 Feb 2012 09:49:02 +0100
+
+rampart (1.3.0-2) unstable; urgency=low
+
+  * Upload to unstable.
+  [ by sponsor Steffen Moeller ]
+  * Updated standard to 3.9.2
+    - added Vcs refs
+    - added Homepage
+  * updated maintainer to Brian
+  * -doc suggests library, no longer depends on it
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Fri, 13 Jan 2012 15:27:13 +0100
+
+rampart (1.3.0-1ubuntu5) precise; urgency=low
+
+  * Added symlink
+     - /usr/lib/librampart.so.0 /usr/lib/librampart.so
+  * Added myself to Uploaders
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Tue, 03 Jan 2012 15:24:32 -0500
+
+rampart (1.3.0-1ubuntu4) oneiric; urgency=low
+
+  * Add fix-oneiric-ftbfs-gcc4.6.patch containing fixes from upstream
+    bug tracker by Robert Schweikert (Closes: #625427). (LP: #829430)
+    - https://issues.apache.org/jira/browse/RAMPARTC-155
+
+ -- Daniel T Chen <crimsun@ubuntu.com>  Fri, 26 Aug 2011 09:52:23 -0400
+
+rampart (1.3.0-1ubuntu3) oneiric; urgency=low
+
+  [ Kees Cook ]
+  * Add debian/patches/xml-security.patch, thanks to Eucalyptus upstream,
+    to support XML security.
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 26 May 2011 10:18:14 -0500
+
+rampart (1.3.0-1ubuntu2) natty; urgency=low
+
+  [ Chuck Short ]
+  * debian/patches/fix-natty-ftbfs.patch: Fix gcc 4.5 build issues.
+    (LP: #687989) 
+
+  [ Dave Walker (Daviey) ]
+  * debian/rules: Resolve /usr/lib/axis2/lib/librampart.so dangling
+    symlink.
+
+ -- Dave Walker (Daviey) <DaveWalker@ubuntu.com>  Sun, 13 Feb 2011 14:00:57 +0000
+
+rampart (1.3.0-1ubuntu1) maverick; urgency=low
+
+  * Merging with debian unstable (LP: #590268), remaining changes:
+      - debian/patches
+          - rampart-memleak.patch: Fix memory leak in rampart where
+            for every connection receiver_cert is not freed
+      - debian/rules
+          - fix shared library installation with symlinks and
+            moving the .so files into the correct FHS location
+
+ -- Vikram Dhillon <dhillonv10@gmail.com>  Sat, 05 Jun 2010 19:23:24 -0400
+
+rampart (1.3.0-1) unstable; urgency=low
+
+  * Build for debian package based largely on Ubuntu package (#561268) 
+
+ -- Kyo Lee <kyo.lee@eucalyptus.com>  Wed, 16 Dec 2009 20:50:33 -0800
+
+rampart (1.3.0-0ubuntu7) lucid; urgency=low
+
+  * debian/patches/rampart-memleak.patch: Fix memory leak in rampart where
+    for every connection receiver_cert is not freed (LP: #460085)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 14 Dec 2009 09:09:58 +0100
+
+rampart (1.3.0-0ubuntu6) lucid; urgency=low
+
+  * debian/rules: fix shared library installation with symlinks and
+    moving the .so files into the correct FHS location
+
+ -- Dustin Kirkland <kirkland@ubuntu.com>  Tue, 01 Dec 2009 14:21:35 -0600
+
+rampart (1.3.0-0ubuntu5) karmic; urgency=low
+
+  * Depend on newer libaxis2c0 so that /usr/lib/axis2/lib is no longer a
+    symlink and upgrade from 1.2 is handled in the right order (LP: #426752)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 12 Oct 2009 11:17:02 +0200
+
+rampart (1.3.0-0ubuntu4) karmic; urgency=low
+
+  * Also add file symlinks to the axis2 include dir.
+
+ -- Soren Hansen <soren@ubuntu.com>  Fri, 11 Sep 2009 00:02:53 +0200
+
+rampart (1.3.0-0ubuntu3) karmic; urgency=low
+
+  * Fixed problem where null check was being made but checked variable 
+    was being referenced later, causing a segfault.
+
+ -- Daniel Nurmi <nurmi@eucalyptus.com>  Thu, 03 Sep 2009 12:39:37 -0700
+
+rampart (1.3.0-0ubuntu2) karmic; urgency=low
+
+  * Consolidate patches (a.k.a. only apply each change once, a.k.a.
+    don't break the build).
+  * Use quilt.
+
+ -- Soren Hansen <soren@ubuntu.com>  Fri, 28 Aug 2009 23:09:01 +0000
+
+rampart (1.3.0-0ubuntu1) karmic; urgency=low
+
+  * New upstream release (FFe: LP: #420644)
+  * Add symlinks to please projects that expect the native Axis2/C+Rampart
+    directory layout (we've made it more FHS friendly in Ubuntu).
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 19 Aug 2009 16:26:34 +0000
+
+rampart (1.2.0-0ubuntu1) jaunty; urgency=low
+
+  * Initial release. Big thanks to Michael Vogt for helping with this!
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 11 Feb 2009 02:41:39 +0200

@@ -1,0 +1,5 @@
+
+ * debian/orig-tar.sh: GWT needs Apache Tapestry's text-util and normally embeds this in the distirbution.  The orig.tgz includes this fragmented code as it is provided by the upstream GWT developers.
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Mon, 28 Dec 2009 18:24:31 -0800
+ 

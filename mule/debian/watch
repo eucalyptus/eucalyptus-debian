@@ -1,0 +1,2 @@
+version=3
+https://svn.codehaus.org/mule/tags/ mule-([0-9].*)/ debian debian/orig-tar.sh

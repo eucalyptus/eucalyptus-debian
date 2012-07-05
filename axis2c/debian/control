@@ -1,0 +1,139 @@
+Source: axis2c
+Section: libs
+Priority: optional
+Maintainer: Brian Thomason <brian.thomason@eucalyptus.com>
+Uploaders: Daniel Nurmi <nurmi@eucalyptus.com>, 
+ Graziano Obertelli <graziano@eucalyptus.com>,
+ Chris Grzegorczyk <grze@eucalyptus.com>,
+ Thierry Carrez <thierry.carrez@ubuntu.com>,
+ Soren Hansen <soren@ubuntu.com>,
+ Steffen Moeller <moeller@debian.org>
+Build-Depends: cdbs, debhelper (>= 7), autotools-dev, libapr1-dev, apache2-threaded-dev, zlib1g-dev, libssl-dev, quilt
+Standards-Version: 3.9.2
+DM-Upload-Allowed: yes
+Homepage: http://ws.apache.org/axis2/c/
+Vcs-Browser: http://svn.debian.org/viewsvn/pkg-eucalyptus/axis2c/trunk/
+Vcs-Svn: svn://svn.debian.org/pkg-eucalyptus/axis2c/trunk/
+
+Package: libaxis2c0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Apache web services engine - Runtime
+ Apache Axis2/C is a Web services engine implemented in the C
+ programming language. It is based on the extensible and flexible
+ Axis2 architecture. Apache Axis2/C can be used to provide and
+ consume WebServices. It has been implemented with portability
+ and ability to embed in mind, hence could be used as a Web services
+ enabler in other software.
+ .
+ Apache Axis2/C supports SOAP 1.1 and SOAP 1.2, as well as REST style
+ of Webservices. A single service could be exposed both as a SOAP style as well
+ as a REST style service simultaneously. It also has built in MTOM support,
+ that can be used to exchange binary data.
+ .
+ Apache Axis2/C is efficient, modular and is designed with extensibility. The
+ extensible design allows it to support the full WS-* stack with the
+ concept of modules. Apache Axis2/C is the Web services engine that supports
+ the most number of WS-* specification implementations in C, with
+ guaranteed interoperability. This enables using C in Service Oriented
+ Architecture (SOA) implementations, and would be very useful when integrating
+ legacy systems into SOA.
+
+Package: libaxis2c-dev
+Architecture: any
+Depends: libaxis2c0 (= ${binary:Version}), libapr1-dev, ${shlibs:Depends}, ${misc:Depends}
+Section: libdevel
+Description: Apache web services engine - Development
+ Apache Axis2/C is a Web services engine implemented in the C
+ programming language. It is based on the extensible and flexible
+ Axis2 architecture. Apache Axis2/C can be used to provide and
+ consume WebServices. It has been implemented with portability
+ and ability to embed in mind, hence could be used as a Web services
+ enabler in other software.
+ .
+ Apache Axis2/C supports SOAP 1.1 and SOAP 1.2, as well as REST style
+ of Webservices. A single service could be exposed both as a SOAP style as well
+ as a REST style service simultaneously. It also has built in MTOM support,
+ that can be used to exchange binary data.
+ .
+ Apache Axis2/C is efficient, modular and is designed with extensibility. The
+ extensible design allows it to support the full WS-* stack with the
+ concept of modules. Apache Axis2/C is the Web services engine that supports
+ the most number of WS-* specification implementations in C, with
+ guaranteed interoperability. This enables using C in Service Oriented
+ Architecture (SOA) implementations, and would be very useful when integrating
+ legacy systems into SOA.
+
+Package: libaxis2c-bin
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Apache web services engine - Misc. binaries
+ Apache Axis2/C is a Web services engine implemented in the C
+ programming language. It is based on the extensible and flexible
+ Axis2 architecture. Apache Axis2/C can be used to provide and
+ consume WebServices. It has been implemented with portability
+ and ability to embed in mind, hence could be used as a Web services
+ enabler in other software.
+ .
+ Apache Axis2/C supports SOAP 1.1 and SOAP 1.2, as well as REST style
+ of Webservices. A single service could be exposed both as a SOAP style as well
+ as a REST style service simultaneously. It also has built in MTOM support,
+ that can be used to exchange binary data.
+ .
+ Apache Axis2/C is efficient, modular and is designed with extensibility. The
+ extensible design allows it to support the full WS-* stack with the
+ concept of modules. Apache Axis2/C is the Web services engine that supports
+ the most number of WS-* specification implementations in C, with
+ guaranteed interoperability. This enables using C in Service Oriented
+ Architecture (SOA) implementations, and would be very useful when integrating
+ legacy systems into SOA.
+
+Package: libaxis2c-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Description: Apache web services engine - Documentation
+ Apache Axis2/C is a Web services engine implemented in the C
+ programming language. It is based on the extensible and flexible
+ Axis2 architecture. Apache Axis2/C can be used to provide and
+ consume WebServices. It has been implemented with portability
+ and ability to embed in mind, hence could be used as a Web services
+ enabler in other software.
+ .
+ Apache Axis2/C supports SOAP 1.1 and SOAP 1.2, as well as REST style
+ of Webservices. A single service could be exposed both as a SOAP style as well
+ as a REST style service simultaneously. It also has built in MTOM support,
+ that can be used to exchange binary data.
+ .
+ Apache Axis2/C is efficient, modular and is designed with extensibility. The
+ extensible design allows it to support the full WS-* stack with the
+ concept of modules. Apache Axis2/C is the Web services engine that supports
+ the most number of WS-* specification implementations in C, with
+ guaranteed interoperability. This enables using C in Service Oriented
+ Architecture (SOA) implementations, and would be very useful when integrating
+ legacy systems into SOA.
+
+Package: libapache2-mod-axis2c
+Architecture: any
+Section: web
+Depends: apache2.2-common, ${shlibs:Depends}, ${misc:Depends}
+Description: Apache web services engine - apache module
+ Apache Axis2/C is a Web services engine implemented in the C
+ programming language. It is based on the extensible and flexible
+ Axis2 architecture. Apache Axis2/C can be used to provide and
+ consume WebServices. It has been implemented with portability
+ and ability to embed in mind, hence could be used as a Web services
+ enabler in other software.
+ .
+ Apache Axis2/C supports SOAP 1.1 and SOAP 1.2, as well as REST style
+ of Webservices. A single service could be exposed both as a SOAP style as well
+ as a REST style service simultaneously. It also has built in MTOM support,
+ that can be used to exchange binary data.
+ .
+ Apache Axis2/C is efficient, modular and is designed with extensibility. The
+ extensible design allows it to support the full WS-* stack with the
+ concept of modules. Apache Axis2/C is the Web services engine that supports
+ the most number of WS-* specification implementations in C, with
+ guaranteed interoperability. This enables using C in Service Oriented
+ Architecture (SOA) implementations, and would be very useful when integrating
+ legacy systems into SOA.

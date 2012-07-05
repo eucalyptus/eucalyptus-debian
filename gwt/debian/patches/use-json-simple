@@ -1,0 +1,372 @@
+Index: gwt-debian.git/user/build.xml
+===================================================================
+--- gwt-debian.git.orig/user/build.xml	2011-09-06 16:21:43.638141752 +0200
++++ gwt-debian.git/user/build.xml	2011-09-13 16:05:50.430141886 +0200
+@@ -65,7 +65,7 @@
+     <pathelement location="${htmlunit.jar}" />
+     <pathelement location="${htmlunit-core-js.jar}" />
+     <pathelement location="${flute.jar}" />
+-    <pathelement location="${json.jar}" />
++    <pathelement location="${json-simple.jar}" />
+     <pathelement location="${geronimo-validation.jar}" />
+     <pathelement location="${hibernate-validator.jar}" />
+     <pathelement location="${gwt.dev.jar}" />
+Index: gwt-debian.git/user/src/com/google/web/bindery/requestfactory/vm/testing/UrlRequestTransport.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/web/bindery/requestfactory/vm/testing/UrlRequestTransport.java	2011-09-06 15:43:55.870144106 +0200
++++ gwt-debian.git/user/src/com/google/web/bindery/requestfactory/vm/testing/UrlRequestTransport.java	2011-09-13 16:43:23.393208365 +0200
+@@ -19,19 +19,22 @@
+ import com.google.web.bindery.requestfactory.shared.RequestTransport;
+ import com.google.web.bindery.requestfactory.shared.ServerFailure;
+ 
+-import org.json.Cookie;
+-import org.json.JSONException;
+-import org.json.JSONObject;
++import org.json.simple.JSONObject;
++import org.json.simple.parser.JSONParser;
++import org.json.simple.parser.ParseException;
+ 
+ import java.io.ByteArrayOutputStream;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.OutputStream;
++import java.io.UnsupportedEncodingException;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
++import java.net.URLDecoder;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
++import java.util.StringTokenizer;
+ import java.util.zip.GZIPInputStream;
+ import java.util.zip.InflaterInputStream;
+ 
+@@ -76,6 +79,45 @@
+     return cookies;
+   }
+ 
++  private static String unescape(String escaped) throws ParseException {
++    try{
++      return  URLDecoder.decode(escaped, "utf-8");
++    }catch(UnsupportedEncodingException e){
++      throw new ParseException(ParseException.ERROR_UNEXPECTED_TOKEN);
++    }
++  }
++
++  private static JSONObject parseCookie(String raw_cookie) throws ParseException {
++    JSONObject json = new JSONObject();
++
++    StringTokenizer parser = new StringTokenizer(raw_cookie, ";");
++
++    String token = parser.nextToken();
++    String[] namevalue = token.split("=", 2);
++    String name = unescape(namevalue[0]);
++    json.put("name", name);
++    String value = unescape(namevalue[1]);
++    json.put("value", value);
++
++    while(parser.hasMoreTokens()){
++      token = parser.nextToken();
++      namevalue = token.split("=", 2);
++      name = unescape(namevalue[0]);
++      if( name.equals("secure") ){
++        json.put("secure", new Boolean(true));
++      }else{
++        try{
++          value = unescape(namevalue[1]);
++          json.put(name, value);
++        }catch(ArrayIndexOutOfBoundsException e){
++          // "missing '='
++          throw new ParseException(ParseException.ERROR_UNEXPECTED_TOKEN);
++        }
++      }
++    }
++   return json;
++  }
++
+   @Override
+   public void send(String payload, TransportReceiver receiver) {
+     HttpURLConnection connection = null;
+@@ -96,19 +138,20 @@
+ 
+       List<String> cookieHeaders = connection.getHeaderFields().get("Set-Cookie");
+       if (cookieHeaders != null) {
++        JSONParser parser = new JSONParser();
+         for (String header : cookieHeaders) {
+           try {
+-            JSONObject cookie = Cookie.toJSONObject(header);
+-            String name = cookie.getString("name");
+-            String value = cookie.getString("value");
+-            String domain = cookie.optString("Domain");
++            JSONObject cookie = parseCookie(header);
++            String name = (String)cookie.get("name");
++            String value = (String)cookie.get("value");
++            String domain = (String)cookie.get("Domain");
+             if (domain == null || url.getHost().endsWith(domain)) {
+-              String path = cookie.optString("Path");
++              String path = (String)cookie.get("Path");
+               if (path == null || url.getPath().startsWith(path)) {
+                 cookies.put(name, value);
+               }
+             }
+-          } catch (JSONException ignored) {
++          } catch (ParseException ignored) {
+           }
+         }
+       }
+Index: gwt-debian.git/user/src/com/google/web/bindery/autobean/shared/impl/StringQuoter.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/web/bindery/autobean/shared/impl/StringQuoter.java	2011-09-06 15:43:55.886143186 +0200
++++ gwt-debian.git/user/src/com/google/web/bindery/autobean/shared/impl/StringQuoter.java	2011-09-06 16:21:43.782143626 +0200
+@@ -18,7 +18,7 @@
+ import com.google.web.bindery.autobean.shared.Splittable;
+ import com.google.web.bindery.autobean.vm.impl.JsonSplittable;
+ 
+-import org.json.JSONObject;
++import org.json.simple.JSONValue;
+ 
+ import java.text.DateFormat;
+ import java.text.ParseException;
+@@ -66,7 +66,7 @@
+    * Create a quoted JSON string.
+    */
+   public static String quote(String raw) {
+-    return JSONObject.quote(raw);
++    return JSONValue.escape(raw);
+   }
+ 
+   public static Splittable split(String payload) {
+Index: gwt-debian.git/user/src/com/google/web/bindery/autobean/vm/impl/JsonSplittable.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/web/bindery/autobean/vm/impl/JsonSplittable.java	2011-09-06 15:43:55.906143791 +0200
++++ gwt-debian.git/user/src/com/google/web/bindery/autobean/vm/impl/JsonSplittable.java	2011-09-13 16:34:12.818391717 +0200
+@@ -20,9 +20,10 @@
+ import com.google.web.bindery.autobean.shared.impl.HasSplittable;
+ import com.google.web.bindery.autobean.shared.impl.StringQuoter;
+ 
+-import org.json.JSONArray;
+-import org.json.JSONException;
+-import org.json.JSONObject;
++import org.json.simple.JSONValue;
++import org.json.simple.JSONObject;
++import org.json.simple.JSONArray;
++import org.json.simple.parser.ParseException;
+ 
+ import java.util.Arrays;
+ import java.util.Collections;
+@@ -44,11 +45,11 @@
+     try {
+       switch (payload.charAt(0)) {
+         case '{':
+-          return new JsonSplittable(new JSONObject(payload));
++          return new JsonSplittable((JSONObject)JSONValue.parseWithException(payload));
+         case '[':
+-          return new JsonSplittable(new JSONArray(payload));
++          return new JsonSplittable((JSONObject)JSONValue.parseWithException(payload));
+         case '"':
+-          return new JsonSplittable(new JSONArray("[" + payload + "]").getString(0));
++          return new JsonSplittable((String)((JSONArray)JSONValue.parseWithException("[" + payload + "]")).get(0));
+         case '-':
+         case '0':
+         case '1':
+@@ -69,7 +70,7 @@
+         default:
+           throw new RuntimeException("Could not parse payload: payload[0] = " + payload.charAt(0));
+       }
+-    } catch (JSONException e) {
++    } catch (ParseException e) {
+       throw new RuntimeException("Could not parse payload", e);
+     }
+   }
+@@ -87,12 +88,12 @@
+    * method is not available in Android 2.2. Used to represent a null value.
+    */
+   private static String[] getNames(JSONObject json) {
+-    int length = json.length();
++    int length = json.size();
+     if (length == 0) {
+       return null;
+     }
+     String[] names = new String[length];
+-    Iterator<?> i = json.keys();
++    Iterator<?> i = json.entrySet().iterator();
+     int j = 0;
+     while (i.hasNext()) {
+       names[j++] = (String) i.next();
+@@ -150,8 +151,8 @@
+ 
+   public void assign(Splittable parent, int index) {
+     try {
+-      ((JsonSplittable) parent).array.put(index, value());
+-    } catch (JSONException e) {
++      ((JsonSplittable) parent).array.add(index, value());
++    } catch (IllegalArgumentException e) {
+       throw new RuntimeException(e);
+     }
+   }
+@@ -159,7 +160,7 @@
+   public void assign(Splittable parent, String propertyName) {
+     try {
+       ((JsonSplittable) parent).obj.put(propertyName, value());
+-    } catch (JSONException e) {
++    } catch (IllegalArgumentException e) {
+       throw new RuntimeException(e);
+     }
+   }
+@@ -175,7 +176,7 @@
+   public Splittable get(int index) {
+     try {
+       return makeSplittable(array.get(index));
+-    } catch (JSONException e) {
++    } catch (IllegalArgumentException e) {
+       throw new RuntimeException(e);
+     }
+   }
+@@ -183,7 +184,7 @@
+   public Splittable get(String key) {
+     try {
+       return makeSplittable(obj.get(key));
+-    } catch (JSONException e) {
++    } catch (IllegalArgumentException e) {
+       throw new RuntimeException(key, e);
+     }
+   }
+@@ -240,12 +241,12 @@
+   }
+ 
+   public boolean isNull(int index) {
+-    return array.isNull(index);
++    return array.get(index) == null;
+   }
+ 
+   public boolean isNull(String key) {
+     // Treat undefined and null as the same
+-    return !obj.has(key) || obj.isNull(key);
++    return !obj.containsKey(key) || obj.get(key) == null;
+   }
+ 
+   public boolean isNumber() {
+@@ -261,7 +262,7 @@
+   }
+ 
+   public boolean isUndefined(String key) {
+-    return !obj.has(key);
++    return !obj.containsKey(key);
+   }
+ 
+   public void setReified(String key, Object object) {
+@@ -273,8 +274,8 @@
+     JSONArray newArray = new JSONArray();
+     for (int i = 0; i < size; i++) {
+       try {
+-        newArray.put(i, array.get(i));
+-      } catch (JSONException e) {
++        newArray.add(i, array.get(i));
++      } catch (IllegalArgumentException e) {
+         throw new RuntimeException(e);
+       }
+     }
+@@ -282,7 +283,7 @@
+   }
+ 
+   public int size() {
+-    return array.length();
++    return array.size();
+   }
+ 
+   /**
+@@ -294,7 +295,7 @@
+   }
+ 
+   private synchronized JsonSplittable makeSplittable(Object object) {
+-    if (JSONObject.NULL.equals(object)) {
++    if (object == null) {
+       return null;
+     }
+     /*
+Index: gwt-debian.git/user/src/com/google/gwt/logging/server/JsonLogRecordServerUtil.java
+===================================================================
+--- gwt-debian.git.orig/user/src/com/google/gwt/logging/server/JsonLogRecordServerUtil.java	2011-09-06 15:43:55.926143630 +0200
++++ gwt-debian.git/user/src/com/google/gwt/logging/server/JsonLogRecordServerUtil.java	2011-09-13 16:36:24.606142220 +0200
+@@ -16,9 +16,10 @@
+ 
+ package com.google.gwt.logging.server;
+ 
+-import org.json.JSONArray;
+-import org.json.JSONException;
+-import org.json.JSONObject;
++import org.json.simple.JSONValue;
++import org.json.simple.JSONArray;
++import org.json.simple.JSONObject;
++import org.json.simple.parser.ParseException;
+ 
+ import java.util.logging.Level;
+ import java.util.logging.LogRecord;
+@@ -36,14 +37,14 @@
+   private static Logger logger =
+     Logger.getLogger(JsonLogRecordServerUtil.class.getName());
+   public static LogRecord logRecordFromJson(String jsonString)
+-  throws JSONException {
+-    JSONObject lro = new JSONObject(jsonString);
+-    String level = lro.getString("level");
+-    String loggerName = lro.getString("loggerName");
+-    String msg = lro.getString("msg");
+-    long timestamp = Long.parseLong(lro.getString("timestamp"));
++  throws ParseException {
++    JSONObject lro = (JSONObject)JSONValue.parseWithException(jsonString);
++    String level = (String)lro.get("level");
++    String loggerName = (String)lro.get("loggerName");
++    String msg = (String)lro.get("msg");
++    long timestamp = Long.parseLong((String)lro.get("timestamp"));
+     Throwable thrown =
+-      throwableFromJson(lro.getString("thrown"));
++      throwableFromJson((String)lro.get("thrown"));
+     LogRecord lr = new LogRecord(Level.parse(level), msg);
+     lr.setLoggerName(loggerName);
+     lr.setThrown(thrown);
+@@ -52,30 +53,30 @@
+   }
+ 
+   private static StackTraceElement stackTraceElementFromJson(
+-      String jsonString) throws JSONException {
+-    JSONObject ste = new JSONObject(jsonString);
+-    String className = ste.getString("className");
+-    String fileName = ste.getString("fileName");
+-    String methodName = ste.getString("methodName");
+-    int lineNumber = Integer.parseInt(ste.getString("lineNumber"));
++      String jsonString) throws ParseException {
++    JSONObject ste = (JSONObject)JSONValue.parseWithException(jsonString);
++    String className = (String)ste.get("className");
++    String fileName = (String)ste.get("fileName");
++    String methodName = (String)ste.get("methodName");
++    int lineNumber = Integer.parseInt((String)ste.get("lineNumber"));
+     return new StackTraceElement(className, methodName, fileName, lineNumber);
+   }
+ 
+   private static Throwable throwableFromJson(String jsonString)
+-  throws JSONException {
++  throws ParseException {
+     if (jsonString.equals("{}")) {
+       return null;
+     }
+-    JSONObject t = new JSONObject(jsonString);
+-    String message = t.getString("message");
++    JSONObject t = (JSONObject)JSONValue.parseWithException(jsonString);
++    String message = (String)t.get("message");
+     Throwable cause =
+-      throwableFromJson(t.getString("cause"));
++      throwableFromJson((String)t.get("cause"));
+     StackTraceElement[] stackTrace = null;
+-    JSONArray st = t.getJSONArray("stackTrace");
+-    if (st.length() > 0) {
+-      stackTrace = new StackTraceElement[st.length()];
+-      for (int i = 0; i < st.length(); i++) {
+-        stackTrace[i] = stackTraceElementFromJson(st.getString(i));
++    JSONArray st = (JSONArray)t.get("stackTrace");
++    if (st.size() > 0) {
++      stackTrace = new StackTraceElement[st.size()];
++      for (int i = 0; i < st.size(); i++) {
++        stackTrace[i] = stackTraceElementFromJson((String)st.get(i));
+       }
+     }
+     Throwable thrown = new Throwable(message, cause);

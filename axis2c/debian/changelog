@@ -1,0 +1,177 @@
+axis2c (1.6.0-5.1) unstable; urgency=low
+
+  * Non maintainer upload.
+  * Fix build failure with GCC 4.7. Closes: #672006.
+
+ -- Matthias Klose <doko@debian.org>  Thu, 10 May 2012 02:13:55 +0000
+
+axis2c (1.6.0-5) unstable; urgency=low
+
+  [ Steffen Moeller ]
+
+  * Some initial pretty-printing in debian/copyright
+
+  [Brian Thomason ]
+
+  * Updated 03_enable-security.patch to include Security in both flows
+  * Removed libxml2-dev as a runtime dep of the dev package as guththila is now used
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Mon, 02 Apr 2012 12:50:08 -0400
+
+axis2c (1.6.0-4) unstable; urgency=low
+
+  * Fixed conflicts of -dev package with libaxix2c0 (Closes: #655838).
+
+ -- Steffen Moeller <moeller@debian.org>  Sun, 22 Jan 2012 21:02:11 +0100
+
+axis2c (1.6.0-3) unstable; urgency=low
+
+  * Adding NMU to pkg-eucalyptus repository on alioth
+  * Added respective Vcs information
+  * Substituted Kyo with Brian for future maintenance
+  * Added myself as uploader
+  * Set DMUA flag for Brian
+
+ -- Steffen Moeller <moeller@debian.org>  Sun, 22 Jan 2012 21:02:11 +0100
+
+axis2c (1.6.0-2.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix ftbfs with gcc-4.6 -Werror (Closes: #625309)
+    Thanks to Peter Green for most of the work.
+  * Remove Build-Depends on libxml2, since use of guththila is
+    the expected behaviour. (Closes: #655480).
+  * Install libaxis2*.[so,a]*
+  * Update debian/axis2c.load to make it load correctly. 
+    (Closes: #594707, #655214)
+
+ -- Aron Xu <aron@debian.org>  Fri, 13 Jan 2012 00:54:36 +0800
+
+axis2c (1.6.0-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Empty dependency_libs (Closes: #621260).
+  * Fix FTBFS with --no-ad-needed (Closes: #604791).
+  * Fix warning with upstream's patch (Closes: #616291).
+  * Use uri instead of clone (Closes: #626693).
+
+ -- Luk Claes <luk@debian.org>  Mon, 13 Jun 2011 18:46:04 +0200
+
+axis2c (1.6.0-2) unstable; urgency=low
+
+  * Fix patches/03_enable-security to enable both security
+    flows (Closes: #594335).
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Sun, 10 Oct 2010 18:16:54 -0700
+
+axis2c (1.6.0-1) unstable; urgency=low
+
+  * Build for debian package based largely on Ubuntu package (Closes: #497594)
+
+ -- Kyo Lee <kyo.lee@eucalyptus.com>  Wed, 16 Dec 2009 20:27:31 -0800
+
+axis2c (1.6.0-0ubuntu7) karmic; urgency=low
+
+  * debian/libaxis2c.preinst: Handle /usr/lib/axis2/lib directory symlink
+    on upgrade from 1.5 (LP: #426752)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 12 Oct 2009 10:29:54 +0200
+
+axis2c (1.6.0-0ubuntu6) karmic; urgency=low
+
+  * Disable threading, as it causes instability. (LP: #428060)
+  * Switch to quilt for patch management.
+
+ -- Soren Hansen <soren@ubuntu.com>  Mon, 14 Sep 2009 22:51:37 +0200
+
+axis2c (1.6.0-0ubuntu5) karmic; urgency=low
+
+  * debian/rules, debian/patches/04_fix_testsuite.patch: Enable testsuite
+  * Fold direct modification of test_util.c into 04_fix_testsuite.patch
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 14 Sep 2009 17:29:50 +0200
+
+axis2c (1.6.0-0ubuntu4) karmic; urgency=low
+
+  * Replace directory symlink for axis2c/include with a stack of file
+    symlinks. This should make upgrades much smoother if we decide to
+    rearrange directories again.
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 09 Sep 2009 16:46:03 +0200
+
+axis2c (1.6.0-0ubuntu3) karmic; urgency=low
+
+  * Put axis2c.pc in /usr/lib/pkgconfig and add (yet another) symlink to
+    account for other projects that may look relative to $AXIS2C_HOME.
+
+ -- Soren Hansen <soren@ubuntu.com>  Fri, 28 Aug 2009 15:48:41 +0000
+
+axis2c (1.6.0-0ubuntu2) karmic; urgency=low
+
+  * Include WSDL2C.sh in libaxis2c-dev. 
+
+ -- Soren Hansen <soren@ubuntu.com>  Thu, 27 Aug 2009 08:05:26 +0000
+
+axis2c (1.6.0-0ubuntu1) karmic; urgency=low
+
+  * New upstream release
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 26 Aug 2009 22:52:22 +0000
+
+axis2c (1.5.0-0ubuntu7) karmic; urgency=low
+
+  * Do remove --enable-tests from configure flags as these do not build yet.
+
+ -- Loïc Minier <loic.minier@ubuntu.com>  Tue, 25 Aug 2009 12:20:53 +0200
+
+axis2c (1.5.0-0ubuntu6) karmic; urgency=low
+
+  * Move changes to samples/server/axis2.xml from the .diff.gz to a new patch,
+    03_enable-security.
+  * Add ${misc:Depends} to all packages and ${shlibs:Depends} to the -dev
+    package.
+  * Set Priority to optional.
+  * Build-dep on zlib1g-dev explicitly for libz.so and on libssl-dev for
+    libssl.so.
+  * Fix bogus description lines starting with a dot; cleanup whitespace.
+  * Remove dh-make boilerplate from copyright file.
+  * Pass -r to xargs to avoid warning when no Makefile to remove is found.
+  * Prepare enabling of testsuite which currently doesn't build; see rules.
+
+ -- Loïc Minier <loic.minier@ubuntu.com>  Tue, 25 Aug 2009 11:49:45 +0200
+
+axis2c (1.5.0-0ubuntu5) jaunty; urgency=low
+
+  * Only put the aforementioned symlinks in the libaxis2c0 (instead of
+    both libaxis2c0 and libaxis2c-dev).
+  * Ship axis2c.{conf,load} needed for "a2enmod axis2c" to work. 
+    (LP: #333239)
+
+ -- Soren Hansen <soren@ubuntu.com>  Thu, 26 Feb 2009 00:16:01 +0100
+
+axis2c (1.5.0-0ubuntu4) jaunty; urgency=low
+
+  * *Correctly* provide extra symlinks so that axis2 can find its base
+    modules. 
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 25 Feb 2009 14:58:40 +0100
+
+axis2c (1.5.0-0ubuntu3) jaunty; urgency=low
+
+  * Ship axis2.xml symlink in libaxis2c0 instead of libaxis2c-bin.
+
+ -- Soren Hansen <soren@ubuntu.com>  Tue, 24 Feb 2009 17:32:37 +0100
+
+axis2c (1.5.0-0ubuntu2) jaunty; urgency=low
+
+  * Provide extra symlinks so that axis2 can find its base modules.
+  * Enable security by default.
+  * Ship axis2.xml in libaxis2c0 instead of libaxis2c-bin.
+
+ -- Soren Hansen <soren@ubuntu.com>  Tue, 24 Feb 2009 09:05:30 +0100
+
+axis2c (1.5.0-0ubuntu1) jaunty; urgency=low
+
+  * Initial release. Big thanks for Michael Vogt for helping out!
+
+ -- Soren Hansen <soren@ubuntu.com>  Wed, 11 Feb 2009 02:36:01 +0200

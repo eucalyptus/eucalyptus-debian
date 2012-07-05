@@ -1,0 +1,48 @@
+Source: wsdl2c
+Section: java
+Priority: extra
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org> 
+DM-Upload-Allowed: yes
+Uploaders: Brian Thomason <brian.thomason@eucalyptus.com>
+Build-Depends: debhelper (>= 7),
+               cdbs,
+               ant,
+               default-jdk,
+               libbackport-util-concurrent-java,
+               libcommons-cli-java,
+               libcommons-fileupload-java,
+               libcommons-httpclient-java,
+               libcommons-logging-java,
+               libgeronimo-jms-1.1-spec-java,
+               libgnumail-java,
+               libhttpcore-java,
+               libjaxen-java,
+               libwsdl4j-java
+Standards-Version: 3.9.3
+Homepage: https://github.com/a13m/wsdl2c
+
+Package: libwsdl2c-java
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: stripped down axis2 source bundle suitable for running WSDL2C
+ This is an amalgam of code from several java projects which are required to use
+ WSDL2C from the Apache Axis 2 project. The goal is to have code which can be
+ built from source without the chain of dependencies needed to build each of
+ these projects in their entirety.
+ .
+ The code in this project coms from the following sources:
+ .
+ http://svn.apache.org/repos/asf/axis/axis2/java/core/tags/v1.4.1
+ http://svn.apache.org/repos/asf/webservices/commons/tags/axiom/1.2.12
+ http://svn.apache.org/repos/asf/webservices/commons/tags/neethi/neethi-3.0.1
+ http://svn.apache.org/repos/asf/webservices/commons/tags/XmlSchema/1.4.2
+ http://svn.apache.org/repos/asf/webservices/woden/tags/1.0M9
+ https://svn.java.net/svn/jsr311~svn/tags/jsr311-api-1.1.1
+ svn://svn.annogen.codehaus.org/annogen/scm [1]
+ .
+ At this point, none of the sources have been modified. Note that the jsr311
+ code (i.e., the files under javax/ws/rs) is provided under the CDDL, while all
+ other code uses the Apache Software License, version 2.0.
+ .
+ Notes: [1] could not access this link, and pulled the code out of a jpackage
+ RPM, but theoretically the code still lives in this repo.

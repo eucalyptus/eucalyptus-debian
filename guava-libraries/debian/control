@@ -1,0 +1,39 @@
+Source: guava-libraries
+Section: java
+Priority: optional
+Maintainer: Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>
+Uploaders: Miguel Landaeta <miguel@miguel.cc>,
+ James Page <james.page@canonical.com>
+Build-Depends: ant-optional, debhelper (>= 7.0.50~), default-jdk, javahelper
+Build-Depends-Indep: maven-repo-helper, libjsr305-java
+Standards-Version: 3.9.2
+Vcs-Git: git://git.debian.org/pkg-java/guava-libraries.git
+Vcs-Browser: http://git.debian.org/?p=pkg-java/guava-libraries.git
+Homepage: http://code.google.com/p/guava-libraries/
+
+Package: libguava-java
+Architecture: all
+Depends: libjsr305-java, ${misc:Depends}
+Description: suite of Google Common Libraries for Java 5.0
+ Guava is a suite of core and expanded libraries that include
+ utility classes, google's collections, io classes, concurrency
+ support and other features.
+ .
+ Guava has only one code dependency: javax.annotation, per the
+ JSR-305 spec.
+
+Package: libguava-java-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}
+Recommends: libguava-java
+Suggests: default-jdk-doc
+Description: documentation for libguava-java
+ Guava is a suite of core and expanded libraries that include
+ utility classes, google's collections, io classes, concurrency
+ support and other features.
+ .
+ Guava has only one code dependency: javax.annotation, per the
+ JSR-305 spec.
+ .
+ This package contains the javadocs of Guava library suite.

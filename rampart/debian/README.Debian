@@ -1,0 +1,14 @@
+Regarding the Usage of RPATH Issue
+------------------------------------
+
+The package libaxis2c uses the compiler option '-rpath', which raises a flag 
+according to the Debian Policy. However:
+
+In the package libraxis2c, the rpath is set to "/usr/lib/axis2", its private shared library.
+And, the only other binaries that reference this library is this package, which is intended to use only with 'libaxis2c'.
+
+Thus, the usage of RPATH in the package librampart complies with the conditions listed by lintian-info --tags binary-or-shlib-defines-rpath.
+
+ -- Kyo Lee <kyo.lee@eucalyptus.com>  Wed, 16 Dec 2009 20:27:31 -0800
+
+

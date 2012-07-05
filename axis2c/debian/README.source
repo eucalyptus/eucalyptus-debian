@@ -1,0 +1,16 @@
+Patches Description
+
+02_fix_doc_dir.patch
+Adds $DESTDIR to Makefile
+
+03_enable-security.patch
+Enables security by default
+
+04_fix_testsuite.patch
+Fixes a bug in testsuite
+
+05-build-without-threading.patch
+Builds without threading to prevent seg-fault due to hi-load
+
+ -- Kyo Lee <kyo.lee@eucalyptus.com>  Wed, 16 Dec 2009 20:27:31 -0800
+

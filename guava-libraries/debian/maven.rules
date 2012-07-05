@@ -1,0 +1,1 @@
+s/com.google.code.findbugs/org.jsr-305/ jsr305 jar s/.*/0.x/ * *

@@ -1,0 +1,29 @@
+Description: Avoids dependency on org.springframework.jms.connection.JmsResourceHolder.
+Origin: vendor
+Forwarded: no
+--- old/modules/spring-extras/src/main/java/org/mule/module/spring/transaction/SpringTransactionFactory.java      2010-03-09 16:33:39.000000000 -0800
++++ new/modules/spring-extras/src/main/java/org/mule/module/spring/transaction/SpringTransactionFactory.java  2010-03-09 16:33:04.000000000 -0800
+@@ -17,7 +17,7 @@
+ import org.mule.transaction.AbstractSingleResourceTransaction;
+ 
+ import org.springframework.jdbc.datasource.ConnectionHolder;
+-import org.springframework.jms.connection.JmsResourceHolder;
++//import org.springframework.jms.connection.JmsResourceHolder;
+ import org.springframework.transaction.PlatformTransactionManager;
+ import org.springframework.transaction.TransactionStatus;
+ import org.springframework.transaction.support.TransactionSynchronizationManager;
+@@ -97,10 +97,10 @@
+             {
+                 if (!(res instanceof ConnectionHolder))
+                 {
+-                    if (res instanceof JmsResourceHolder)
++/*                    if (res instanceof JmsResourceHolder)
+                     {
+                         return ((JmsResourceHolder)res).getConnection();
+-                    }
++                    }*/
+                 }
+                 else
+                 {
+
+

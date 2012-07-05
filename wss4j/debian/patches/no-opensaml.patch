@@ -1,0 +1,261 @@
+diff -Nur -x '*.orig' -x '*~' wss4j/build.xml wss4j.new/build.xml
+--- wss4j/build.xml	2009-07-20 15:19:40.000000000 +0200
++++ wss4j.new/build.xml	2009-07-20 15:29:53.000000000 +0200
+@@ -351,6 +351,8 @@
+         <!-- Compile the java code from ${dir.src} into ${build.classes} -->
+         <javac srcdir="${dir.src}" destdir="${build.classes}" debug="on" source="1.3" target="1.3">
+             <classpath refid="classpath.library"/>
++            <exclude name="**/*SAMLToken*.java"/>
++            <exclude name="org/apache/ws/security/saml/**"/>
+             <exclude name="**/Merlin.java" unless="merlin.ok"/>
+             <exclude name="**/sandbox/**/*.java" if="jdk13.present" />
+         </javac>
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/message/WSSecDKSign.java wss4j.new/src/org/apache/ws/security/message/WSSecDKSign.java
+--- wss4j/src/org/apache/ws/security/message/WSSecDKSign.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/message/WSSecDKSign.java	2009-07-20 15:30:17.000000000 +0200
+@@ -28,7 +28,7 @@
+ import org.apache.ws.security.conversation.ConversationException;
+ import org.apache.ws.security.message.token.Reference;
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.transform.STRTransform;
+ import org.apache.ws.security.util.WSSecurityUtil;
+ import org.apache.xml.security.algorithms.SignatureAlgorithm;
+@@ -295,7 +295,7 @@
+                     Element ctx = createSTRParameter(document);
+                     transforms.addTransform(STRTransform.implementedTransformURI, ctx);
+                     sig.addDocument("#" + strUri, transforms);
+-                } else if (elemName.equals("Assertion")) { // Assertion
++                } /* else if (elemName.equals("Assertion")) { // Assertion
+                     String id = SAMLUtil.getAssertionId(envel, elemName, nmSpace);
+ 
+                     Element body = 
+@@ -319,7 +319,7 @@
+                     body.setAttributeNS(WSConstants.WSU_NS, prefix + ":Id", id);
+                     sig.addDocument("#" + id, transforms);
+ 
+-                } else {
++                } */ else {
+                     Element body = (Element) WSSecurityUtil.findElement(envel, elemName, nmSpace);
+                     if (body == null) {
+                         throw new WSSecurityException(
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/message/WSSecSignature.java wss4j.new/src/org/apache/ws/security/message/WSSecSignature.java
+--- wss4j/src/org/apache/ws/security/message/WSSecSignature.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/message/WSSecSignature.java	2009-07-20 15:30:17.000000000 +0200
+@@ -1,4 +1,4 @@
+-/*
++/* /*
+  * Copyright  2003-2004 The Apache Software Foundation.
+  *
+  *  Licensed under the Apache License, Version 2.0 (the "License");
+@@ -31,7 +31,7 @@
+ import org.apache.ws.security.message.token.Reference;
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+ import org.apache.ws.security.message.token.X509Security;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.transform.STRTransform;
+ import org.apache.ws.security.util.WSSecurityUtil;
+ import org.apache.xml.security.algorithms.SignatureAlgorithm;
+@@ -551,7 +551,7 @@
+                     Element ctx = createSTRParameter(document);
+                     transforms.addTransform(STRTransform.implementedTransformURI, ctx);
+                     sig.addDocument("#" + strUri, transforms, digestAlgo);
+-                } else if (elemName.equals("Assertion")) { // Assertion
++                }/* else if (elemName.equals("Assertion")) { // Assertion
+                     String id = null;
+                     id = SAMLUtil.getAssertionId(envelope, elemName, nmSpace);
+ 
+@@ -574,7 +574,7 @@
+                         WSSecurityUtil.setNamespace(body, WSConstants.WSU_NS, WSConstants.WSU_PREFIX);
+                     body.setAttributeNS(WSConstants.WSU_NS, prefix + ":Id", id);
+                     sig.addDocument("#" + id, transforms, digestAlgo);
+-                } else {
++                }*/ else {
+                     Element body = 
+                         (Element)WSSecurityUtil.findElement(envelope, elemName, nmSpace);
+                     if (body == null) {
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/message/WSSignEnvelope.java wss4j.new/src/org/apache/ws/security/message/WSSignEnvelope.java
+--- wss4j/src/org/apache/ws/security/message/WSSignEnvelope.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/message/WSSignEnvelope.java	2009-07-20 15:30:17.000000000 +0200
+@@ -31,7 +31,7 @@
+ import org.apache.ws.security.message.token.Reference;
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+ import org.apache.ws.security.message.token.X509Security;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.transform.STRTransform;
+ import org.apache.ws.security.util.WSSecurityUtil;
+ import org.apache.xml.security.algorithms.SignatureAlgorithm;
+@@ -416,7 +416,7 @@
+                     transforms.addTransform(
+                             STRTransform.implementedTransformURI, ctx);
+                     sig.addDocument("#" + secRefId, transforms);
+-                } else if (elemName.equals("Assertion")) { // Assertion
++                } /*else if (elemName.equals("Assertion")) { // Assertion
+ 
+                     String id = null;
+                     id = SAMLUtil.getAssertionId(envelope, elemName, nmSpace);
+@@ -443,7 +443,7 @@
+                             id);
+                     sig.addDocument("#" + id, transforms);
+ 
+-                } else {
++                } */ else {
+                     Element body = (Element) WSSecurityUtil.findElement(
+                             envelope, elemName, nmSpace);
+                     if (body == null) {
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/processor/DerivedKeyTokenProcessor.java wss4j.new/src/org/apache/ws/security/processor/DerivedKeyTokenProcessor.java
+--- wss4j/src/org/apache/ws/security/processor/DerivedKeyTokenProcessor.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/processor/DerivedKeyTokenProcessor.java	2009-07-20 15:30:17.000000000 +0200
+@@ -30,8 +30,8 @@
+ import org.apache.ws.security.message.token.DerivedKeyToken;
+ import org.apache.ws.security.message.token.Reference;
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+-import org.apache.ws.security.saml.SAMLKeyInfo;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLKeyInfo;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.util.Base64;
+ import org.w3c.dom.Element;
+ 
+@@ -165,13 +165,14 @@
+                 this.secret = ((EncryptedKeyProcessor) processor).getDecryptedBytes();
+             } else if (processor instanceof SecurityContextTokenProcessor) {
+                 this.secret = ((SecurityContextTokenProcessor) processor).getSecret();
+-            } else if (processor instanceof SAMLTokenProcessor) {
++/*            } else if (processor instanceof SAMLTokenProcessor) {
+                 SAMLTokenProcessor samlp = (SAMLTokenProcessor) processor;
+                 SAMLKeyInfo keyInfo = 
+                     SAMLUtil.getSAMLKeyInfo(samlp.getSamlTokenElement(), crypto, cb);
+                 // TODO Handle malformed SAML tokens where they don't have the 
+                 // secret in them
+                 this.secret = keyInfo.getSecret();
++*/
+             } else {
+                 throw new WSSecurityException(
+                     WSSecurityException.FAILED_CHECK, "unsupportedKeyId"
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/processor/ReferenceListProcessor.java wss4j.new/src/org/apache/ws/security/processor/ReferenceListProcessor.java
+--- wss4j/src/org/apache/ws/security/processor/ReferenceListProcessor.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/processor/ReferenceListProcessor.java	2009-07-20 15:30:17.000000000 +0200
+@@ -37,8 +37,8 @@
+ import org.apache.ws.security.components.crypto.Crypto;
+ import org.apache.ws.security.message.token.Reference;
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+-import org.apache.ws.security.saml.SAMLKeyInfo;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLKeyInfo;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.util.WSSecurityUtil;
+ import org.apache.xml.security.encryption.XMLCipher;
+ import org.apache.xml.security.encryption.XMLEncryptionException;
+@@ -290,8 +290,8 @@
+             }
+             Processor p = wsDocInfo.getProcessor(id);
+             if (!(p instanceof EncryptedKeyProcessor
+-                || p instanceof DerivedKeyTokenProcessor 
+-                || p instanceof SAMLTokenProcessor)
++                || p instanceof DerivedKeyTokenProcessor ) 
++/*                || p instanceof SAMLTokenProcessor) */
+             ) {
+                 // Try custom token
+                 WSPasswordCallback pwcb = new WSPasswordCallback(id, WSPasswordCallback.CUSTOM_TOKEN);
+@@ -320,14 +320,14 @@
+             } else if (p instanceof DerivedKeyTokenProcessor) {
+                 DerivedKeyTokenProcessor dkp = (DerivedKeyTokenProcessor) p;
+                 decryptedData = dkp.getKeyBytes(WSSecurityUtil.getKeyLength(algorithm));
+-            } else if (p instanceof SAMLTokenProcessor) {
++            } /*else if (p instanceof SAMLTokenProcessor) {
+                 SAMLTokenProcessor samlp = (SAMLTokenProcessor) p;
+                 SAMLKeyInfo keyInfo = 
+                     SAMLUtil.getSAMLKeyInfo(samlp.getSamlTokenElement(), crypto, cb);
+                 // TODO Handle malformed SAML tokens where they don't have the 
+                 // secret in them
+                 decryptedData = keyInfo.getSecret();
+-            }
++            }*/
+         } else if (secRef.containsKeyIdentifier()){
+             String sha = secRef.getKeyIdentifierValue();
+             WSPasswordCallback pwcb = 
+diff -Nur -x '*.orig' -x '*~' wss4j/src/org/apache/ws/security/processor/SignatureProcessor.java wss4j.new/src/org/apache/ws/security/processor/SignatureProcessor.java
+--- wss4j/src/org/apache/ws/security/processor/SignatureProcessor.java	2009-04-15 09:48:44.000000000 +0200
++++ wss4j.new/src/org/apache/ws/security/processor/SignatureProcessor.java	2009-07-20 15:30:17.000000000 +0200
+@@ -42,8 +42,8 @@
+ import org.apache.ws.security.message.token.SecurityTokenReference;
+ import org.apache.ws.security.message.token.UsernameToken;
+ import org.apache.ws.security.message.token.X509Security;
+-import org.apache.ws.security.saml.SAMLKeyInfo;
+-import org.apache.ws.security.saml.SAMLUtil;
++//import org.apache.ws.security.saml.SAMLKeyInfo;
++//import org.apache.ws.security.saml.SAMLUtil;
+ import org.apache.ws.security.util.WSSecurityUtil;
+ import org.apache.xml.security.exceptions.XMLSecurityException;
+ import org.apache.xml.security.keys.KeyInfo;
+@@ -51,7 +51,7 @@
+ import org.apache.xml.security.signature.SignedInfo;
+ import org.apache.xml.security.signature.XMLSignature;
+ import org.apache.xml.security.signature.XMLSignatureException;
+-import org.opensaml.SAMLAssertion;
++//import org.opensaml.SAMLAssertion;
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
+@@ -208,7 +208,7 @@
+         byte[] secretKey = null;
+         UsernameToken ut = null;
+         DerivedKeyToken dkt = null;
+-        SAMLKeyInfo samlKi = null;
++        //SAMLKeyInfo samlKi = null;
+         String customTokenId = null;
+         java.security.PublicKey publicKey = null;
+         
+@@ -268,7 +268,7 @@
+                     if (el.equals(WSSecurityEngine.binaryToken)) {
+                         // TODO: Use results from BinarySecurityTokenProcessor
+                         certs = getCertificatesTokenReference(token, crypto);
+-                    } else if (el.equals(WSSecurityEngine.SAML_TOKEN)) {
++/*                    } else if (el.equals(WSSecurityEngine.SAML_TOKEN)) {
+                         if (crypto == null) {
+                             throw new WSSecurityException(
+                                 WSSecurityException.FAILURE, "noSigCryptoFile"
+@@ -277,7 +277,7 @@
+                         samlKi = SAMLUtil.getSAMLKeyInfo(token, crypto, cb);
+                         certs = samlKi.getCerts();
+                         secretKey = samlKi.getSecret();
+-
++*/
+                     } else if (el.equals(WSSecurityEngine.ENCRYPTED_KEY)){
+                         String encryptedKeyID = token.getAttributeNS(null,"Id");                   
+                         EncryptedKeyProcessor encryptKeyProcessor = 
+@@ -349,7 +349,7 @@
+                         );
+                     }
+                     secretKey = pwcb.getKey();
+-                } else if (WSConstants.WSS_SAML_KI_VALUE_TYPE.equals(secRef.getKeyIdentifierValueType())) { 
++/*                } else if (WSConstants.WSS_SAML_KI_VALUE_TYPE.equals(secRef.getKeyIdentifierValueType())) { 
+                     Element token = 
+                         secRef.getKeyIdentifierTokenElement(elem.getOwnerDocument(), wsDocInfo, cb);
+                     
+@@ -361,6 +361,7 @@
+                     samlKi = SAMLUtil.getSAMLKeyInfo(token, crypto, cb);
+                     certs = samlKi.getCerts();
+                     secretKey = samlKi.getSecret();
++*/
+                 } else {
+                     certs = secRef.getKeyIdentifier(crypto);
+                 }
+@@ -512,11 +513,12 @@
+                     }
+                     principal.setBasetokenId(basetokenId);
+                     return principal;
+-                } else if (samlKi != null) {
++/*                } else if (samlKi != null) {
+                     final SAMLAssertion assertion = samlKi.getAssertion();
+                     CustomTokenPrincipal principal = new CustomTokenPrincipal(assertion.getId());
+                     principal.setTokenObject(assertion);
+                     return principal;
++*/
+                 } else if (secretKey != null) {
+                     // This is the custom key scenario
+                     return new CustomTokenPrincipal(customTokenId);

@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+#
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+
+%:
+	dh $@ --with javahelper
+
+override_dh_clean:
+	rm -f lib/sablecc.jar
+	rm -rf sablecc-anttask-1.0.1
+	dh_clean
+
+override_dh_auto_build:
+	# Unpack ant task but without precompiled binary
+	tar -zxvf sablecc-anttask-1.0.1.tar.gz --exclude=\*.class
+
+	# Build ant task class
+	cd sablecc-anttask-1.0.1 && ant
+	mkdir -p classes/org/sablecc/ant/taskdef
+	cp sablecc-anttask-1.0.1/classes/org/sablecc/ant/taskdef/Sablecc.class classes/org/sablecc/ant/taskdef
+
+	# Build with ant jar target
+	dh_auto_build -- jar
+

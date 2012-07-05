@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if [ "$1" = "upgrade" ]
+then
+    if dpkg --compare-versions "$2" lt 1.6.0-0ubuntu6
+    then
+        rm -f /usr/lib/axis2/lib
+    fi
+fi
+
+#DEBHELPER#

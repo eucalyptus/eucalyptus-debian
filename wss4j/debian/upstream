@@ -1,0 +1,9 @@
+# Various informations about Upstream in YAML format,
+# See: http://wiki.debian.org/UpstreamMetadata
+
+Archive: Apache
+Homepage: http://ws.apache.org/wss4j/
+Name: WSS4J
+Repository: http://svn.apache.org/repos/asf/webservices/wss4j
+Repository-Browse: http://svn.apache.org/viewvc/webservices/wss4j
+Watch: http://www.apache.org/dist/ws/wss4j/ (\d+)_(\d+)_(\d+)/

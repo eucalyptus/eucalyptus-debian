@@ -1,0 +1,49 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/javahelper.mk
+include /usr/share/cdbs/1/class/ant.mk
+
+JAVA_HOME          := /usr/lib/jvm/default-java
+DEB_ANT_BUILDFILE  := ./debian/build.xml
+DEB_JARS           := commons-collections3 jetty jetty-sslengine jetty-util ecj \
+                      /usr/share/java/swt.jar servlet-api-2.5 junit sac hibernate-core \
+                      hibernate-validator jsilver
+DEB_ANT_ARGS       := -DartifactVersion=$(DEB_UPSTREAM_VERSION)
+
+clean::
+	rm -rf build target
+
+configure/libgwt-dev-java::
+	mkdir -p $(CURDIR)/build/out/dev/bin/com/google/gwt/dev
+	echo gwt.version=$(DEB_UPSTREAM_VERSION) >> $(CURDIR)/build/out/dev/bin/com/google/gwt/dev/About.properties
+
+get-orig-source:
+	debian/orig-tar.sh --upstream-version $(DEB_UPSTREAM_VERSION)	
+
+# Unit tests are a fiddle to run and need some extra parts
+unittests: unittests-dev unittests-user
+
+unittests-check: build
+	dh_testdir
+	@if ! [ -d samples ]; then \
+		echo "The debian sources for this package do not include the samples directory"; \
+		echo "which is needed to run the unit tests. You can download the official GWT"; \
+		echo "build from Google from http://code.google.com/webtoolkit/download.html"; \
+		exit 1; \
+	fi
+	@if ! [ -d "$$GWT_EXTTOOLS"/lib/junit ]; then \
+		echo "To run the unit tests you need to set GWT_EXTTOOLS to point to a checkout" ;\
+		echo "of Google web tools. You can get it here:" ;\
+		echo " svn checkout http://google-web-toolkit.googlecode.com/svn/tools" ;\
+		exit 1 ;\
+	fi
+	cd build-tools/ant-gwt && GWT_TOOLS="$$GWT_EXTTOOLS" ant
+
+unittests-dev : unittests-check
+	@echo Development unit tests
+	ant -propertyfile debian/ant.properties -propertyfile tools.properties -DartifactVersion=2.4.0 -f dev/build.xml test
+
+unittests-user : unittests-check
+	@echo User unit tests
+	ant -propertyfile debian/ant.properties -propertyfile tools.properties -DartifactVersion=2.4.0 -f user/build.xml test

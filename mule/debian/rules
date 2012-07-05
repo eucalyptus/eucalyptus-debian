@@ -1,0 +1,39 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/ant.mk
+
+SVN                  := https://svn.codehaus.org/mule/tags/mule-$(DEB_UPSTREAM_VERSION)
+REQUIRED_JVM_VERSION := 1.5
+
+JAVA_HOME            := /usr/lib/jvm/default-java
+DEB_ANT_BUILDFILE    := debian/build.xml
+DEB_ANT_ARGS         := -DartifactVersion=$(DEB_UPSTREAM_VERSION) \
+                        -DartifactId=$(DEB_SOURCE_PACKAGE) \
+                        -DsourceVersion=$(REQUIRED_JVM_VERSION) \
+                        -DtargetVersion=$(REQUIRED_JVM_VERSION)
+DEB_UPSTREAM_VERSION_SHORT := $(shell echo $(DEB_UPSTREAM_VERSION)|cut -f1,2 -d.)
+
+test:
+	echo "'$(DEB_UPSTREAM_VERSION_SHORT)'"
+	echo "'lib$(DEB_SOURCE_PACKAGE)-java-$(DEB_UPSTREAM_VERSION_SHORT)'"
+
+#                        
+DEB_JARS             := groovy quartz /usr/share/java/geronimo-jms_1.1_spec.jar jaxrpc commons-net2 axis aopalliance backport-util-concurrent commons-beanutils commons-cli commons-collections3 commons-httpclient commons-io commons-jxpath commons-logging commons-lang commons-pool dom4j geronimo-j2ee-connector-1.5-spec jaxen.jar jug-asl log4j-1.2 geronimo-ejb-3.0-spec geronimo-jta-1.0.1b-spec jboss-transaction maven-artifact-manager mx4j ognl servlet-2.3 spring3-beans spring3-core spring3-web spring3-context spring3-jdbc spring3-transaction-3.x xstream mx4j-tools mx4j-remote wrapper
+
+binary-post-install/lib$(DEB_SOURCE_PACKAGE)-java-$(DEB_UPSTREAM_VERSION_SHORT)::
+	for n in core \
+		module-builders module-client module-jaas module-ognl module-spring-config module-scripting module-spring-extras module-xml management\
+		transport-rmi transport-ejb transport-jms transport-multicast transport-quartz transport-bpm transport-soap transport-ssl transport-stdio transport-tcp transport-udp transport-vm ; \
+	do \
+		jarbasename=$(DEB_SOURCE_PACKAGE)-$$n ; \
+		dh_install target/$$jarbasename-$(DEB_UPSTREAM_VERSION).jar usr/share/java ; \
+		dh_link usr/share/java/$$jarbasename-$(DEB_UPSTREAM_VERSION).jar usr/share/java/$$jarbasename-$(DEB_UPSTREAM_VERSION_SHORT).jar ; \
+	done
+
+get-orig-source:
+	mkdir orig_tmp
+	cd orig_tmp && \
+		svn export $(SVN) $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION) && \
+		GZIP="--best --no-name" tar c --exclude-vcs --exclude-from=../debian/exclude -zvf ../../$(DEB_SOURCE_PACKAGE)_$(DEB_UPSTREAM_VERSION).orig.tar.gz $(DEB_SOURCE_PACKAGE)-$(DEB_UPSTREAM_VERSION)
+	rm -rf orig_tmp

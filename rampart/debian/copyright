@@ -1,0 +1,64 @@
+This package was debianized by Soren Hansen <soren@ubuntu.com> on
+Mon, 26 Jan 2009 11:29:36 +0100.
+
+It was downloaded from http://archive.apache.org/dist/ws/axis2/c/1_5_0/
+
+Upstream Authors:
+
+Samisa Abeysinghe
+Dushshantha Chandradasa
+Chris Darroch
+Senaka Fernando
+Paul Fremantle
+Dimuthu Gamage
+Sahan Gamage
+Lahiru Gunathilake
+Nandika Jayawardana
+Supun Kamburugamuva
+Kaushalye Kapuruge
+Damitha Kumarage
+Bill Mitchell
+Dumindu Pallewela
+Milinda Pathirage
+Manjula Peiris
+Dinesh Premalal
+Sanjaya Rathnaweera
+Davanum Srinivas
+Selvaratnam Uthaiyashankar
+Sanjiva Weerawarana
+Nabeel Yoosuf
+
+Copyright:
+    Copyright 2003-2004 The Apache Software Foundation. 
+
+License:
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+On a Debian system, the license can be found at
+/usr/share/common-licenses/Apache-2.0 .
+
+
+The Debian packaging is copyright 2009, Soren Hansen <soren@ubuntu.com> and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+
+The article below is included in the NOTICE file. 
+
+Apache Rampart/C
+Copyright 2005-2009 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+

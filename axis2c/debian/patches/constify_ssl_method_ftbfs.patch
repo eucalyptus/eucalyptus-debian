@@ -1,0 +1,15 @@
+Description: Declare SSL_METHOD of type const, fixing FTBFS.
+Author: Dave Walker (Daviey)) <DaveWalker@ubuntu.com>
+Bug-Ubuntu: https://launchpad.net/bugs/796379
+
+--- a/src/core/transport/http/sender/ssl/ssl_utils.c
++++ b/src/core/transport/http/sender/ssl/ssl_utils.c
+@@ -41,7 +41,7 @@
+     axis2_char_t * key_file,
+     axis2_char_t * ssl_pp)
+ {
+-    SSL_METHOD *meth = NULL;
++    const SSL_METHOD *meth = NULL;
+     SSL_CTX *ctx = NULL;
+     axis2_char_t *ca_file = server_cert;
+ 

@@ -1,0 +1,38 @@
+Source: jsilver
+Section: java
+Priority: extra
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org>
+Uploaders: Alexandre Rossi <alexandre.rossi@gmail.com>, Chris Halls <halls@debian.org>
+Build-Depends: debhelper (>= 7.0.50~), default-jdk, javahelper (>=0.20), ant, sablecc, libguava-java
+Standards-Version: 3.9.3
+Homepage: http://code.google.com/p/jsilver/
+
+Package: libjsilver-java
+Architecture: all
+Depends: ${misc:Depends}, ${java:Depends}
+Description: Clearsilver templates in pure Java
+ JSilver is a pure-Java implementation of Clearsilver. Key benefits of JSilver
+ over Clearsilver include:
+ .
+ Performance
+  - Templates are only parsed when the file changes - not for each request.
+  - Optionally, templates can be compiled directly to Java bytecode, making
+    rendering super-fast.
+  - Once-off template optimization step simplifies template making rendering
+   even faster.
+  - Internal optimizations to streamline string manipulation.
+ .
+ Avoids the complexities of JNI
+  - Avoids the risk of native code taking down the JVM.
+  - Avoids JNI marshalling overhead.
+ .
+ Simplifies IDE use (no more forgetting java.library.path).
+  - Allows for easy extension in Java
+  - API allows template functions to be defined in Java allowing logic to be
+    pulled out of templates.
+  - Custom escaping / text filters can be plugged in.
+  - Makes plugging in translations much simpler
+    (e.g. <?cs var:translate('some.message') ?>).
+  - API designed with testability in mind.
+  - Custom mechanisms can be plugged in for loading templates and caching.
+  - Low-level access to template AST for advanced transformations.

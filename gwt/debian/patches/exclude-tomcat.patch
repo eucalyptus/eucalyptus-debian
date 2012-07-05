@@ -1,0 +1,64 @@
+Description: Prevents embedded Tomcat server to start.
+Author: Thierry Carrez <thierry.carrez@ubuntu.com>
+Forwarded: no
+
+Index: gwt-debian/dev/build.xml
+===================================================================
+--- gwt-debian.orig/dev/build.xml	2011-12-21 11:23:41.692747204 +0100
++++ gwt-debian/dev/build.xml	2011-12-21 11:23:54.429246513 +0100
+@@ -40,7 +40,7 @@
+ 
+   <target name="compile.tests" depends="build, compile.emma.if.enabled" description="Compiles the test code for this project">
+     <mkdir dir="${javac.junit.out}" />
+-    <gwt.javac srcdir="" destdir="${javac.junit.out}">
++    <gwt.javac srcdir="" destdir="${javac.junit.out}" excludes="${filter.pattern}">
+       <src path="core/src" />
+       <src path="core/test" />
+       <classpath>
+@@ -149,7 +149,7 @@
+     </outofdate>
+   </target>
+ 
+-  <property name="filter.pattern" value="com/google/gwt/dev/About.properties" />
++  <property name="filter.pattern" value="com/google/gwt/dev/About.properties com/google/gwt/dev/shell/tomcat/** org/apache/catalina/loader/WebappClassLoader.java" />
+ 
+   <target name="-filter.props" description="Creates filtered About.properties with version info"
+      unless="filter.uptodate">
+Index: gwt-debian/dev/core/src/com/google/gwt/dev/GWTShell.java
+===================================================================
+--- gwt-debian.orig/dev/core/src/com/google/gwt/dev/GWTShell.java	2011-12-21 09:20:38.096746270 +0100
++++ gwt-debian/dev/core/src/com/google/gwt/dev/GWTShell.java	2011-12-21 11:23:54.433245796 +0100
+@@ -22,7 +22,6 @@
+ import com.google.gwt.core.ext.linker.impl.StandardLinkerContext;
+ import com.google.gwt.dev.cfg.ModuleDef;
+ import com.google.gwt.dev.shell.WorkDirs;
+-import com.google.gwt.dev.shell.tomcat.EmbeddedTomcatServer;
+ import com.google.gwt.dev.util.OutputFileSetOnDirectory;
+ import com.google.gwt.dev.util.arg.ArgHandlerDisableUpdateCheck;
+ import com.google.gwt.dev.util.arg.ArgHandlerOutDir;
+@@ -195,7 +194,6 @@
+   protected void doShutDownServer() {
+     // Stop the HTTP server.
+     //
+-    EmbeddedTomcatServer.stop();
+   }
+ 
+   @Override
+@@ -206,17 +204,7 @@
+ 
+   @Override
+   protected int doStartUpServer() {
+-    // TODO(jat): find a safe way to get an icon for Tomcat
+-    TreeLogger logger = ui.getWebServerLogger("Tomcat", null);
+-    // TODO(bruce): make tomcat work in terms of the modular launcher
+-    String whyFailed = EmbeddedTomcatServer.start(isHeadless() ? getTopLogger()
+-        : logger, getPort(), options, shouldAutoGenerateResources());
+-
+-    if (whyFailed != null) {
+-      getTopLogger().log(TreeLogger.ERROR, "Starting Tomcat: " + whyFailed);
+       return -1;
+-    }
+-    return EmbeddedTomcatServer.getPort();
+   }
+ 
+   @Override

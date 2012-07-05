@@ -1,0 +1,56 @@
+--- axis2c-1.6.0-orig/axiom/test/util/Makefile.am	2009-04-05 22:48:14.000000000 -0600
++++ axis2c-1.6.0-new/axiom/test/util/Makefile.am	2010-07-16 11:44:25.000000000 -0600
+@@ -1,7 +1,9 @@
+ noinst_PROGRAMS = axiom
+ axiom_SOURCES = axiom_util_test.c
+ axiom_LDADD   =   \
+-                    $(top_builddir)/src/om/libaxis2_axiom.la 
++                    $(top_builddir)/src/om/libaxis2_axiom.la \
++                    $(top_builddir)/src/parser/guththila/libaxis2_parser.la \
++                    $(top_builddir)/../util/src/libaxutil.la
+ 
+ INCLUDES = -I$(top_builddir)/include \
+ 			-I ../../../util/include \
+--- axis2c-1.6.0-orig/axiom/test/util/axiom_util_test.c	2010-07-16 12:03:37.000000000 -0600
++++ axis2c-1.6.0-new/axiom/test/util/axiom_util_test.c	2010-07-16 12:04:12.000000000 -0600
+@@ -3,6 +3,8 @@
+ #include <axiom.h>
+ #include <axis2_util.h>
+ #include <axiom_node.h>
++#include <axiom_xml_reader.h>	/* FIXME */
++
+ #include "../../../util/test/util/create_env.h"
+     FILE *f = NULL;
+     axiom_node_t *node = NULL;
+--- axis2c-1.6.0-orig/neethi/test/Makefile.am	2009-04-05 22:46:59.000000000 -0600
++++ axis2c-1.6.0-new/neethi/test/Makefile.am	2010-07-16 11:50:08.000000000 -0600
+@@ -12,5 +12,6 @@
+ 
+ test_LDADD = $(top_builddir)/src/libneethi.la \
+ 			../../axiom/src/om/libaxis2_axiom.la \
++			../../axiom/src/parser/guththila/libaxis2_parser.la \
+ 			../../util/src/libaxutil.la \
+ 			../src/libneethi.la
+--- ./neethi/test/Makefile.in~	2009-04-17 08:15:28.000000000 +0200
++++ ./neethi/test/Makefile.in	2010-10-07 16:33:06.232108405 +0200
+@@ -187,6 +187,7 @@
+ 
+ test_LDADD = $(top_builddir)/src/libneethi.la \
+ 			../../axiom/src/om/libaxis2_axiom.la \
++			../../axiom/src/parser/guththila/libaxis2_parser.la \
+ 			../../util/src/libaxutil.la \
+ 			../src/libneethi.la
+ 
+--- ./axiom/test/util/Makefile.in~	2009-04-17 08:15:23.000000000 +0200
++++ ./axiom/test/util/Makefile.in	2010-10-07 16:32:04.289608905 +0200
+@@ -184,7 +184,9 @@
+ top_srcdir = @top_srcdir@
+ axiom_SOURCES = axiom_util_test.c
+ axiom_LDADD = \
+-                    $(top_builddir)/src/om/libaxis2_axiom.la 
++                    $(top_builddir)/src/om/libaxis2_axiom.la  \
++                    $(top_builddir)/src/parser/guththila/libaxis2_parser.la  \
++                    $(top_builddir)/../util/src/libaxutil.la \
+ 
+ INCLUDES = -I$(top_builddir)/include \
+ 			-I ../../../util/include \

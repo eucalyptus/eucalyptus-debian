@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<project name="pkg-java" default="package" basedir="..">
+
+    <property name="build.sourceDirectory" value="src/main/java"/>
+    <property name="build.resourcesDirectory" value="src/main/resources"/>
+    <property name="build.directory" value="build"/>
+    <property name="build.outputDirectory" value="${build.directory}/classes"/>
+
+    <target name="init">
+        <available property="available.resources" file="${build.resourcesDirectory}"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${build.directory}"/>
+    </target>
+
+    <target name="process-resources" depends="init" if="available.resources">
+        <mkdir dir="${build.outputDirectory}"/>
+        <copy todir="${build.outputDirectory}">
+            <fileset dir="${build.resourcesDirectory}"/>
+        </copy>
+    </target>
+
+    <target name="compile" depends="process-resources">
+        <mkdir dir="${build.outputDirectory}"/>
+        <javac
+            destdir="${build.outputDirectory}"
+            nowarn="true"
+            source="${sourceVersion}" target="${targetVersion}"
+            debug="on">
+            <src path="${build.sourceDirectory}"/>
+        </javac>
+    </target>
+
+    <target name="package" depends="compile">
+        <jar jarfile="${build.directory}/${artifactId}-${artifactVersion}.jar"
+            basedir="${build.outputDirectory}"/>
+    </target>
+
+</project>
+

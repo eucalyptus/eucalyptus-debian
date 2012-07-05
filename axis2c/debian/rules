@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/patchsys-quilt.mk
+
+DEB_CONFIGURE_PREFIX:=/usr/lib/axis2
+DEB_CONFIGURE_EXTRA_FLAGS := --with-apache2=/usr/include/apache2 --with-apr=/usr/include/apr-1.0 --enable-openssl --enable-multi-thread=no
+
+DEB_CONFIGURE_EXTRA_FLAGS += --enable-tests
+DEB_MAKE_CHECK_TARGET := check
+
+binary-install/libaxis2c0::
+	cd debian/$(cdbs_curpkg)/usr/lib; for x in axis2/lib/*.so*; do ln -s $$x; done
+	sed -i "/dependency_libs/ s/'.*'/''/" `find debian/$(cdbs_curpkg) -name '*.la'`
+
+binary-install/libaxis2c-dev::
+	mkdir -p debian/$(cdbs_curpkg)/usr/lib/axis2/include/axis2-1.6.0
+	find debian/$(cdbs_curpkg)
+	cd debian/$(cdbs_curpkg)/usr/lib/axis2/include/axis2-1.6.0 ; for x in ../../../../include/axis2-1.6.0/*; do ln -s $$x; done
+	chmod +x debian/$(cdbs_curpkg)/usr/lib/axis2/bin/tools/wsdl2c/WSDL2C.sh
+
+binary-install/libapache2-mod-axis2c::
+	sed -i -e "s/\(libdir=.*\)axis2/\1apache2/g" -e "/dependency_libs/ s/'.*'/''/" debian/$(cdbs_curpkg)/usr/lib/apache2/modules/addressing/libaxis2_mod_addr.la
+	sed -i -e "s/\(libdir=.*\)axis2/\1apache2/g" -e "/dependency_libs/ s/'.*'/''/" debian/$(cdbs_curpkg)/usr/lib/apache2/modules/logging/libaxis2_mod_log.la	
+
+clean::
+	find . -name Makefile -print0 | xargs -0 rm || /bin/true
+	chmod 755 tools/codegen/javatool/WSDL2C.sh
+

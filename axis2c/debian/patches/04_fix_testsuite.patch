@@ -1,0 +1,44 @@
+Index: axis2c-1.6.0/util/test/util/test_util.c
+===================================================================
+--- axis2c-1.6.0.orig/util/test/util/test_util.c	2009-09-14 22:27:46.794355427 +0200
++++ axis2c-1.6.0/util/test/util/test_util.c	2009-09-14 22:27:48.091357644 +0200
+@@ -243,7 +243,6 @@
+ test_log_write(
+     )
+ {
+-    char msg[10];
+     printf("start of test_log_write\n\n");
+     axutil_allocator_t *allocator = axutil_allocator_init(NULL);
+     if (!allocator)
+@@ -272,7 +271,6 @@
+         printf("cannot create env with error and log\n");
+         return;
+     }
+-    strcpy(msg, "abcd test123");
+ 
+     AXIS2_LOG_CRITICAL(env->log, AXIS2_LOG_SI, "log1 %s", "test1");
+     AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI, "log2 %d", 2);
+Index: axis2c-1.6.0/test/core/transport/http/Makefile.in
+===================================================================
+--- axis2c-1.6.0.orig/test/core/transport/http/Makefile.in	2009-09-14 22:27:46.746335640 +0200
++++ axis2c-1.6.0/test/core/transport/http/Makefile.in	2009-09-14 22:27:48.095333917 +0200
+@@ -222,6 +222,7 @@
+ 						    $(top_builddir)/neethi/src/libneethi.la \
+ 		                    ../../../../axiom/src/parser/$(WRAPPER_DIR)/libaxis2_parser.la \
+ 							$(top_builddir)/src/core/engine/libaxis2_engine.la \
++							$(top_builddir)/src/core/transport/http/common/libaxis2_http_common.la \
+ 							$(top_builddir)/src/core/transport/http/sender/libaxis2_http_sender.la
+ 
+ INCLUDES = -I${CUTEST_HOME}/include \
+Index: axis2c-1.6.0/test/core/transport/http/Makefile.am
+===================================================================
+--- axis2c-1.6.0.orig/test/core/transport/http/Makefile.am	2009-09-14 22:27:46.778336353 +0200
++++ axis2c-1.6.0/test/core/transport/http/Makefile.am	2009-09-14 22:27:48.095333917 +0200
+@@ -12,6 +12,7 @@
+ 						    $(top_builddir)/neethi/src/libneethi.la \
+ 		                    ../../../../axiom/src/parser/$(WRAPPER_DIR)/libaxis2_parser.la \
+ 							$(top_builddir)/src/core/engine/libaxis2_engine.la \
++							$(top_builddir)/src/core/transport/http/common/libaxis2_http_common.la \
+ 							$(top_builddir)/src/core/transport/http/sender/libaxis2_http_sender.la
+ 
+ INCLUDES = -I${CUTEST_HOME}/include \

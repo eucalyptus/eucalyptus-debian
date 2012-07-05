@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="debian-wss4j" default="jar" basedir="..">
+  <import file="../build.xml"/>
+    <!-- This target is necessary so that "debuild clean" succeeds
+         on an unpatched build.xml -->
+    <target name="debian-clean">
+        <delete dir="./build"/>
+        <delete>
+            <fileset dir="." includes="before*.xml"/>
+            <fileset dir="." includes="after*.xml"/>
+            <fileset dir="." includes="signed*.xml"/>
+            <fileset dir="." includes="server*.wsdd"/>
+            <fileset dir="." includes="client*.wsdd"/>
+        </delete>
+        <delete dir="./dist"/>
+    </target>
+
+</project>

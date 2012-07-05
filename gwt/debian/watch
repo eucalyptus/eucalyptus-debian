@@ -1,0 +1,2 @@
+version=3
+http://google-web-toolkit.googlecode.com/svn/tags/ ([0-9].*)/ debian debian/orig-tar.sh

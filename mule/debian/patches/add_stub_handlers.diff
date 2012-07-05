@@ -1,0 +1,28 @@
+Description: Add stub handlers for new functions in Spring 3 (TODO: May need implementing)
+Author: Brian Thomason <brian.thomason@eucalyptus.com>
+
+--- mule-2.0.1.orig/modules/spring-extras/src/main/java/org/mule/module/spring/events/MuleEventMulticaster.java
++++ mule-2.0.1/modules/spring-extras/src/main/java/org/mule/module/spring/events/MuleEventMulticaster.java
+@@ -220,6 +220,10 @@ public class MuleEventMulticaster
+         listeners.add(listenerToAdd);
+     }
+ 
++    public void addApplicationListenerBean(String listenerBeanName) {
++        return;
++    }
++
+     /**
+      * Removes a listener from the multicaster
+      * 
+@@ -250,6 +254,11 @@ public class MuleEventMulticaster
+         listeners.remove(listener);
+     }
+ 
++    public void removeApplicationListenerBean(String listenerBeanName) {
++        return;
++    }
++
++
+     /**
+      * Removes all the listeners from the multicaster
+      */

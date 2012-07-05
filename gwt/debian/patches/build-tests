@@ -1,0 +1,15 @@
+Index: gwt-debian/dev/core/test/com/google/gwt/dev/javac/BinaryTypeReferenceRestrictionsCheckerTest.java
+===================================================================
+--- gwt-debian.orig/dev/core/test/com/google/gwt/dev/javac/BinaryTypeReferenceRestrictionsCheckerTest.java	2011-12-21 11:43:29.277245427 +0100
++++ gwt-debian/dev/core/test/com/google/gwt/dev/javac/BinaryTypeReferenceRestrictionsCheckerTest.java	2011-12-21 11:44:26.308746537 +0100
+@@ -92,6 +92,10 @@
+       return null;
+     }
+ 
++    public char[] getEnclosingMethod() {
++      return null;
++    }
++
+     public char[][][] getMissingTypeNames() {
+       return null;
+     }

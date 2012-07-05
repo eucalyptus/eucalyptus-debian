@@ -1,0 +1,25 @@
+<project name="gwt" basedir=".." default="build">
+
+  <property name="target.dir" value="${basedir}/target"/>
+
+  <target name="build">
+    <ant dir="dev/"/>
+    <ant dir="user/"/>
+    <ant dir="servlet/"/>
+  </target>
+
+  <target name="clean">
+    <ant dir="dev/" target="clean" />
+    <!-- These targets fail if there is no gwt jar -->
+    <touch file="${target.dir}/gwt-dev-${artifactVersion}.jar" mkdirs="true"/>
+    <touch file="${basedir}/build/out/dev/bin" mkdirs="true"/>
+    <ant dir="user/" target="clean" />
+    <touch file="${basedir}/build/out/user/bin" mkdirs="true"/>
+    <ant dir="servlet/" target="clean" />
+    <delete dir="build"/>
+    <delete dir="${target.dir}"/>
+    <!-- Also remove this leftover of the GWT build system -->
+    <delete file="${basedir}/dev/core/\${filter.sentinel}"/>
+  </target>
+
+</project>

@@ -1,0 +1,41 @@
+Index: rampart-1.3.0/src/util/rampart_context.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_context.c	2009-12-03 18:01:22.000000000 +0100
++++ rampart-1.3.0/src/util/rampart_context.c	2009-12-03 18:01:59.000000000 +0100
+@@ -359,11 +359,11 @@
+         }
+         
+         /* Free receiver certificate we found when processing incoming security header */
+-        /*if(rampart_context->receiver_cert && rampart_context->found_cert_in_shp)
+-        {
++        if(rampart_context->receiver_cert && rampart_context->found_cert_in_shp)
++	{
+             oxs_x509_cert_free(rampart_context->receiver_cert, env);
+             rampart_context->receiver_cert = NULL;
+-        }*/
++        }
+ 
+         if(rampart_context->key_mgr)
+         {
+Index: rampart-1.3.0/src/util/rampart_sec_header_processor.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_sec_header_processor.c	2009-12-03 18:01:49.000000000 +0100
++++ rampart-1.3.0/src/util/rampart_sec_header_processor.c	2009-12-03 18:01:59.000000000 +0100
+@@ -1435,8 +1435,6 @@
+                             return AXIS2_FAILURE;
+                         }
+                         
+-                        rampart_context_set_found_cert_in_shp(rampart_context, env, AXIS2_TRUE);
+-                        rampart_context_set_receiver_cert_found_in_shp(rampart_context, env, cert);
+                         status = AXIS2_SUCCESS;
+                     }
+                     else if(0 == axutil_strcmp(str_child_name, OXS_NODE_X509_DATA))
+@@ -1463,8 +1461,6 @@
+                             return AXIS2_FAILURE;
+                         }
+                         
+-                        rampart_context_set_found_cert_in_shp(rampart_context, env, AXIS2_TRUE);
+-                        rampart_context_set_receiver_cert_found_in_shp(rampart_context, env, cert);
+                         status = AXIS2_SUCCESS;
+                     }
+                     else

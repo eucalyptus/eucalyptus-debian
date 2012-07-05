@@ -1,0 +1,12 @@
+diff -Naurp rampartc-src-1.3.0.orig//src/omxmlsec/key_mgr.c rampartc-src-1.3.0//src/omxmlsec/key_mgr.c
+--- rampartc-src-1.3.0.orig//src/omxmlsec/key_mgr.c	2009-05-13 01:13:54.000000000 -0400
++++ rampartc-src-1.3.0//src/omxmlsec/key_mgr.c	2011-02-12 16:38:13.120379524 -0500
+@@ -351,7 +351,7 @@ oxs_key_mgr_get_prv_key(
+ 
+         if(prv_key_file)
+         {
+-	        if(oxs_util_get_format_by_file_extension(env, prv_key_file) ==OXS_ASYM_CTX_FORMAT_PEM)
++	        if((int) oxs_util_get_format_by_file_extension(env, prv_key_file) == OXS_ASYM_CTX_FORMAT_PEM)
+ 	        {
+ 	            prvkey = oxs_key_mgr_load_private_key_from_pem_file(env, prv_key_file, password);
+ 	            if(!prvkey)

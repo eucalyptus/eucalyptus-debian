@@ -1,0 +1,52 @@
+diff -Nur -x '*.orig' -x '*~' wss4j/build.xml wss4j.new/build.xml
+--- wss4j/build.xml	2009-04-16 10:23:04.000000000 +0200
++++ wss4j.new/build.xml	2009-07-22 14:47:56.000000000 +0200
+@@ -122,17 +122,8 @@
+ 
+         <path id="classpath.library">
+             <path refid="classpath.wss4j"/>
+-            <path refid="classpath.libraries"/>
+         </path>
+ 
+-        <taskdef resource="axis-tasks.properties" classpathref=
+-              "classpath.library"/>
+-        <taskdef name="runaxisfunctionaltests" classname=
+-              "org.apache.axis.tools.ant.axis.RunAxisFunctionalTestsTask"
+-            loaderref="axis">
+-            <classpath refid="classpath.library"/>
+-        </taskdef>
+-      
+         <!-- this shall include Axis jars because the tests use the
+          Axis implementation of javax.xml.soap, etc. Therefore the
+          CLASSPATH is included.
+@@ -328,8 +319,7 @@
+             description="Target for the gump run"/>
+ 
+     <target name="compile" 
+-       depends="compile.library,compile.samples, compile.tests, 
+-                compile.interops, fix.properties"
++       depends="compile.library, fix.properties"
+             description="compile everything"/>
+ 
+     <target name="test"
+@@ -411,11 +401,6 @@
+     <target name="systemTests" unless="skip.tests" depends="compile"
+         if="junit.present"
+         description="Runs all JUnit tests">
+-        <runaxisfunctionaltests
+-            url="http://localhost:8088"
+-            httpServerTarget="start-functional-test-http-server"
+-            testTarget="allTests"
+-            httpStopTarget="stop-functional-test-http-server"/>
+     </target>
+ 
+     <target name="start-functional-test-http-server" if="junit.present">
+@@ -707,7 +692,7 @@
+     </target>
+ 
+     <target name="jar"
+-        depends="compile, test"
++        depends="compile"
+         description="Creates the ${jar.library}">
+ 
+         <jar jarfile="${build.dir}/${jar.library}"

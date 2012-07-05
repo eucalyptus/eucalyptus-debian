@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+
+PACKAGE   := libguava-java
+VERSION   := $(shell dpkg-parsechangelog | grep ^Version: | sed -r 's/^Version: (.+)-.+$$/\1/')
+export JAVA_HOME := /usr/lib/jvm/default-java
+export CLASSPATH := /usr/share/java/jsr305.jar
+
+%:
+	dh $@ --with javahelper
+
+override_dh_auto_build:
+	jh_build --javacopts="-source 1.5 -target 1.5" --javadoc-opts="-source 1.5" guava.jar src
+
+override_dh_auto_install:
+	mh_installpoms -p$(PACKAGE)
+	mh_installjar -p$(PACKAGE) -l debian/pom.xml guava.jar
+
+override_dh_auto_clean:
+	dh_auto_clean
+	mh_clean
+	rm -f guava.jar
+
+get-orig-source:
+	-uscan --download-current-version --force-download --rename
+
+get-orig-pom:
+	wget http://repo1.maven.org/maven2/com/google/guava/guava/$(VERSION)/guava-$(VERSION).pom \
+		-O debian/pom.xml -U Debian

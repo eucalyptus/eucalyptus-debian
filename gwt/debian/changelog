@@ -1,0 +1,79 @@
+gwt (2.4.0-1) sid; urgency=low
+
+  * Upload to Debian (Closes: #677571)
+  * Set maintainer to Eucalyptus packaging team with Brian & myself
+    as uploaders
+  * Fix clean target when package is not built
+  * Add target to debian/rules for running dev unit tests
+  * patches/build-with-jdt37: Merge changes from gwt trunk to fix problems
+    exposed by unit tests
+  * patches/build-with-jdt38: implement new interface build against eclipse
+    jdt 3.8
+  * patches/exclude-tomcat.patch: Also exclude from unit tests
+  * patches/fix-guava-pkg-path: Fix path in unit tests
+  * patches/fix-test-classpath: New patch to use the same classpath for running
+    tests as used during the build
+  * Use javahelper to set a classpath and dependencies
+  * Add build against libxerces2-java and to classpath, as this is the same
+    as upstream uses
+  * Standards version 3.9.3 (no changes required)
+  * Update copyright for some new files in this version
+
+ -- Chris Halls <halls@debian.org>  Sat, 30 Jun 2012 21:15:56 +0000
+
+gwt (2.4.0-0ubuntu1) precise; urgency=low
+
+  [ Brian Thomason ]
+  * Minor JDT 3.7 fix
+  * Minor packaging cleanup
+
+  [ Alexandre Rossi ]
+  * Added patch to build against JDT 3.5+
+  * Added patch to use JSON Simple
+  * Added patch to fix guava path
+
+  [ Charles Plessy ]
+  * New upstream release (Closes: #624205).
+  * Build-depends on libswt-gtk-3 instead of 3.5 (Closes: #629733).
+  * Switched to source format 3.0 (quilt) (debian/source/format,
+    debian/patches/series).
+  * Added Vcs and Homepage fields to the source paragraph of debian/control.
+  * Maintained by the pkg-eucalyptus team (debian/control).
+  * Removed XSBC-Original-Maintainer field (debian/control).
+  * Conforms to Policy 3.9.2 (debian/control, no other changes needed).
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Thu, 09 Feb 2012 01:26:50 +0000
+
+gwt (1.6.4-1) unstable; urgency=low
+
+  * Port existing ubuntu package to debian. 
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Mon, 28 Dec 2009 18:24:31 -0800
+
+gwt (1.6.4-0ubuntu4) karmic; urgency=low
+
+  * debian/rules: Fix FTBFS due to SWT-GTK jar location change (LP: #447268)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 12 Oct 2009 09:34:29 +0200
+
+gwt (1.6.4-0ubuntu3) karmic; urgency=low
+
+  * debian/control: Bump minimal JRE dependency to java5-runtime-headless
+    since code is java5-compatible only.
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 24 Aug 2009 11:58:41 +0200
+
+gwt (1.6.4-0ubuntu2) karmic; urgency=low
+
+  * debian/patches/issue-3510.patch: Fix abusive stack usage in GWT resulting
+    in java.lang.StackOverflowError. Patch from scottb, taken from
+    http://code.google.com/p/google-web-toolkit/issues/detail?id=3510
+    (LP: #418022)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Mon, 24 Aug 2009 09:45:55 +0200
+
+gwt (1.6.4-0ubuntu1) karmic; urgency=low
+
+  * Initial release. New Eucalyptus dependency.
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Wed, 05 Aug 2009 16:06:30 +0100

@@ -1,0 +1,20 @@
+--- rampart-1.3.0.orig/src/rahas/Makefile.am
++++ rampart-1.3.0/src/rahas/Makefile.am
+@@ -24,5 +24,5 @@
+ 			@AXIOMINC@
+ 
+ install-data-hook:
+-	mv $(prefix)/modules/rahas/rahas_module.xml $(prefix)/modules/rahas/module.xml
++	mv $(DESTDIR)$(prefix)/modules/rahas/rahas_module.xml $(DESTDIR)$(prefix)/modules/rahas/module.xml
+ 	
+--- rampart-1.3.0.orig/src/rahas/Makefile.in
++++ rampart-1.3.0/src/rahas/Makefile.in
+@@ -592,7 +592,7 @@
+ 
+ 
+ install-data-hook:
+-	mv $(prefix)/modules/rahas/rahas_module.xml $(prefix)/modules/rahas/module.xml
++	mv $(DESTDIR)$(prefix)/modules/rahas/rahas_module.xml $(DESTDIR)$(prefix)/modules/rahas/module.xml
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:

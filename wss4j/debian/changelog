@@ -1,0 +1,46 @@
+wss4j (1.5.8+svntag-2) unstable; urgency=low
+
+  * Team upload.
+  * Imported 1.5.8+svntag-1ubuntu1.
+    Closes: #642747, thanks to James for the notification.
+  * Conforms to Debian Policy 3.9.3 (debian/control).
+    - Machine-readable debian/copyright file, removed mention of pack. creator.
+  * Team maintenance (pkg-eucalyptus group on the Alioth forge).
+
+ -- Charles Plessy <plessy@debian.org>  Thu, 24 May 2012 13:28:37 +0900
+
+wss4j (1.5.8+svntag-1ubuntu1) precise; urgency=low
+
+  * Fix FTBFS (LP: #935490):
+    - d/rules: Switched xml-security -> xmlsec to pickup jar name change
+      in libxml-security-java.
+
+ -- James Page <james.page@ubuntu.com>  Tue, 27 Mar 2012 13:13:21 +0100
+
+wss4j (1.5.8+svntag-1) unstable; urgency=low
+
+  * Exclude more directories from the repacked upstream sources.
+    (debian/exclude, debian/README.source).
+  * Pass --no-name to gzip so that ‘orig’ tarballs have a constant message
+    digest. (debian/rules, debian/orig-tar.sh)
+
+ -- Charles Plessy <plessy@debian.org>  Thu, 11 Feb 2010 19:30:49 +0900
+
+wss4j (1.5.8-1) unstable; urgency=low
+
+  * New upstream version.
+  * Expressed compliance with Debian policy 3.8.4.
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Fri, 29 Jan 2010 01:28:53 +0100
+
+wss4j (1.5.7-1) UNRELEASED; urgency=low
+
+  * Port existing ubuntu package to debian.
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Mon, 28 Dec 2009 18:12:53 -0800
+
+wss4j (1.5.7-0ubuntu1) karmic; urgency=low
+
+  * Initial release (LP: #403003)
+
+ -- Thierry Carrez <thierry.carrez@ubuntu.com>  Wed, 22 Jul 2009 15:29:35 +0200

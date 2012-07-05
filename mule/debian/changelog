@@ -1,0 +1,58 @@
+mule (2.0.1-5) unstable; urgency=low
+
+  * Fixed typo in rules file preventing management module from being installed
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Tue, 12 Jun 2012 20:33:27 +0000
+
+mule (2.0.1-4) unstable; urgency=low
+
+  [ Charles Plessy ]
+  * Normalised debian/copyright with config-model.
+  * Conforms with Policy 3.9.3 (debian/control, no other changes needed).
+  * Added Brian and myself to the Uploaders in debian/control.
+  * Removed build dependance on gcj-jdk, redundant with default-jdk.
+  * Removed unneeded build dependance on quilt.
+
+  [ Brian Thomason ]
+  * Converted to Debian source format 3.0 (quilt)
+  * Reordered modules in debian/build.xml so that they would build properly
+  * Added mule-management-module
+  * Added stub functions for spring-extras compilation against spring3-context
+
+ -- Charles Plessy <plessy@debian.org>  Thu, 17 May 2012 20:33:15 +0900
+
+mule (2.0.1-3) unstable; urgency=low
+
+  * Team upload.
+
+  [ Miguel Landaeta ]
+  * Replace Build-Depends on Spring Framework 2.5 with 3.0 (Closes: #638384).
+
+  [ Charles Plessy ]
+  * Added VCS fields to debian/control.
+  * Use Debhelper 8 (debian/compat, debian/control).
+  * Converted debian/copyright to the DEP 5 machine-readable format.
+  * Conforms with Policy 3.9.2 (debian/control, no other change needed).
+
+ -- Charles Plessy <plessy@debian.org>  Tue, 23 Aug 2011 09:21:26 +0900
+
+mule (2.0.1-2) unstable; urgency=low
+
+  * Team upload.
+  * Added missing build dependencies on Spring, Quartz and OGNL libraries
+    (debian/control, closes: #583606, thanks to Miguel Landaeta).
+  * Updated Standards-Version to reflect conformance with Policy 3.9.0
+    (debian/control, no changes needed).
+  * Added DEP-3 headers to the patches in debian/patches.
+  * Uncommented the clean target of debian/build.xml (thanks, M. Landaeta).
+  * Exclude more binary files from the next export of the upstream sources
+    (debian/exclude, hinted by Lintian's source-contains-prebuilt-binary tag).
+
+ -- Charles Plessy <plessy@debian.org>  Sun, 11 Jul 2010 21:19:08 +0900
+
+mule (2.0.1-1) unstable; urgency=low
+
+  [ Chris Grzegorczyk ]
+  * Initial release (Closes: #573630).
+
+ -- Charles Plessy <plessy@debian.org>  Sat, 27 Mar 2010 00:10:21 +0900

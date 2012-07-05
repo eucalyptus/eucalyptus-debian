@@ -1,0 +1,110 @@
+This package was debianized by Soren Hansen <soren@ubuntu.com> on
+Mon, 26 Jan 2009 11:29:36 +0100.
+
+It was downloaded from http://archive.apache.org/dist/ws/axis2/c/1_6_0/
+
+Files: *
+Upstream Authors:
+
+   Samisa Abeysinghe
+   Dushshantha Chandradasa
+   Chris Darroch
+   Senaka Fernando
+   Paul Fremantle
+   Dimuthu Gamage
+   Sahan Gamage
+   Lahiru Gunathilake
+   Nandika Jayawardana
+   Supun Kamburugamuva
+   Kaushalye Kapuruge
+   Damitha Kumarage
+   Bill Mitchell
+   Dumindu Pallewela
+   Milinda Pathirage
+   Manjula Peiris
+   Dinesh Premalal
+   Sanjaya Rathnaweera
+   Davanum Srinivas
+   Selvaratnam Uthaiyashankar
+   Sanjiva Weerawarana
+   Nabeel Yoosuf
+
+Copyright:
+    Copyright 2003-2004 The Apache Software Foundation. 
+
+License:
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+On a Debian system, the license can be found at
+/usr/share/common-licenses/Apache-2.0 .
+
+The Debian packaging is copyright 2009, Soren Hansen <soren@ubuntu.com> and
+is also licensed under the Apache license.
+
+The below article is included in NOTICE file
+
+Apache Axis2/C
+Copyright 2005-2009 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This software contains code derived from the RSA Data Security
+Inc. MD5 Message-Digest Algorithm, including various
+modifications by Spyglass Inc., Carnegie Mellon University, and
+Bell Communications Research, Inc (Bellcore).
+
+Files in util/src/minizip are covered by the following license.
+
+unzip.h -- IO for uncompress .zip files using zlib
+   Version 1.01e, February 12th, 2005
+
+   Copyright (C) 1998-2005 Gilles Vollant
+
+   This unzip package allow extract file from .ZIP file, compatible with PKZip 2.04g
+     WinZip, InfoZip tools and compatible.
+
+   Multi volume ZipFile (span) are not supported.
+   Encryption compatible with pkzip 2.04g only supported
+   Old compressions used by old PKZip 1.x are not supported
+
+   I WAIT FEEDBACK at mail info@winimage.com
+   Visit also http://www.winimage.com/zLibDll/unzip.htm for evolution
+
+   Condition of use and distribution are the same than zlib :
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+   for more info about .ZIP format, see
+      http://www.info-zip.org/pub/infozip/doc/appnote-981119-iz.zip
+      http://www.info-zip.org/pub/infozip/doc/
+   PkWare has also a specification at :
+      ftp://ftp.pkware.com/probdesc.zip
+

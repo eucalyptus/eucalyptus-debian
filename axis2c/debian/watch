@@ -1,0 +1,2 @@
+version=2
+http://archive.apache.org/dist/ws/axis2/c/([\d_]+)/axis2c-src-([\d\.]+)\.tar\.gz

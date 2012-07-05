@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="pkg-java" default="package" basedir="..">
+
+    <property name="build.sourceDirectory" value="src/main/java"/>
+    <property name="build.directory" value="build"/>
+    <property name="build.outputDirectory" value="${build.directory}/classes"/>
+
+    <target name="clean">
+        <delete dir="${build.directory}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${build.outputDirectory}"/>
+        <javac
+            destdir="${build.outputDirectory}"
+            nowarn="true"
+            target="1.5"
+            deprecation="false"
+            debug="on">
+            <src path="${build.sourceDirectory}"/>
+            <exclude name="org/jboss/netty/channel/xnio/**"/>
+            <exclude name="org/jboss/netty/container/**"/>
+            <exclude name="org/jboss/netty/example/**"/>
+            <exclude name="org/jboss/netty/handler/codec/protobuf/**"/>
+            <exclude name="org/jboss/netty/logging/JBossLogger*.java"/>
+            <exclude name="org/jboss/netty/logging/OsgiLogger*.java"/>
+        </javac>
+    </target>
+
+    <target name="package" depends="compile">
+        <jar jarfile="${build.directory}/${artifactId}-${artifactVersion}.jar"
+            basedir="${build.outputDirectory}"/>
+    </target>
+
+</project>

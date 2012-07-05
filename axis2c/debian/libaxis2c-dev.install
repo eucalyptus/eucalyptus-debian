@@ -1,0 +1,9 @@
+usr/lib/axis2/lib/libguththila*.so
+usr/lib/axis2/lib/libaxutil*.so
+usr/lib/axis2/lib/libneethi*.so
+# Was not in Ubuntu 0ubuntu13 version and caused conflicts
+# with libaxis2c0 package
+#usr/lib/axis2/lib/libaxis2*.so
+usr/lib/axis2/include/* /usr/include
+usr/lib/axis2/bin/tools/wsdl2c/WSDL2C.sh
+usr/lib/axis2/lib/pkgconfig /usr/lib

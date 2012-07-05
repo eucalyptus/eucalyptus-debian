@@ -1,0 +1,25 @@
+Source: wss4j
+Section: java
+Priority: optional
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org>
+DM-Upload-Allowed: yes
+Uploaders: Chris Grzegorczyk <grze@eucalyptus.com>, Graziano Obertelli <graziano@eucalyptus.com>, Kyo Lee <kyo.lee@eucalyptus.com>, Thierry Carrez <thierry.carrez@ubuntu.com>
+Build-Depends-Indep: default-jdk,
+ libaxis-java,
+ libbcprov-java,
+ libcommons-logging-java,
+ libxalan2-java,
+ libxml-security-java
+Build-Depends: ant, debhelper (>= 7), cdbs (>= 0.4.5.3)
+Homepage: http://ws.apache.org/wss4j/
+Vcs-svn: svn://svn.debian.org/svn/pkg-eucalyptus/wss4j/trunk
+Vcs-browser: http://svn.debian.org/viewvc/pkg-eucalyptus/wss4j/trunk/
+Standards-Version: 3.9.3
+
+Package: libwss4j-java
+Architecture: all
+Depends: default-jre-headless | java2-runtime-headless, ${misc:Depends}
+Description: Apache WSS4J WS-Security implementation
+ Apache WSS4J is an implementation of the OASIS Web Services Security
+ framework (WS-Security). It can be used to sign and verify SOAP Messages
+ with WS-Security information.

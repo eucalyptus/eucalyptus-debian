@@ -1,0 +1,15 @@
+Patches Description
+
+01-destdir.patch
+Adds $DESTDIR to Makefile
+
+02-autoconf-quoting.patch
+Fixes quotes
+
+token-processor-segfault.patch
+Fixes segfault
+
+
+ -- Kyo Lee <kyo.lee@eucalyptus.com>  Wed, 16 Dec 2009 20:50:33 -0800
+
+

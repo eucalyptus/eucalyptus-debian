@@ -1,0 +1,19 @@
+Description: Fix use after free in uri_test
+Origin: backport, http://svn.apache.org/viewvc/axis/axis2/c/core/trunk/util/test/uri/uri_test.c#rev961590
+Bug-Ubuntu: https://launchpad.net/bugs/600174
+Applied-Upstream: 1.7.0
+Last-Update: 2011-05-14
+
+Index: axis2c-1.6.0/util/test/uri/uri_test.c
+===================================================================
+--- axis2c-1.6.0.orig/util/test/uri/uri_test.c	2011-03-08 16:43:28.988346623 +0200
++++ axis2c-1.6.0/util/test/uri/uri_test.c	2011-03-08 16:43:23.020317033 +0200
+@@ -72,7 +72,7 @@
+         printf("Test clone failed");
+     }
+     
+-    rel = axutil_uri_resolve_relative(env,base,clone);
++    rel = axutil_uri_resolve_relative(env,base,uri);
+     if(rel)
+     {
+         printf("The resolved relative uri is %s\n",axutil_uri_to_string(rel,env,0));

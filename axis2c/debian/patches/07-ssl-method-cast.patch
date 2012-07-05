@@ -1,0 +1,11 @@
+--- trunk/src/core/transport/http/sender/ssl/ssl_utils.c	(revision 918421)
++++ trunk/src/core/transport/http/sender/ssl/ssl_utils.c	(revision 918422)
+@@ -62,7 +62,7 @@
+     }
+ 
+     /* Create our context */
+-    meth = SSLv23_method();
++    meth = (SSL_METHOD*)SSLv23_method();
+     ctx = SSL_CTX_new(meth);
+ 
+     /* Load our keys and certificates

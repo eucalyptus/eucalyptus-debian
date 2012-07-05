@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/ant.mk
+include /usr/share/cdbs/1/rules/simple-patchsys.mk
+
+SRCARCHIVE           := http://www.apache.org/dist/ws/wss4j
+SRCDIRECTORY         := $(shell echo $(DEB_UPSTREAM_VERSION) | sed 'y/\./_/')
+UPSTREAM_VERSION     := $(shell echo $(DEB_UPSTREAM_VERSION) | sed 's/\+svntag//')
+JAVA_HOME            := /usr/lib/jvm/default-java
+DEB_ANT_CLEAN_TARGET := debian-clean
+DEB_ANT_BUILDFILE    := debian/build.xml
+DEB_JARS             := axis commons-logging xalan2 bcprov jaxrpc xmlsec
+
+DEB_INSTALL_CHANGELOGS_ALL = ChangeLog.txt
+
+binary-post-install/lib$(DEB_SOURCE_PACKAGE)-java::
+	dh_install -plib$(DEB_SOURCE_PACKAGE)-java build/$(DEB_SOURCE_PACKAGE)-$(UPSTREAM_VERSION).jar usr/share/java
+	dh_link -plib$(DEB_SOURCE_PACKAGE)-java usr/share/java/$(DEB_SOURCE_PACKAGE)-$(UPSTREAM_VERSION).jar usr/share/java/$(DEB_SOURCE_PACKAGE).jar
+
+get-orig-source:
+	./debian/orig-tar.sh --upstream-version $(UPSTREAM_VERSION)
+
+get-orig-source-from-zip:
+	mkdir -p orig_tmp
+	cd orig_tmp && \
+		wget $(SRCARCHIVE)/$(SRCDIRECTORY)/wss4j-src-$(UPSTREAM_VERSION).zip && \
+		unzip wss4j-src-$(UPSTREAM_VERSION).zip && \
+		GZIP="--best --no-name" tar czf ../../wss4j_$(UPSTREAM_VERSION).orig.tar.gz wss4j && \
+		cd ..
+	rm -rf orig_tmp

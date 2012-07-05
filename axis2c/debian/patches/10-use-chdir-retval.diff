@@ -1,0 +1,23 @@
+--- a/util/src/dir_handler.c	2009-04-06 04:49:04.000000000 +0000
++++ b/util/src/dir_handler.c	2012-04-02 19:13:33.695826943 +0000
+@@ -206,12 +206,20 @@
+ 
+     /* pathname is path of services directory or modules directory. */
+     chdir_result =  AXIS2_CHDIR(pathname);
++    if (chdir_result != 0)
++    {
++      /* Should probably exit here if chdir call fails? */
++    }
+ #ifdef AXIS2_ARCHIVE_ENABLED
+     axis2_archive_extract();
+ #endif
+ 
+     count = AXIS2_SCANDIR(pathname, &files, dir_select, AXIS2_ALPHASORT);
+     chdir_result = AXIS2_CHDIR(cwd);
++    if (chdir_result != 0)
++    {
++      /* Should probably exit here if chdir call fails? */
++    }
+ 
+     /* If no files found, make a non-selectable menu item */
+     if (count <= 0)

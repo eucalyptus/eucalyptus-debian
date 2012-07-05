@@ -1,0 +1,24 @@
+Description: Removes check on success of file relocation.
+Origin: vendor
+Forwarded: no
+
+--- old/core/src/main/java/org/mule/util/FileUtils.java     2010-03-09 12:11:43.038691909 -0800
++++ new/core/src/main/java/org/mule/util/FileUtils.java     2010-03-09 12:11:35.605998857 -0800
+@@ -733,7 +733,7 @@
+     }
+     
+     /** Try to move a file by renaming with backup attempt by copying/deleting via NIO */
+-    public static boolean moveFile(File sourceFile, File destinationFile)
++    public static void moveFile(File sourceFile, File destinationFile)
+     {
+         // try fast file-system-level move/rename first
+         boolean success = sourceFile.renameTo(destinationFile);
+@@ -766,7 +766,6 @@
+             }
+         }
+ 
+-        return success;
+     }
+ 
+ }
+

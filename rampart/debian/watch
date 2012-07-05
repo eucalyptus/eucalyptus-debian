@@ -1,0 +1,2 @@
+version=3
+http://archive.apache.org/dist/ws/rampart/c/([\d_]+)/rampartc-src-([\d\.]+)\.tar\.gz

@@ -1,0 +1,4 @@
+binary-or-shlib-defines-rpath usr/lib/apache2/modules/addressing/libaxis2_mod_addr.so.0.6.0 /usr/lib/axis2/lib
+binary-or-shlib-defines-rpath usr/lib/apache2/modules/libmod_axis2.so.0.6.0 /usr/lib/axis2/lib
+binary-or-shlib-defines-rpath usr/lib/apache2/modules/logging/libaxis2_mod_log.so.0.6.0 /usr/lib/axis2/lib
+

@@ -1,0 +1,61 @@
+Description: Disable YourKit support (it is a commercial profiler)
+Author: Brian Thomason <brian.thomason@eucalyptus.com>
+
+--- mule-2.0.1.orig/modules/management/src/main/java/org/mule/module/management/agent/DefaultJmxSupportAgent.java
++++ mule-2.0.1/modules/management/src/main/java/org/mule/module/management/agent/DefaultJmxSupportAgent.java
+@@ -147,14 +147,14 @@ public class DefaultJmxSupportAgent exte
+                 }
+             }
+ 
+-            if (loadProfilerAgent)
+-            {
+-                agent = createProfilerAgent();
+-                if (!isAgentRegistered(agent))
+-                {
+-                    RegistryContext.getRegistry().registerAgent(agent);
+-                }
+-            }
++            //if (loadProfilerAgent)
++            //{
++            //    agent = createProfilerAgent();
++            //    if (!isAgentRegistered(agent))
++            //    {
++            //        RegistryContext.getRegistry().registerAgent(agent);
++            //    }
++            //}
+ 
+             // remove this agent once it has registered the other agents
+             //TODO RM* this currently does nothing!!!
+@@ -232,10 +232,12 @@ public class DefaultJmxSupportAgent exte
+         return new JdmkAgent();
+     }
+ 
++/**
+     protected YourKitProfilerAgent createProfilerAgent()
+     {
+         return new YourKitProfilerAgent();
+     }
++**/
+ 
+     protected boolean isAgentRegistered(Agent agent)
+     {
+--- mule-2.0.1.orig/modules/management/src/main/java/org/mule/module/management/config/ManagementNamespaceHandler.java
++++ mule-2.0.1/modules/management/src/main/java/org/mule/module/management/config/ManagementNamespaceHandler.java
+@@ -21,7 +21,7 @@ import org.mule.module.management.agent.
+ import org.mule.module.management.agent.Log4jAgent;
+ import org.mule.module.management.agent.Mx4jAgent;
+ import org.mule.module.management.agent.RmiRegistryAgent;
+-import org.mule.module.management.agent.YourKitProfilerAgent;
++//import org.mule.module.management.agent.YourKitProfilerAgent;
+ 
+ /**
+  * Handles all configuration elements in the Mule Management module.
+@@ -46,7 +46,7 @@ public class ManagementNamespaceHandler
+ 
+         registerBeanDefinitionParser("publish-notifications", new AgentDefinitionParser(EndpointNotificationLoggerAgent.class));
+         registerBeanDefinitionParser("rmi-server", new AgentDefinitionParser(RmiRegistryAgent.class));
+-        registerBeanDefinitionParser("yourkit-profiler", new AgentDefinitionParser(YourKitProfilerAgent.class));
++        //registerBeanDefinitionParser("yourkit-profiler", new AgentDefinitionParser(YourKitProfilerAgent.class));
+         registerBeanDefinitionParser("custom-agent", new AgentDefinitionParser());
+ 
+         //This gets processed by the jmx-server parser

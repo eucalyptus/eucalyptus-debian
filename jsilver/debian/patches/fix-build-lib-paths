@@ -1,0 +1,39 @@
+Index: jsilver-0.0.r19/build.xml
+===================================================================
+--- jsilver-0.0.r19.orig/build.xml	2010-08-06 20:33:38.000000000 +0200
++++ jsilver-0.0.r19/build.xml	2011-09-05 10:11:28.854142135 +0200
+@@ -5,13 +5,13 @@
+   <property name="src" value="src" />
+   <property name="gen" value="build/gen" />
+ 
+-  <property name="lib.guava" value="lib/guava-r06.jar" />
++  <property name="lib.guava" value="/usr/share/java/guava.jar" />
+ 
+   <target name="gen" description="Code generation" >
+     <mkdir dir="${gen}" />
+     <exec executable="java">
+       <arg value="-jar" />
+-      <arg value="sablecc/sablecc.jar" />
++      <arg value="/usr/share/java/sablecc.jar" />
+       <arg value="src/com/google/clearsilver/jsilver/syntax/jsilver.sablecc" />
+       <arg value="-d" />
+       <arg value="${gen}" />
+@@ -33,9 +33,7 @@
+     	>
+       <compilerarg value="-Xlint:all"/>
+       <classpath>
+-        <fileset dir="lib/">
+-          <include name="*.jar"/>
+-        </fileset>
++        <pathelement location="${lib.guava}" />
+       </classpath>
+     </javac>
+   </target>
+@@ -44,7 +42,6 @@
+     <mkdir dir="${jar.dir}"/>
+     <jar jarfile="${jar.file}">
+       <fileset dir="build/classes"/>
+-    	<zipfileset src="${lib.guava}" />
+     	<fileset dir="${gen}">
+          <include name="**/*.dat"/>
+      </fileset>

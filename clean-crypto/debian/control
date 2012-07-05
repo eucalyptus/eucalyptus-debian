@@ -1,0 +1,24 @@
+Source: clean-crypto
+Section: java
+Priority: optional
+Maintainer: Debian Eucalyptus Maintainers <pkg-eucalyptus-maintainers@lists.alioth.debian.org>
+Uploaders:
+ Chris Grzegorczyk <grze@eucalyptus.com>,
+ Charles Plessy <plessy@debian.org>,
+ Graziano Obertelli <graziano@eucalyptus.com>,
+ Kyo Lee <kyo.lee@eucalyptus.com>,
+ Daniel Nuomi <nurmi@eucalyptus.com>,
+DM-Upload-Allowed: yes
+Build-Depends: ant, debhelper (>= 5), cdbs (>= 0.4.5.3)
+Build-Depends-Indep: default-jdk
+Standards-Version: 3.8.4
+Homepage: https://code.launchpad.net/~chris-grze/eucalyptus-commons-ext/clean-crypto
+Vcs-Bzr: lp:~chris-grze/eucalyptus-commons-ext/clean-crypto
+
+Package: libclean-crypto-java
+Architecture: all
+Depends: ${misc:Depends}, default-jre-headless
+Description: Simplified and unrestricted javax.crypto bootstrap library
+ Provides a simple unrestricted version of the javax.crypto package
+ which can be provided when bootstrapping the Java Virtual Machine. This
+ is needed to load, e.g., unsigned crypo SPI implementations.

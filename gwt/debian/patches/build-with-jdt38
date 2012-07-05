@@ -1,0 +1,26 @@
+--- a/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java
++++ b/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java
+@@ -220,6 +220,10 @@
+     public String toString() {
+       return builder.toString();
+     }
++
++    public boolean ignoreOptionalProblems() {
++      return false;
++    }
+   }
+ 
+   private class CompilerImpl extends Compiler {
+--- a/dev/core/src/com/google/gwt/dev/jdt/AbstractCompiler.java
++++ b/dev/core/src/com/google/gwt/dev/jdt/AbstractCompiler.java
+@@ -122,6 +122,10 @@
+     public String toString() {
+       return unit.toString();
+     }
++
++    public boolean ignoreOptionalProblems() {
++      return false;
++    }
+   }
+ 
+   /**

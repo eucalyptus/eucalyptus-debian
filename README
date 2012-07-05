@@ -1,0 +1,1 @@
+This packaging replaces the previous packaging for Debian located in pkg-eucalyptus.  Any package maintained as a dependency for Eucalyptus that is not contained in pkg-java should reside here.

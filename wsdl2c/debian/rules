@@ -1,0 +1,9 @@
+#!/usr/bin/make -f
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/ant.mk
+
+REQUIRED_JVM_VERSION := 1.5
+JAVA_HOME            := /usr/lib/jvm/default-java
+DEB_ANT_BUILDFILE    := build.xml
+DEB_JARS             := commons-logging wsdl4j backport-util-concurrent gnumail httpcore jaxen commons-fileupload commons-cli geronimo-jms_1.1_spec commons-httpclient httpcore-nio

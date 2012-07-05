@@ -1,0 +1,3 @@
+usr/lib/axis2/lib/*.so
+usr/lib/axis2/include/* usr/include
+#usr/lib/axis2/lib/include/* usr/include

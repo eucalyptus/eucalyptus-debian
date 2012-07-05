@@ -1,0 +1,5 @@
+clean-crypto (1-1) unstable; urgency=low
+
+  * Initial release (Closes: #580386)
+
+ -- Chris Grzegorczyk <grze@eucalyptus.com>  Wed, 05 May 2010 10:24:55 -0700

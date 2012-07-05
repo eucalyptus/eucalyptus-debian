@@ -1,0 +1,13 @@
+build.patch
+build-protobuf-class
+exclude-tomcat.patch
+fix-protobuf-pkg-path
+fix-guava-pkg-path
+fix-streamhtmlparser-pkg-path
+use-json-simple
+build-tests
+build-with-jdt35
+generated-protobuf-class
+build-with-jdt37
+fix-test-classpath
+build-with-jdt38

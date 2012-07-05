@@ -1,0 +1,4 @@
+Please note that in order to reduce dependencies, the Debian WSS4J package
+currently doesn't provide SAML token support.
+
+-- Thierry Carrez <thierry.carrez@ubuntu.com>  Wed, 22 Jul 2009 15:29:08 +0200

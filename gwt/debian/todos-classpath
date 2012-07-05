@@ -1,0 +1,14 @@
+
+Suggest a servlet server?
+
+guava and google-commons provided the same classes, except guava also had primitives/Primitives.class
+
+Removed jetty, but this might be better as a Suggests (and in the jar's classpath) for unit testing.
+
+Removed geronimo-validation - it's included as a copy under src/javax.
+see e.g. class MessageInterpolator
+ - looks like debian's libgeronimo-validation-1.0-spec-java
+
+Same for user/src/org/hibernate/validator/engine - could have 
+ - looks like debian's libhibernate-validator-java
+

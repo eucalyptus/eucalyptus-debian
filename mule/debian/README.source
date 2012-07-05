@@ -1,0 +1,14 @@
+One key thing to point out is that to build mule from source one /must/
+use the svn repository in order to get the needed resource files, etc,
+which are included in the jar files.
+
+All .exe, .dll and .so files have been removed.
+
+The source is patched
+ * 01_fix_fileutiles_return.diff: removing check on success of file relocation
+ * 03_remove_spring_jms.diff: avoiding dependency on org.springframework.jms.connection.JmsResourceHolder
+
+The folder ./distributions/server/src/main/resources/licenses provides license of all external software needed for mule to be functional. This has no meaning for Debian but was left within the source tree.
+
+  -- Steffen Moeller <moeller@debian.org>  Sat, 20 Mar 2010 01:47:32 +0100
+

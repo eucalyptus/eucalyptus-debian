@@ -1,0 +1,10 @@
+02_fix_doc_dir.patch
+03_enable-security.patch
+04_fix_testsuite.patch
+05-build-without-threading.patch
+06-ld-no-as-needed.patch
+07-ssl-method-cast.patch
+08-uri-use-after-free.patch
+09-fix-gcc-4.6.patch
+10-use-chdir-retval.diff
+ftbfs-gcc-4.7.diff

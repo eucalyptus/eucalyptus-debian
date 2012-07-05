@@ -1,0 +1,47 @@
+Index: gwt-debian/dev/build.xml
+===================================================================
+--- gwt-debian.orig/dev/build.xml	2011-12-21 11:56:17.000000000 +0100
++++ gwt-debian/dev/build.xml	2011-12-21 12:05:51.340745186 +0100
+@@ -31,6 +31,11 @@
+     <delete failonerror="false">
+       <fileset dir="${gwt.build.lib}"  includes="gwt-dev.jar"/>
+     </delete>
++
++    <!-- Restore protobuf generated file as source dist -->
++    <move file="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java.orig"
++          tofile="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java"
++          preservelastmodified="true" failonerror="false" />
+   </target>
+ 
+   <target name="compile.tests" depends="build, compile.emma.if.enabled" description="Compiles the test code for this project">
+@@ -181,7 +186,7 @@
+     </gwt.javac>
+   </target>
+ 
+-  <target name="compile" depends="compiler.standalone" description="Compiles this project">
++  <target name="compile" depends="compiler.standalone, generate.remotemessageproto.java" description="Compiles this project">
+     <gwt.javac srcdir="" excludes="${filter.pattern}">
+       <src path="core/src" />
+       <classpath>
+@@ -194,16 +199,17 @@
+   </target>
+ 
+   <target name="generate.remotemessageproto.java">
++    <!-- Backup file from source dist -->
++    <copy file="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java"
++          tofile="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java.orig"
++          preservelastmodified="true" />
++
+     <!-- Generate the java code -->
+     <exec executable="protoc" failonerror="true">
+         <arg value="--java_out=core/src"/>
+         <arg value="./core/src/com/google/gwt/dev/shell/remoteui/remotemessage.proto"/>
+     </exec>
+ 
+-    <!-- Rebase the java code to match the rebased protobuf library -->
+-    <replace file="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java">
+-        <replacefilter token="com.google.protobuf" value="com.google.gwt.dev.protobuf"/>
+-    </replace>
+   </target>
+ 
+   <target name="checkstyle" description="Static analysis of source">

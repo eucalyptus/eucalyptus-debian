@@ -1,0 +1,11 @@
+Please note that in order to reduce dependencies, the Debian Netty package
+currently doesn't provide some optional Netty features:
+
+ * XNIO support (org.jboss.netty.channel.xnio package)
+ * JBoss microcontainer support (org.jboss.netty.container package)
+ * Google Guice and Spring Framework support (org.jboss.netty.example package)
+ * Protocol buffers support (org.jboss.netty.handler.codec.protobuf package)
+ * JBoss Logging support (org.jboss.netty.logging.JBossLogger* classes)
+ * OSGi Logging support (org.jboss.netty.logging.OsgiLogger* classes)
+
+-- Thierry Carrez <thierry.carrez@ubuntu.com>  Tue, 30 Jun 2009 11:11:15 +0200

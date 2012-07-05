@@ -1,0 +1,12 @@
+Mule is a very large project. This is initial packaging is not yet
+complete, but the package provided by this effort are all important with
+some serious reverse dependencies.
+
+To do:
+
+ * package mule-examples
+ * split big package into multiple smaller ones
+ * performing testing as part of the build process
+
+If you are using mule, please consider contributing to this packaging
+effort.

@@ -1,0 +1,1532 @@
+--- a/util/src/platforms/unix/uuid_gen_unix.c
++++ b/util/src/platforms/unix/uuid_gen_unix.c
+@@ -59,7 +59,7 @@
+     )
+ {
+     struct timeval time_now;
+-    struct timeval tv;
++    /*struct timeval tv;*/
+     unsigned long long time_val;
+     unsigned long long time_val2;
+     unsigned short int clck = 0;
+@@ -99,8 +99,8 @@
+         axutil_uuid_static.time_seq++;
+     }
+     /* sleep for 1000ns (1us) */
+-    tv.tv_sec = 0;
+-    tv.tv_usec = 1;
++    /*tv.tv_sec = 0;
++    tv.tv_usec = 1;*/
+     /*
+        The following select causes severe performance problems. 
+        Hence commenting out. I am not sure why this is required. - Samisa.    
+--- a/util/src/utils.c
++++ b/util/src/utils.c
+@@ -37,10 +37,10 @@
+     axis2_char_t ***tmp3 = NULL;
+     axis2_char_t *tmp4 = NULL;
+     axis2_char_t *resource = NULL;
+-    axis2_char_t *query = NULL;
++    /*axis2_char_t *query = NULL;*/
+     axis2_char_t *url_tmp = NULL;
+     axis2_char_t *url_resource = NULL;
+-    axis2_char_t *url_query = NULL;
++    /*axis2_char_t *url_query = NULL;*/
+     axis2_bool_t finished = AXIS2_FALSE;
+     axis2_status_t status = AXIS2_FAILURE;
+     int ret_count = 0;
+@@ -78,7 +78,7 @@
+         if (*tmp1 && ((tmp1 - resource) < (int)strlen(resource) - 1))
+             /* We are sure that the difference lies within the int range */
+         {
+-            query = tmp1;
++            /*query = tmp1;*/
+             /* 
+              * Query String based matching is not implemented. This is
+              * reserved for future implementations.
+@@ -179,7 +179,7 @@
+         if (*tmp1 && ((tmp1 - url_resource) < (int)strlen(url_resource) - 1))
+             /* We are sure that the difference lies within the int range */
+         {
+-            url_query = tmp1;
++            /*url_query = tmp1;*/
+         }
+     }
+     tmp1 = resource;
+--- a/util/test/util/test_util.c
++++ b/util/test/util/test_util.c
+@@ -66,9 +66,9 @@
+     char *key4 = "key4";
+     int cnt = 0;
+     axis2_char_t ***rettt = NULL;
+-    axis2_status_t stat = AXIS2_FAILURE;
+-    stat = axutil_parse_rest_url_for_params(env, "ech{a}tring", "/echoString?text=Hello%20World%21", &cnt, &rettt);
+-    stat = axutil_parse_rest_url_for_params(env, "{a}ny/mor/sum", "echoStringmany/mor/sum", &cnt, &rettt);
++    /*axis2_status_t stat = AXIS2_FAILURE;*/
++    axutil_parse_rest_url_for_params(env, "ech{a}tring", "/echoString?text=Hello%20World%21", &cnt, &rettt);
++    axutil_parse_rest_url_for_params(env, "{a}ny/mor/sum", "echoStringmany/mor/sum", &cnt, &rettt);
+ /*    rettt = axutil_parse_rest_url_for_params(env, "echoString/{a}re/{b}?", "/echoString/more/sum/?");
+     rettt = axutil_parse_rest_url_for_params(env, "/ech{c}tring{a}more/{b}/", "/echoStringma/nymore/sum?");
+     rettt = axutil_parse_rest_url_for_params(env, "echoString/{a}/more/{b}?{c}", "echoString/many/more/sum/");
+@@ -180,7 +180,7 @@
+ {
+     axutil_array_list_t *al;
+     a *entry = NULL;
+-    int size;
++    /*int size;*/
+ 
+     al = axutil_array_list_create(env, 1);
+     printf("list size %d\n", axutil_array_list_size(al, env));
+@@ -219,7 +219,7 @@
+ 
+     entry = (a *) axutil_array_list_get(al, env, 2);
+     printf("entry->value:%s\n", entry->value);
+-    size = axutil_array_list_size(al, env);
++    axutil_array_list_size(al, env);
+     printf("list size %d\n", axutil_array_list_size(al, env));
+ 
+ }
+--- a/util/test/allocator/allocator_test.c
++++ b/util/test/allocator/allocator_test.c
+@@ -16,7 +16,7 @@
+       unsigned char buffer[1024];
+       FILE *in = fopen("test","rb");
+       FILE *out = fopen("test.doc","w");
+-      int fwrite_result = 0;
++      /*int fwrite_result = 0;*/
+ 
+       if (!(in && out))
+       {
+@@ -26,7 +26,7 @@
+ 
+       while((plain_binary_len = fread(buffer,1,sizeof(buffer),in)) > 0)
+       {
+-          fwrite_result = fwrite(buffer,1,plain_binary_len,out);
++          fwrite(buffer,1,plain_binary_len,out);
+       }
+ 
+       fclose(in);
+--- a/axiom/src/attachments/data_handler.c
++++ b/axiom/src/attachments/data_handler.c
+@@ -383,7 +383,7 @@
+     if (data_handler->file_name)
+     {
+         FILE *f = NULL;
+-        int count = 0;
++        /*int count = 0;*/
+ 
+         f = fopen(data_handler->file_name, "wb");
+         if (!f)
+@@ -393,7 +393,7 @@
+             return AXIS2_FAILURE;
+         }
+ 
+-        count = (int)fwrite(data_handler->buffer, 1,
++        fwrite(data_handler->buffer, 1,
+             data_handler->buffer_len, f);
+         /* The count lies within the int range */
+ 
+--- a/axiom/src/soap/soap_header.c
++++ b/axiom/src/soap/soap_header.c
+@@ -295,7 +295,7 @@
+     const axis2_char_t *nsuri = NULL;
+ 
+     axiom_node_t *first_node = NULL;
+-    axiom_element_t *first_ele = NULL;
++    /*axiom_element_t *first_ele = NULL;*/
+ 
+     axutil_qname_t *qn = NULL;
+ 
+@@ -327,7 +327,7 @@
+ 
+     if (header_om_ele)
+     {
+-        first_ele = axiom_element_get_first_element(header_om_ele, env,
++        axiom_element_get_first_element(header_om_ele, env,
+                                                     soap_header->om_ele_node,
+                                                     &first_node);
+         if (first_node)
+@@ -591,16 +591,16 @@
+     const axutil_env_t * env,
+     axutil_qname_t * qname)
+ {
+-    axis2_char_t *qn_localname = NULL;
++    /*axis2_char_t *qn_localname = NULL;
+     axis2_char_t *qname_ns = NULL;
+-    axis2_char_t *qname_prefix = NULL;
++    axis2_char_t *qname_prefix = NULL;*/
+     axutil_hash_index_t *hi = NULL;
+ 
+     AXIS2_PARAM_CHECK(env->error, qname, AXIS2_FAILURE);
+ 
+-    qn_localname = axutil_qname_get_localpart(qname, env);
+-    qname_ns = axutil_qname_get_uri(qname, env);
+-    qname_prefix = axutil_qname_get_prefix(qname, env);
++    axutil_qname_get_localpart(qname, env);
++    axutil_qname_get_uri(qname, env);
++    axutil_qname_get_prefix(qname, env);
+ 
+     if (!soap_header->header_blocks)
+     {
+--- a/axiom/src/soap/soap11_builder_helper.c
++++ b/axiom/src/soap/soap11_builder_helper.c
+@@ -143,7 +143,7 @@
+         axiom_soap_fault_code_t *fault_code = NULL;
+         axiom_soap_fault_value_t *fault_value = NULL;
+         axiom_node_t *fault_value_node = NULL;
+-        axiom_element_t *fault_value_ele = NULL;
++        /*axiom_element_t *fault_value_ele = NULL;*/
+ 
+         if (axutil_strcmp
+             (ele_localname, AXIOM_SOAP11_SOAP_FAULT_CODE_LOCAL_NAME) == 0)
+@@ -184,9 +184,8 @@
+             {
+                 return AXIS2_FAILURE;
+             }
+-            fault_value_ele =
+-                (axiom_element_t *)
+-                axiom_node_get_data_element(fault_value_node, env);
++
++            axiom_node_get_data_element(fault_value_node, env);
+ 
+             axiom_stax_builder_set_lastnode(builder_helper->om_builder,
+                                             env, fault_value_node);
+--- a/axiom/src/soap/soap_body.c
++++ b/axiom/src/soap/soap_body.c
+@@ -248,7 +248,7 @@
+ {
+     int status = AXIS2_SUCCESS;
+     axiom_node_t *xop_node = NULL;    
+-    axis2_bool_t is_replaced = AXIS2_FALSE;
++    /*axis2_bool_t is_replaced = AXIS2_FALSE;*/
+     axiom_element_t *xop_element = NULL;
+ 
+                                                                                                                                     
+@@ -263,7 +263,7 @@
+                 xop_node, env);
+             if(xop_element)
+             {
+-                is_replaced = axiom_soap_builder_replace_xop(soap_body->soap_builder, 
++                axiom_soap_builder_replace_xop(soap_body->soap_builder, 
+                     env, xop_node, xop_element);
+             }
+         }    
+--- a/axiom/src/soap/soap12_builder_helper.c
++++ b/axiom/src/soap/soap12_builder_helper.c
+@@ -764,7 +764,7 @@
+                  (builder_helper->soap_builder, env))
+         {
+ 
+-            int detail_element_level = 0;
++            /*int detail_element_level = 0;*/
+             axis2_bool_t local_name_exists = AXIS2_FALSE;
+             int i = 0;
+             if (!(builder_helper->detail_element_names))
+@@ -783,7 +783,7 @@
+                                            env, i)) == 0)
+                 {
+                     local_name_exists = AXIS2_TRUE;
+-                    detail_element_level = i + 1;
++                    /*detail_element_level = i + 1;*/
+                 }
+             }
+             if (local_name_exists)
+--- a/axiom/src/xpath/xpath_internals_iterators.c
++++ b/axiom/src/xpath/xpath_internals_iterators.c
+@@ -35,7 +35,7 @@
+     axiom_node_t *cur = NULL;
+     axiom_node_t *context_node = NULL;
+     /* For streaming */
+-    axiom_node_t *prev = NULL;
++    /*axiom_node_t *prev = NULL;*/
+     /*axiom_xpath_operation_t * next_operation = NULL;*/
+ 
+     AXIOM_XPATH_ITERATOR_INITIALIZE;
+@@ -45,7 +45,7 @@
+     {
+         n_nodes = 0;
+         context->node = cur;
+-        prev = cur;
++        /*prev = cur;*/
+         cur = axiom_node_get_next_sibling(cur, context->env);
+         if (axiom_xpath_node_test_match(
+                     context, (axiom_xpath_node_test_t *)node_test_op->par1))
+--- a/axiom/src/om/om_document.c
++++ b/axiom/src/om/om_document.c
+@@ -141,14 +141,14 @@
+     axiom_document_t * document,
+     const axutil_env_t * env)
+ {
+-    axiom_node_t *node = NULL;
++    /*axiom_node_t *node = NULL;*/
+     AXIS2_ENV_CHECK(env, NULL);
+ 
+     if (document->root_element)
+     {
+         return document->root_element;
+     }
+-    node = axiom_document_build_next(document, env);
++    axiom_document_build_next(document, env);
+ 
+     if (document->root_element)
+     {
+--- a/axiom/src/om/om_children_with_specific_attribute_iterator.c
++++ b/axiom/src/om/om_children_with_specific_attribute_iterator.c
+@@ -130,14 +130,13 @@
+         if (axiom_node_get_node_type(iterator->current_child, env)
+             == AXIOM_ELEMENT)
+         {
+-            axiom_attribute_t *om_attr = NULL;
++            /*axiom_attribute_t *om_attr = NULL;*/
+             axiom_element_t *om_ele = NULL;
+             om_ele =
+                 (axiom_element_t *) axiom_node_get_data_element(iterator->
+                                                                 current_child,
+                                                                 env);
+-            om_attr =
+-                axiom_element_get_attribute(om_ele, env, iterator->attr_qname);
++            axiom_element_get_attribute(om_ele, env, iterator->attr_qname);
+             break;
+             /*if (om_attr &&
+                 (axutil_strcmp(axiom_attribute_get_value(om_attr, env),
+--- a/axiom/src/om/om_element.c
++++ b/axiom/src/om/om_element.c
+@@ -390,7 +390,7 @@
+     axiom_namespace_t * ns)
+ {
+     axis2_char_t *prefix = NULL;
+-    axis2_char_t *uri = NULL;
++    /*axis2_char_t *uri = NULL;*/
+ 
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+ 
+@@ -403,7 +403,7 @@
+         return AXIS2_FAILURE;
+     }
+ 
+-    uri = axiom_namespace_get_uri(ns, env);
++    axiom_namespace_get_uri(ns, env);
+     prefix = axiom_namespace_get_prefix(ns, env);
+ 
+     if (!(om_element->namespaces))
+@@ -1273,7 +1273,7 @@
+     axiom_node_t * element_node)
+ {
+     axiom_node_t *temp_node, *next_node;
+-    axiom_text_t *om_text = NULL;
++    /*axiom_text_t *om_text = NULL;*/
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, text, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, element_node, AXIS2_FAILURE);
+@@ -1289,7 +1289,7 @@
+         }
+     }
+ 
+-    om_text = axiom_text_create(env, NULL, text, &temp_node);
++    axiom_text_create(env, NULL, text, &temp_node);
+     axiom_node_add_child(element_node, env, temp_node);
+     return AXIS2_SUCCESS;
+ }
+--- a/axiom/src/om/om_output.c
++++ b/axiom/src/om/om_output.c
+@@ -640,7 +640,7 @@
+ 
+     if (om_output->do_optimize)
+     {
+-        axis2_char_t *root_content_id = NULL;
++        /*axis2_char_t *root_content_id = NULL;*/
+         axis2_char_t *buffer = NULL;
+ 
+         /* Extracting the soap part */
+@@ -661,7 +661,7 @@
+         om_output->mime_boundry = axiom_output_get_mime_boundry(om_output, env);
+         
+         /* This is also created for attachments*/
+-        root_content_id = axiom_output_get_root_content_id(om_output, env);
++        axiom_output_get_root_content_id(om_output, env);
+         
+         /* different parts of the message is added according to their order
+          * to an arraylist */
+--- a/axiom/test/soap/test_soap.c
++++ b/axiom/test/soap/test_soap.c
+@@ -276,7 +276,7 @@
+     axiom_soap_body_t *soap_body = NULL;
+     axiom_soap_header_t *soap_header = NULL;
+     axiom_soap_fault_t *soap_fault = NULL;
+-    axiom_soap_fault_code_t *fault_code = NULL;
++    /*axiom_soap_fault_code_t *fault_code = NULL; */
+     axiom_soap_header_block_t *hb1 = NULL;
+ 
+     axiom_namespace_t *env_ns = NULL;
+@@ -328,7 +328,7 @@
+ 
+     soap_fault = axiom_soap_fault_create_with_parent(env, soap_body);
+ 
+-    fault_code = axiom_soap_fault_code_create_with_parent(env, soap_fault);
++    axiom_soap_fault_code_create_with_parent(env, soap_fault);
+ 
+     xml_writer =
+         axiom_xml_writer_create_for_memory(env, NULL, AXIS2_FALSE, AXIS2_FALSE,
+@@ -453,7 +453,7 @@
+     axiom_soap_fault_t *soap_fault = NULL;
+     axis2_char_t *node_text = NULL;
+     axiom_soap_fault_node_t *fault_node = NULL;
+-    axis2_status_t status = 0;
++    /*axis2_status_t status = 0; */
+ 
+     printf("Testing soap fault node \n");
+     soap_envelope =
+@@ -466,7 +466,7 @@
+     soap_fault = axiom_soap_body_get_fault(soap_body, env);
+ 
+     fault_node = axiom_soap_fault_node_create_with_parent(env, soap_fault);
+-    status = axiom_soap_fault_node_set_value(fault_node, env, "MyFaultNode");
++    axiom_soap_fault_node_set_value(fault_node, env, "MyFaultNode");
+     node_text = axiom_soap_fault_node_get_value(fault_node, env);
+ 
+     printf("Actual = %s Expected = %s |", node_text, "MyFaultNode");
+--- a/axiom/test/xpath/test_xpath.c
++++ b/axiom/test/xpath/test_xpath.c
+@@ -475,7 +475,7 @@
+     axiom_node_t *grandchild;
+     axis2_char_t value_str[255];
+     axiom_element_t *order_ele;
+-    axiom_element_t *values_ele;
++    /*axiom_element_t *values_ele;*/
+     axiom_element_t *value_ele;
+     axiom_element_t *grandchild_ele;
+     axiom_attribute_t *attribute;
+@@ -493,8 +493,7 @@
+         axiom_attribute_create(env, "attr1", "attribute_value_1", NULL);
+     axiom_element_add_attribute(order_ele, env, attribute, order_node);
+ 
+-    values_ele =
+-        axiom_element_create(env, main_node, "node2", NULL, &values_node);
++    axiom_element_create(env, main_node, "node2", NULL, &values_node);
+ 
+     for (i = 0 ; i < N; i++)
+     {
+--- a/neethi/src/all.c
++++ b/neethi/src/all.c
+@@ -149,15 +149,14 @@
+ {
+ 
+     axiom_node_t *all_node = NULL;
+-    axiom_element_t *all_ele = NULL;
++    /*axiom_element_t *all_ele = NULL;*/
+     axiom_namespace_t *policy_ns = NULL;
+     axutil_array_list_t *components = NULL;
+     axis2_status_t status = AXIS2_FAILURE;
+ 
+     policy_ns = axiom_namespace_create(env, NEETHI_NAMESPACE, NEETHI_PREFIX);
+ 
+-    all_ele =
+-        axiom_element_create(env, parent, NEETHI_ALL, policy_ns, &all_node);
++    axiom_element_create(env, parent, NEETHI_ALL, policy_ns, &all_node);
+     if (!all_node)
+     {
+         return AXIS2_FAILURE;
+--- a/neethi/src/assertion.c
++++ b/neethi/src/assertion.c
+@@ -401,7 +401,7 @@
+     const axutil_env_t *env)
+ {
+     axiom_namespace_t *namespace = NULL;
+-    axiom_element_t *element = NULL;
++    /*axiom_element_t *element = NULL;*/
+     axiom_node_t *node = NULL;
+     axis2_char_t *localname = NULL;
+ 
+@@ -409,7 +409,7 @@
+         axiom_element_get_namespace(assertion->element, env, assertion->node);
+     localname = axiom_element_get_localname(assertion->element, env);
+ 
+-    element = axiom_element_create(env, parent, localname, namespace, &node);
++    axiom_element_create(env, parent, localname, namespace, &node);
+ 
+     if (!node)
+     {
+--- a/neethi/src/mtom_assertion_checker.c
++++ b/neethi/src/mtom_assertion_checker.c
+@@ -36,7 +36,7 @@
+     neethi_operator_t *operator = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+     int i = 0;
+ 
+     normalized_policy = neethi_engine_get_normalize(env, AXIS2_FALSE, policy);
+@@ -58,7 +58,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         /*if (value)
+--- a/neethi/src/secpolicy/builder/asymmetric_binding_builder.c
++++ b/neethi/src/secpolicy/builder/asymmetric_binding_builder.c
+@@ -107,7 +107,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+     rp_binding_commons_t *commons = NULL;
+     rp_symmetric_asymmetric_binding_commons_t *as_commons = NULL;
+ 
+@@ -123,7 +123,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_INITIATOR_TOKEN)
+--- a/neethi/src/secpolicy/builder/symmetric_binding_builder.c
++++ b/neethi/src/secpolicy/builder/symmetric_binding_builder.c
+@@ -107,7 +107,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+     rp_binding_commons_t *commons = NULL;
+     rp_symmetric_asymmetric_binding_commons_t *as_commons = NULL;
+ 
+@@ -123,7 +123,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_PROTECTION_TOKEN)
+--- a/neethi/src/secpolicy/builder/transport_binding_builder.c
++++ b/neethi/src/secpolicy/builder/transport_binding_builder.c
+@@ -108,7 +108,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL; */
+     rp_binding_commons_t *commons = NULL;
+ 
+     int i = 0;
+@@ -122,7 +122,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_TRANSPORT_TOKEN)
+--- a/neethi/src/secpolicy/builder/trust10_builder.c
++++ b/neethi/src/secpolicy/builder/trust10_builder.c
+@@ -104,7 +104,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+ 
+     int i = 0;
+ 
+@@ -116,7 +116,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_MUST_SUPPORT_CLIENT_CHALLENGE)
+--- a/neethi/src/secpolicy/builder/wss10_builder.c
++++ b/neethi/src/secpolicy/builder/wss10_builder.c
+@@ -104,7 +104,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+ 
+     int i = 0;
+ 
+@@ -116,7 +116,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_MUST_SUPPORT_REF_KEY_IDENTIFIER)
+--- a/neethi/src/secpolicy/builder/wss11_builder.c
++++ b/neethi/src/secpolicy/builder/wss11_builder.c
+@@ -104,7 +104,7 @@
+     axutil_array_list_t *arraylist = NULL;
+     neethi_assertion_t *assertion = NULL;
+     neethi_assertion_type_t type;
+-    void *value = NULL;
++    /*void *value = NULL;*/
+ 
+     int i = 0;
+ 
+@@ -116,7 +116,7 @@
+                                                               i);
+         assertion =
+             (neethi_assertion_t *) neethi_operator_get_value(operator, env);
+-        value = neethi_assertion_get_value(assertion, env);
++        neethi_assertion_get_value(assertion, env);
+         type = neethi_assertion_get_type(assertion, env);
+ 
+         if (type == ASSERTION_TYPE_MUST_SUPPORT_REF_KEY_IDENTIFIER)
+--- a/neethi/test/test.c
++++ b/neethi/test/test.c
+@@ -137,7 +137,7 @@
+ 
+     axiom_output_t *om_output = NULL;
+     axiom_xml_writer_t *writer = NULL;
+-    axis2_char_t *output_buffer = NULL;
++    /*axis2_char_t *output_buffer = NULL;*/
+     axis2_status_t status = AXIS2_FAILURE;
+ 
+     writer = axiom_xml_writer_create_for_memory(env, NULL, AXIS2_TRUE, 0,
+@@ -155,7 +155,7 @@
+     /* end serializing stuff */
+ 
+     /*axiom_node_free_tree(node1, environment); */
+-    output_buffer = (axis2_char_t *) axiom_xml_writer_get_xml(writer, env);
++    axiom_xml_writer_get_xml(writer, env);
+ 
+     printf("\nend test_om_serialize\n");
+ 
+--- a/src/core/context/msg_ctx.c
++++ b/src/core/context/msg_ctx.c
+@@ -842,8 +842,8 @@
+ 
+     if (soap_envelope)
+     {
+-        int soap_v = AXIOM_SOAP12;
+-        soap_v = axiom_soap_envelope_get_soap_version(soap_envelope, env);
++        /*int soap_v = AXIOM_SOAP12;*/
++        axiom_soap_envelope_get_soap_version(soap_envelope, env);
+         msg_ctx->response_soap_envelope = soap_envelope;
+     }
+     else
+--- a/src/core/deployment/conf_builder.c
++++ b/src/core/deployment/conf_builder.c
+@@ -431,7 +431,7 @@
+     }
+     while (qname_itr_has_next)
+     {
+-        axiom_node_t *disp_node = NULL;
++        /*axiom_node_t *disp_node = NULL;*/
+         axiom_element_t *disp_element = NULL;
+         axiom_attribute_t *disp_att = NULL;
+         axis2_char_t *class_name = NULL;
+@@ -444,8 +444,7 @@
+         axis2_handler_t *handler = NULL;
+ 
+         found_disp = AXIS2_TRUE;
+-        disp_node = (axiom_node_t *)
+-            axiom_children_qname_iterator_next(disps, env);
++        axiom_children_qname_iterator_next(disps, env);
+         class_qname = axutil_qname_create(env, AXIS2_CLASSNAME, NULL, NULL);
+         disp_att = axiom_element_get_attribute(disp_element, env, class_qname);
+         axutil_qname_free(class_qname, env);
+--- a/src/core/deployment/desc_builder.c
++++ b/src/core/deployment/desc_builder.c
+@@ -1200,10 +1200,10 @@
+         node = axiom_children_qname_iterator_next(iterator, env);
+         if (node)
+         {
+-            axiom_element_t *element = NULL;
++            /*axiom_element_t *element = NULL;*/
+             neethi_reference_t *reference = NULL;
+ 
+-            element = axiom_node_get_data_element(node, env);
++            axiom_node_get_data_element(node, env);
+             /* TODO: add neethi_engine_get_policy_reference
+                reference = neethi_engine_get_policy_reference(env, node, element); */
+             axis2_policy_include_add_policy_reference_element(policy_include,
+--- a/src/core/deployment/repos_listener.c
++++ b/src/core/deployment/repos_listener.c
+@@ -330,9 +330,9 @@
+                                                                        folder_name);
+     if (!current_info_list)
+     {
+-        axis2_status_t status_code = AXIS2_FAILURE;
++        /*axis2_status_t status_code = AXIS2_FAILURE;*/
+ 
+-        status_code = AXIS2_ERROR_GET_STATUS_CODE(env->error);
++        AXIS2_ERROR_GET_STATUS_CODE(env->error);
+         if (AXIS2_SUCCESS != status)
+         {
+             return status;
+--- a/src/core/deployment/svc_builder.c
++++ b/src/core/deployment/svc_builder.c
+@@ -168,13 +168,13 @@
+     axiom_node_t *desc_node = NULL;
+     axiom_children_qname_iterator_t *module_refs = NULL;
+     axiom_node_t *in_flow_node = NULL;
+-    axiom_element_t *in_flow_element = NULL;
++    /*axiom_element_t *in_flow_element = NULL;*/
+     axiom_node_t *out_flow_node = NULL;
+-    axiom_element_t *out_flow_element = NULL;
++    /*axiom_element_t *out_flow_element = NULL;*/
+     axiom_node_t *in_faultflow_node = NULL;
+-    axiom_element_t *in_faultflow_element = NULL;
++    /*axiom_element_t *in_faultflow_element = NULL;*/
+     axiom_node_t *out_faultflow_node = NULL;
+-    axiom_element_t *out_faultflow_element = NULL;
++    /*axiom_element_t *out_faultflow_element = NULL;*/
+     axiom_attribute_t *name_attr = NULL;
+     axutil_array_list_t *ops = NULL;
+     axis2_char_t *svc_name = NULL;
+@@ -241,11 +241,11 @@
+     qdesc = NULL;
+     if (desc_element)
+     {
+-        axiom_element_t *desc_value_element = NULL;
++        /*axiom_element_t *desc_value_element = NULL;*/
+         axiom_node_t *desc_value_node = NULL;
+         axis2_char_t *description_text = NULL;
+ 
+-        desc_value_element = axiom_element_get_first_element(desc_element,
++        axiom_element_get_first_element(desc_element,
+                                                              env, desc_node,
+                                                              &desc_value_node);
+         description_text = axiom_element_get_text(desc_element, env, desc_node);
+@@ -375,7 +375,7 @@
+ 
+     /* process IN_FLOW */
+     qinflowst = axutil_qname_create(env, AXIS2_IN_FLOW_START, NULL, NULL);
+-    in_flow_element = axiom_element_get_first_child_with_qname(svc_element,
++    axiom_element_get_first_child_with_qname(svc_element,
+                                                                env, qinflowst,
+                                                                svc_node,
+                                                                &in_flow_node);
+@@ -383,7 +383,7 @@
+     qinflowst = NULL;
+ 
+     qoutflowst = axutil_qname_create(env, AXIS2_OUT_FLOW_START, NULL, NULL);
+-    out_flow_element = axiom_element_get_first_child_with_qname(svc_element,
++    axiom_element_get_first_child_with_qname(svc_element,
+                                                                 env, qoutflowst,
+                                                                 svc_node,
+                                                                 &out_flow_node);
+@@ -391,7 +391,7 @@
+     qoutflowst = NULL;
+ 
+     qin_faultflowst = axutil_qname_create(env, AXIS2_IN_FAILTFLOW, NULL, NULL);
+-    in_faultflow_element = axiom_element_get_first_child_with_qname(svc_element,
++    axiom_element_get_first_child_with_qname(svc_element,
+                                                                     env,
+                                                                     qin_faultflowst,
+                                                                     svc_node,
+@@ -401,8 +401,7 @@
+ 
+     qout_faultflowst =
+         axutil_qname_create(env, AXIS2_OUT_FAILTFLOW, NULL, NULL);
+-    out_faultflow_element =
+-        axiom_element_get_first_child_with_qname(svc_element, env, qoutflowst,
++    axiom_element_get_first_child_with_qname(svc_element, env, qoutflowst,
+                                                  svc_node, &out_faultflow_node);
+     axutil_qname_free(qout_faultflowst, env);
+     qout_faultflowst = NULL;
+--- a/src/core/description/op.c
++++ b/src/core/description/op.c
+@@ -660,7 +660,7 @@
+     pr = axis2_phase_resolver_create_with_config(env, conf);
+     if (pr)
+     {
+-        axis2_module_t *module = NULL;
++        /*axis2_module_t *module = NULL;*/
+         axis2_status_t status = AXIS2_FAILURE;
+ 
+         status = axis2_phase_resolver_engage_module_to_op(pr, env, op, moduleref);
+@@ -671,7 +671,7 @@
+             AXIS2_LOG_INFO(env->log, AXIS2_LOG_SI, 
+                 "Engaging module %s to operaion %s failed. But ignore this.", modname, opname);
+         }
+-        module = axis2_module_desc_get_module(moduleref, env);
++        axis2_module_desc_get_module(moduleref, env);
+ 
+         if (need_to_add)
+         {
+--- a/src/core/description/svc_grp.c
++++ b/src/core/description/svc_grp.c
+@@ -287,12 +287,12 @@
+     const axutil_env_t * env,
+     const axutil_qname_t * svc_qname)
+ {
+-    axis2_svc_t *svc = NULL;
++    /*axis2_svc_t *svc = NULL;*/
+     axis2_char_t *svc_name = NULL;
+ 
+     AXIS2_PARAM_CHECK(env->error, svc_name, AXIS2_FAILURE);
+ 
+-    svc = axis2_svc_grp_get_svc(svc_grp, env, svc_qname);
++    axis2_svc_grp_get_svc(svc_grp, env, svc_qname);
+ 
+     svc_name = axutil_qname_to_string((axutil_qname_t *) svc_qname, env);
+     axutil_hash_set(svc_grp->svcs, svc_name, AXIS2_HASH_KEY_STRING, NULL);
+--- a/src/core/engine/conf.c
++++ b/src/core/engine/conf.c
+@@ -579,7 +579,7 @@
+     axutil_hash_index_t *index_i = NULL;
+     axis2_char_t *svc_name = NULL;
+     const axis2_char_t *svc_grp_name = NULL;
+-    int k = 0;
++    /*int k = 0;*/
+ 
+     AXIS2_PARAM_CHECK(env->error, svc_grp, AXIS2_FAILURE);
+ 
+@@ -594,7 +594,7 @@
+         }
+     }
+ 
+-    k = axutil_hash_count(svcs);
++    axutil_hash_count(svcs);
+     index_i = axutil_hash_first(svcs, env);
+     while (index_i)
+     {
+--- a/src/core/engine/rest_disp.c
++++ b/src/core/engine/rest_disp.c
+@@ -163,7 +163,7 @@
+     axis2_op_t *op = NULL;
+     axiom_soap_envelope_t *soap_env = NULL;
+     axiom_soap_body_t *soap_body = NULL;
+-    axiom_element_t *body_child = NULL;
++    /*axiom_element_t *body_child = NULL;*/
+     axiom_node_t *body_child_node = NULL;
+     axiom_node_t *body_element_node = NULL;
+     axis2_bool_t soap_env_exists = AXIS2_TRUE;
+@@ -305,7 +305,7 @@
+ 
+     if (!body_child_node)
+     {
+-        body_child = axiom_element_create_with_qname(env, NULL,
++        axiom_element_create_with_qname(env, NULL,
+                                                      axis2_op_get_qname(
+                                                       op, env),
+                                                      &body_child_node);
+--- a/src/core/phaseresolver/phase_resolver.c
++++ b/src/core/phaseresolver/phase_resolver.c
+@@ -692,7 +692,7 @@
+     int i = 0;
+     int size = 0;
+     int status = AXIS2_FAILURE;
+-    axis2_char_t *flowname = NULL;
++    /*axis2_char_t *flowname = NULL;*/
+     axis2_phase_holder_t *phase_holder = NULL;
+     axutil_array_list_t *engaged_module_list_for_parent_svc = NULL;
+ 
+@@ -811,7 +811,7 @@
+ 
+             phase_list = axis2_op_get_in_flow(op, env);
+             phase_holder = axis2_phase_holder_create_with_phases(env, phase_list);
+-            flowname = "in flow";
++            /*flowname = "in flow";*/
+             break;
+         }
+     case AXIS2_OUT_FLOW:
+@@ -820,7 +820,7 @@
+ 
+             phase_list = axis2_op_get_out_flow(op, env);
+             phase_holder = axis2_phase_holder_create_with_phases(env, phase_list);
+-            flowname = "out flow";
++            /*flowname = "out flow";*/
+             break;
+         }
+     case AXIS2_FAULT_IN_FLOW:
+@@ -829,7 +829,7 @@
+ 
+             phase_list = axis2_op_get_fault_in_flow(op, env);
+             phase_holder = axis2_phase_holder_create_with_phases(env, phase_list);
+-            flowname = "fault in flow";
++            /*flowname = "fault in flow";*/
+             break;
+         }
+     case AXIS2_FAULT_OUT_FLOW:
+@@ -838,7 +838,7 @@
+ 
+             phase_list = axis2_op_get_fault_out_flow(op, env);
+             phase_holder = axis2_phase_holder_create_with_phases(env, phase_list);
+-            flowname = "fault out flow";
++            /*flowname = "fault out flow";*/
+             break;
+         }
+     }
+@@ -1967,11 +1967,11 @@
+     axis2_flow_t *flow = NULL;
+     axis2_char_t *flowname = NULL;
+     const axutil_qname_t *opqname = NULL;
+-    axis2_char_t *opname = NULL;
++    /*axis2_char_t *opname = NULL;*/
+     axis2_status_t status = AXIS2_FAILURE;
+ 
+     opqname = axis2_op_get_qname(op, env);
+-    opname = axutil_qname_get_localpart(opqname, env);
++    axutil_qname_get_localpart(opqname, env);
+ 
+     switch (type)
+     {
+--- a/src/core/receivers/raw_xml_in_out_msg_recv.c
++++ b/src/core/receivers/raw_xml_in_out_msg_recv.c
+@@ -70,11 +70,11 @@
+     axis2_op_t *op_desc = NULL;
+     const axis2_char_t *style = NULL;
+     axiom_node_t *om_node = NULL;
+-    axiom_element_t *om_element = NULL;
++    /*axiom_element_t *om_element = NULL;*/
+     axis2_char_t *local_name = NULL;
+     axiom_node_t *result_node = NULL;
+     axiom_node_t *body_content_node = NULL;
+-    axiom_element_t *body_content_element = NULL;
++    /*axiom_element_t *body_content_element = NULL;*/
+     axiom_soap_envelope_t *default_envelope = NULL;
+     axiom_soap_body_t *out_body = NULL;
+     axiom_soap_header_t *out_header = NULL;
+@@ -132,7 +132,7 @@
+             envelope = axis2_msg_ctx_get_soap_envelope(msg_ctx, env);
+             body = axiom_soap_envelope_get_body(envelope, env);
+             om_node = axiom_soap_body_get_base_node(body, env);
+-            om_element = axiom_node_get_data_element(om_node, env);
++            axiom_node_get_data_element(om_node, env);
+             om_node = axiom_node_get_first_element(om_node, env);
+         }
+         else if (0 == axutil_strcmp(AXIS2_STYLE_RPC, style))
+@@ -177,7 +177,7 @@
+                     if (matches)
+                     {
+                         om_node = axiom_node_get_first_child(op_node, env);
+-                        om_element = axiom_node_get_data_element(om_node, env);
++                        axiom_node_get_data_element(om_node, env);
+                     }
+                     else
+                     {
+@@ -224,8 +224,7 @@
+                 }
+                 else
+                 {
+-                    body_content_element =
+-                        axiom_element_create(env, NULL, res_name, ns, &body_content_node);
++                    axiom_element_create(env, NULL, res_name, ns, &body_content_node);
+                     axiom_node_add_child(body_content_node, env, result_node);
+                 }
+             }
+--- a/src/core/transport/http/common/http_simple_response.c
++++ b/src/core/transport/http/common/http_simple_response.c
+@@ -566,7 +566,7 @@
+     while (loop_state)
+     {
+         int read = 0;
+-        int write = 0;
++        /*int write = 0;*/
+         char buf[AXIS2_HTTP_SIMPLE_RESPONSE_READ_SIZE];
+ 
+         read =
+@@ -576,7 +576,7 @@
+         {
+             break;
+         }
+-        write = axutil_stream_write(tmp_stream, env, buf, read);
++        axutil_stream_write(tmp_stream, env, buf, read);
+         if (read < (AXIS2_HTTP_SIMPLE_RESPONSE_READ_SIZE - 1))
+         {
+             break;
+--- a/src/core/transport/http/common/http_worker.c
++++ b/src/core/transport/http/common/http_worker.c
+@@ -2152,12 +2152,12 @@
+     axis2_conf_ctx_t * conf_ctx,
+     axis2_http_simple_response_t * simple_response)
+ {
+-    axis2_conf_t *config = NULL;
++    /*axis2_conf_t *config = NULL;*/
+ 
+     AXIS2_PARAM_CHECK(env->error, conf_ctx, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, simple_response, AXIS2_FAILURE);
+ 
+-    config = axis2_conf_ctx_get_conf(conf_ctx, env);
++    axis2_conf_ctx_get_conf(conf_ctx, env);
+ 
+     return AXIS2_SUCCESS;
+ }
+--- a/src/core/transport/http/sender/http_client.c
++++ b/src/core/transport/http/sender/http_client.c
+@@ -417,7 +417,7 @@
+ 
+     if(client->doing_mtom)
+     {
+-        axis2_status_t status = AXIS2_SUCCESS;
++        /*axis2_status_t status = AXIS2_SUCCESS;*/
+         axutil_http_chunked_stream_t *chunked_stream = NULL;
+         
+         /* If the callback name is not there, then we will check whether there 
+@@ -441,7 +441,7 @@
+ 
+         /* This method will write the Attachment + data to the wire */
+ 
+-        status = axis2_http_transport_utils_send_mtom_message(chunked_stream, env, 
++        axis2_http_transport_utils_send_mtom_message(chunked_stream, env, 
+                 client->mime_parts, client->mtom_sending_callback_name);      
+ 
+         axutil_http_chunked_stream_free(chunked_stream, env);
+--- a/src/core/transport/http/sender/http_sender.c
++++ b/src/core/transport/http/sender/http_sender.c
+@@ -1475,7 +1475,7 @@
+     int *content_length = NULL;
+     axutil_property_t *property = NULL;
+     axis2_char_t *content_type = NULL;
+-    int status_code = 0;
++    /*int status_code = 0;*/
+ 
+     AXIS2_PARAM_CHECK (env->error, msg_ctx, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK (env->error, response, AXIS2_FAILURE);
+@@ -1577,7 +1577,7 @@
+                                     AXIS2_HTTP_HEADER_CONTENT_LENGTH, property);
+     }
+ 
+-    status_code = axis2_http_simple_response_get_status_code (response, env);
++    axis2_http_simple_response_get_status_code (response, env);
+     return AXIS2_SUCCESS;
+ }
+ 
+--- a/src/core/transport/http/server/apache2/apache2_worker.c
++++ b/src/core/transport/http/server/apache2/apache2_worker.c
+@@ -1329,7 +1329,7 @@
+     while (loop_status)
+     {
+         int read = 0;
+-        int write = 0;
++        /*int write = 0;*/
+ 
+         char buf[READ_SIZE];
+         read = axutil_stream_read(stream, env, buf, READ_SIZE);
+@@ -1337,7 +1337,7 @@
+         {
+             break;
+         }
+-        write = axutil_stream_write(tmp_stream, env, buf, read);
++        axutil_stream_write(tmp_stream, env, buf, read);
+         if (read < (READ_SIZE - 1))
+         {
+             break;
+--- a/src/core/transport/http/server/simple_axis2_server/http_server_main.c
++++ b/src/core/transport/http/server/simple_axis2_server/http_server_main.c
+@@ -77,14 +77,14 @@
+     axutil_env_t * env,
+     int status)
+ {
+-    axutil_allocator_t *allocator = NULL;
++    /*axutil_allocator_t *allocator = NULL;*/
+     if (server)
+     {
+         axis2_transport_receiver_free(server, system_env);
+     }
+     if (env)
+     {
+-        allocator = env->allocator;
++        /*allocator = env->allocator;*/
+         axutil_env_free(env);
+     }
+     /*axutil_allocator_free(allocator); */
+--- a/src/core/transport/http/util/http_transport_utils.c
++++ b/src/core/transport/http/util/http_transport_utils.c
+@@ -2470,7 +2470,7 @@
+ {
+     axiom_soap_envelope_t *soap_env = NULL;
+     axiom_soap_body_t *soap_body = NULL;
+-    axiom_element_t *body_child = NULL;
++    /*axiom_element_t *body_child = NULL;*/
+     axiom_node_t *body_child_node = NULL;
+     axiom_node_t *body_element_node = NULL;
+ 
+@@ -2505,7 +2505,7 @@
+         {
+             return NULL;
+         }
+-        body_child = axiom_element_create_with_qname(env, NULL,
++        axiom_element_create_with_qname(env, NULL,
+                                                      axis2_op_get_qname
+                                                      (axis2_msg_ctx_get_op
+                                                       (msg_ctx, env), env),
+@@ -3168,12 +3168,12 @@
+ 			{
+ 				if (out_msg_ctx)
+ 				{
+-					int size = 0;
++					/*int size = 0;*/
+ 					axutil_array_list_t *output_header_list = NULL;
+ 					output_header_list = axis2_msg_ctx_get_http_output_headers(out_msg_ctx, env);
+ 					if (output_header_list)
+ 					{
+-						size = axutil_array_list_size(output_header_list, env);
++						axutil_array_list_size(output_header_list, env);
+ 						response->output_headers = output_header_list;
+ 					}
+ 					
+@@ -3204,12 +3204,12 @@
+ 			{
+ 				if (out_msg_ctx)
+ 				{
+-					int size = 0;
++					/*int size = 0;*/
+ 					axutil_array_list_t *output_header_list = NULL;
+ 					output_header_list = axis2_msg_ctx_get_http_output_headers(out_msg_ctx, env);
+ 					if (output_header_list)
+ 					{
+-						size = axutil_array_list_size(output_header_list, env);
++						axutil_array_list_size(output_header_list, env);
+ 						response->output_headers = output_header_list;
+ 					}
+ 					if (axis2_msg_ctx_get_no_content(out_msg_ctx, env))
+--- a/src/modules/mod_addr/addr_in_handler.c
++++ b/src/modules/mod_addr/addr_in_handler.c
+@@ -472,18 +472,18 @@
+             axis2_char_t *address = NULL;
+             axutil_qname_t *rqn = NULL;
+             axiom_attribute_t *relationship_type = NULL;
+-            const axis2_char_t *relationship_type_default_value = NULL;
++            /*const axis2_char_t *relationship_type_default_value = NULL;*/
+             const axis2_char_t *relationship_type_value = NULL;
+             axis2_relates_to_t *relates_to = NULL;
+             if (!axutil_strcmp(AXIS2_WSA_NAMESPACE_SUBMISSION, addr_ns_str))
+             {
+-                relationship_type_default_value =
+-                    AXIS2_WSA_RELATES_TO_RELATIONSHIP_TYPE_DEFAULT_VALUE_SUBMISSION;
++                /*relationship_type_default_value =
++                    AXIS2_WSA_RELATES_TO_RELATIONSHIP_TYPE_DEFAULT_VALUE_SUBMISSION;*/
+             }
+             else
+             {
+-                relationship_type_default_value =
+-                    AXIS2_WSA_ANONYMOUS_URL_SUBMISSION;
++                /*relationship_type_default_value =
++                    AXIS2_WSA_ANONYMOUS_URL_SUBMISSION;*/
+             }
+             rqn =
+                 axutil_qname_create(env, AXIS2_WSA_RELATES_TO_RELATIONSHIP_TYPE,
+@@ -594,12 +594,10 @@
+                        (ref_param_iter, env))
+                 {
+                     axiom_node_t *om_node = NULL;
+-                    axiom_element_t *om_ele = NULL;
++                    /*axiom_element_t *om_ele = NULL;*/
+                     om_node =
+                         AXIOM_CHILD_ELEMENT_ITERATOR_NEXT(ref_param_iter, env);
+-                    om_ele =
+-                        (axiom_element_t *) axiom_node_get_data_element(om_node,
+-                                                                        env);
++                    axiom_node_get_data_element(om_node, env);
+                     axis2_endpoint_ref_add_ref_param(endpoint_ref, env, om_node);                    
+                 }
+             }
+--- a/test/core/clientapi/test_clientapi.c
++++ b/test/core/clientapi/test_clientapi.c
+@@ -93,7 +93,7 @@
+     const axis2_char_t * echo_text)
+ {
+     axiom_node_t *echo_om_node = NULL;
+-    axiom_element_t *echo_om_ele = NULL;
++    /*axiom_element_t *echo_om_ele = NULL;*/
+     axiom_node_t *text_om_node = NULL;
+     axiom_element_t *text_om_ele = NULL;
+     axiom_namespace_t *ns1 = NULL;
+@@ -101,8 +101,7 @@
+     ns1 =
+         axiom_namespace_create(env, "http://ws.apache.org/axis2/c/samples",
+                                "ns1");
+-    echo_om_ele =
+-        axiom_element_create(env, NULL, "echoString", ns1, &echo_om_node);
++    axiom_element_create(env, NULL, "echoString", ns1, &echo_om_node);
+     text_om_ele =
+         axiom_element_create(env, echo_om_node, "text", NULL, &text_om_node);
+     axiom_element_set_text(text_om_ele, env, echo_text, text_om_node);
+--- a/test/core/deployment/test_deployment.c
++++ b/test/core/deployment/test_deployment.c
+@@ -174,16 +174,16 @@
+ {
+     axutil_dll_desc_t *dll_desc = NULL;
+     axis2_char_t *dll_name = NULL;
+-    axis2_transport_sender_t *transport_sender = NULL;
++    /*axis2_transport_sender_t *transport_sender = NULL;*/
+     axutil_param_t *impl_info_param = NULL;
+     axis2_char_t *axis2c_home = NULL;
+-    axis2_msg_ctx_t *msg_ctx = NULL;
++    /*axis2_msg_ctx_t *msg_ctx = NULL;*/
+ 
+     printf("******************************************\n");
+     printf("testing axis2_transport_sender load\n");
+     printf("******************************************\n");
+ 
+-    msg_ctx = (axis2_msg_ctx_t *) AXIS2_MALLOC(env->allocator, 5);
++    AXIS2_MALLOC(env->allocator, 5);
+     dll_desc = axutil_dll_desc_create(env);
+ 
+     axis2c_home = AXIS2_GETENV("AXIS2C_HOME");
+@@ -194,9 +194,7 @@
+     impl_info_param = axutil_param_create(env, NULL, NULL);
+     axutil_param_set_value(impl_info_param, env, dll_desc);
+     axutil_class_loader_init(env);
+-    transport_sender =
+-        (axis2_transport_sender_t *) axutil_class_loader_create_dll(env,
+-                                                                    impl_info_param);
++    axutil_class_loader_create_dll(env,impl_info_param);
+ 
+     AXIS2_FREE(env->allocator, dll_name);
+     printf("transport sender load test successful\n");
+--- a/test/core/description/test_description.c
++++ b/test/core/description/test_description.c
+@@ -142,7 +142,7 @@
+     struct axutil_qname *qname = NULL;
+     struct axutil_hash_t *ops = NULL;
+     struct axis2_op *op = NULL;
+-    axis2_status_t status = AXIS2_SUCCESS;
++    /*axis2_status_t status = AXIS2_SUCCESS;*/
+ 
+     printf("******************************************\n");
+     printf("testing axis2_svc_get_op\n");
+@@ -155,11 +155,11 @@
+     qname = axutil_qname_create(env, "svc1", NULL, NULL);
+     svc = axis2_svc_create_with_qname(env, qname);
+ 
+-    status = axis2_svc_add_op(svc, env, op);
++    axis2_svc_add_op(svc, env, op);
+ 
+     qname = axutil_qname_create(env, "op2", NULL, NULL);
+     op = axis2_op_create_with_qname(env, qname);
+-    status = axis2_svc_add_op(svc, env, op);
++    axis2_svc_add_op(svc, env, op);
+ 
+     ops = axis2_svc_get_all_ops(svc, env);
+ 
+--- a/test/core/transport/http/test_http_transport.c
++++ b/test/core/transport/http/test_http_transport.c
+@@ -135,7 +135,7 @@
+     axis2_http_simple_response_t *response = NULL;
+     int status = 0;
+     char *body_bytes = NULL;
+-    int body_bytes_len = 0;
++    /*int body_bytes_len = 0;*/
+ 
+     printf("Starting http_client tests\n");
+     request_line = axis2_http_request_line_create(env, "GET",
+@@ -174,8 +174,7 @@
+     printf("Content Length :%d\n",
+            axis2_http_simple_response_get_content_length(response, env));
+     printf("Status code :%d\n", status);
+-    body_bytes_len =
+-        axis2_http_simple_response_get_body_bytes(response, env, &body_bytes);
++    axis2_http_simple_response_get_body_bytes(response, env, &body_bytes);
+     printf("body :%s\n", body_bytes);
+ 
+     axis2_http_client_free(client, env);
+@@ -201,7 +200,7 @@
+     axis2_http_simple_response_t *response = NULL;
+     int status = 0;
+     char *body_bytes = NULL;
+-    int body_bytes_len = 0;
++    /*int body_bytes_len = 0;*/
+ 
+     printf("Starting https_client tests\n");
+     request_line = axis2_http_request_line_create(env, "GET", "/", "HTTP/1.0");
+@@ -246,8 +245,7 @@
+     printf("Content Length :%d\n",
+            axis2_http_simple_response_get_content_length(response, env));
+     printf("Status code :%d\n", status);
+-    body_bytes_len =
+-        axis2_http_simple_response_get_body_bytes(response, env, &body_bytes);
++    axis2_http_simple_response_get_body_bytes(response, env, &body_bytes);
+ 
+     axis2_http_client_free(client, env);
+     axis2_http_simple_request_free(request, env);
+--- a/tools/tcpmon/src/util.c
++++ b/tools/tcpmon/src/util.c
+@@ -55,7 +55,7 @@
+         int c;
+         int tab_pos = 0;
+         int has_value = 0;
+-        int has_space = 0;
++        /*int has_space = 0;*/
+         int start_ele = 0;
+         int prev_case = 0;
+         int buffer_size = 0;
+@@ -145,7 +145,7 @@
+                     prev_case = START_ELEMENT;
+ 
+                     has_value = 0;
+-                    has_space = 0;
++                    /*has_space = 0;*/
+ 
+                     if (start_ele != 0)
+                         tcpmon_util_strcat(out, "\n", &buffer_size, env);
+@@ -257,7 +257,7 @@
+                     prev_case = EMPTY_ELEMENT;
+ 
+                     has_value = 0;
+-                    has_space = 0;
++                    /*has_space = 0;*/
+ 
+                     if (start_ele != 0)
+                         tcpmon_util_strcat(out, "\n", &buffer_size, env);
+@@ -570,7 +570,7 @@
+     axis2_char_t *body_ptr = NULL;
+     int header_found = 0;
+     int header_just_finished = 0;
+-    int read = 0;
++    /*int read = 0;*/
+     int header_width = 0;
+     int current_line_offset = 0;
+     int mtom_optimized = 0;
+@@ -590,7 +590,7 @@
+         buffer = AXIS2_REALLOC(env->allocator, buffer,
+                                sizeof(axis2_char_t) * (read_size + 1));
+         *(buffer + read_size) = '\0';
+-        read = axutil_stream_read(stream, env, buffer + read_size, 1);
++        axutil_stream_read(stream, env, buffer + read_size, 1);
+ 
+         if (header_just_finished)
+         {
+--- a/neethi/src/exactlyone.c
++++ b/neethi/src/exactlyone.c
+@@ -150,15 +150,14 @@
+ {
+ 
+     axiom_node_t *exactlyone_node = NULL;
+-    axiom_element_t *exactlyone_ele = NULL;
++    /*axiom_element_t *exactlyone_ele = NULL;*/
+     axiom_namespace_t *policy_ns = NULL;
+     axutil_array_list_t *components = NULL;
+     axis2_status_t status = AXIS2_FAILURE;
+ 
+     policy_ns = axiom_namespace_create(env, NEETHI_NAMESPACE, NEETHI_PREFIX);
+ 
+-    exactlyone_ele =
+-        axiom_element_create(env, parent, NEETHI_EXACTLYONE, policy_ns,
++    axiom_element_create(env, parent, NEETHI_EXACTLYONE, policy_ns,
+                              &exactlyone_node);
+     if (!exactlyone_node)
+     {
+--- a/axiom/test/om/test_om.c
++++ b/axiom/test/om/test_om.c
+@@ -289,7 +289,7 @@
+     int status;
+     axiom_element_t *ele1 = NULL,
+         *ele2 = NULL,
+-        *ele3 = NULL,
++        /* *ele3 = NULL, */
+         *ele4 = NULL;
+     axiom_node_t *node1 = NULL,
+         *node2 = NULL,
+@@ -303,10 +303,10 @@
+         *attr2 = NULL;
+     axiom_namespace_t *ns1 = NULL,
+         *ns2 = NULL;
+-    axiom_text_t *text1 = NULL;
++    /*axiom_text_t *text1 = NULL;*/
+     axiom_output_t *om_output = NULL;
+     axiom_xml_writer_t *writer = NULL;
+-    axis2_char_t *output_buffer = NULL;
++    /*axis2_char_t *output_buffer = NULL;*/
+ 
+     printf("\nstart test_om_serialize\n");
+ 
+@@ -322,11 +322,11 @@
+ 
+     axiom_element_add_attribute(ele2, environment, attr1, node2);
+ 
+-    text1 = axiom_text_create(environment, node2, "Axis2/C OM HOWTO", &node3);
++    axiom_text_create(environment, node2, "Axis2/C OM HOWTO", &node3);
+ 
+-    ele3 = axiom_element_create(environment, node1, "number", ns2, &node4);
++    axiom_element_create(environment, node1, "number", ns2, &node4);
+ 
+-    text1 = axiom_text_create(environment, node4, "1748491379", &node5);
++    axiom_text_create(environment, node4, "1748491379", &node5);
+ 
+     ele4 = axiom_element_create(environment, node1, "author", ns1, &node6);
+ 
+@@ -366,8 +366,7 @@
+     /* end serializing stuff */
+ 
+     axiom_node_free_tree(node1, environment);
+-    output_buffer =
+-        (axis2_char_t *) axiom_xml_writer_get_xml(writer, environment);
++    axiom_xml_writer_get_xml(writer, environment);
+ 
+     axiom_output_free(om_output, environment);
+     /*    if (output_buffer) */
+--- a/src/modules/mod_addr/addr_out_handler.c
++++ b/src/modules/mod_addr/addr_out_handler.c
+@@ -204,7 +204,7 @@
+         */
+         const axis2_char_t *action = NULL;
+         const axis2_char_t *address = NULL;
+-        const axis2_char_t *svc_group_context_id = NULL;
++        /*const axis2_char_t *svc_group_context_id = NULL;*/
+         const axis2_char_t *message_id = NULL;
+         axis2_relates_to_t *relates_to = NULL;
+         axiom_node_t *relates_to_header_node = NULL;
+@@ -409,8 +409,7 @@
+         }
+ 
+         /* add the service group id as a reference parameter */
+-        svc_group_context_id =
+-            axutil_string_get_buffer(axis2_msg_ctx_get_svc_grp_ctx_id
++        axutil_string_get_buffer(axis2_msg_ctx_get_svc_grp_ctx_id
+                                      (msg_ctx, env), env);
+ 
+         axis2_addr_out_handler_add_to_soap_header(env, epr_reply_to,
+@@ -637,7 +636,7 @@
+     axutil_array_list_t *meta_data_list = NULL;
+     axutil_array_list_t *extension_list = NULL;
+     axiom_node_t *header_block_node = NULL;
+-    axiom_node_t *header_node = NULL;
++    /*axiom_node_t *header_node = NULL;*/
+     axiom_namespace_t *addr_ns_obj = NULL;
+     int size = 0;
+ 
+@@ -645,7 +644,7 @@
+     AXIS2_PARAM_CHECK(env->error, type, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, soap_header, AXIS2_FAILURE);
+ 
+-    header_node = axiom_soap_header_get_base_node(soap_header, env);
++    axiom_soap_header_get_base_node(soap_header, env);
+ 
+     addr_ns_obj = axiom_namespace_create(env,
+                                          addr_ns, AXIS2_WSA_DEFAULT_PREFIX);
+@@ -662,11 +661,11 @@
+     if (address && *address)
+     {
+         axiom_node_t *hb_node = NULL;
+-        axiom_element_t *hb_ele = NULL;
++        /*axiom_element_t *hb_ele = NULL;*/
+         axiom_node_t *address_node = NULL;
+         axiom_element_t *address_ele = NULL;
+         hb_node = axiom_soap_header_block_get_base_node(header_block, env);
+-        hb_ele = (axiom_element_t *) axiom_node_get_data_element(hb_node, env);
++        axiom_node_get_data_element(hb_node, env);
+ 
+         addr_ns_obj =
+             axiom_namespace_create(env, addr_ns, AXIS2_WSA_DEFAULT_PREFIX);
+@@ -676,9 +675,9 @@
+                                  &address_node);
+         if (address_ele)
+         {
+-            axiom_namespace_t *dec_ns = NULL;
++            /*axiom_namespace_t *dec_ns = NULL;*/
+             axiom_element_set_text(address_ele, env, address, address_node);
+-            dec_ns = axiom_element_find_declared_namespace(address_ele, env,
++            axiom_element_find_declared_namespace(address_ele, env,
+                                                            addr_ns,
+                                                            AXIS2_WSA_DEFAULT_PREFIX);
+         }
+@@ -820,7 +819,7 @@
+     axiom_node_t *interface_node = NULL;
+     axiom_element_t *interface_ele = NULL;
+     const axis2_char_t *element_localname = NULL;
+-    axis2_svc_name_t *service_name = NULL;
++    /*axis2_svc_name_t *service_name = NULL;*/
+     axiom_namespace_t *addr_ns_obj = NULL;
+ 
+     AXIS2_PARAM_CHECK(env->error, epr, AXIS2_FAILURE);
+@@ -877,7 +876,7 @@
+ 
+     }
+ 
+-    service_name = axis2_endpoint_ref_get_svc_name(epr, env);
++    axis2_endpoint_ref_get_svc_name(epr, env);
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -918,12 +917,11 @@
+                     if (!axutil_strcmp(AXIS2_WSA_NAMESPACE, addr_ns))
+                     {
+                         axiom_namespace_t *addr_ns_obj = NULL;
+-                        axiom_attribute_t *att = NULL;
++                        /*axiom_attribute_t *att = NULL;*/
+                         addr_ns_obj =
+                             axiom_namespace_create(env, addr_ns,
+                                                    AXIS2_WSA_DEFAULT_PREFIX);
+-                        att =
+-                            axiom_attribute_create(env,
++                        axiom_attribute_create(env,
+                                                    AXIS2_WSA_IS_REFERENCE_PARAMETER_ATTRIBUTE,
+                                                    AXIS2_WSA_TYPE_ATTRIBUTE_VALUE,
+                                                    addr_ns_obj);
+--- a/util/src/network_handler.c
++++ b/util/src/network_handler.c
+@@ -193,7 +193,7 @@
+     const axutil_env_t *env,
+     axis2_socket_t socket)
+ {
+-    int i = 0;
++    /*int i = 0;*/
+     char buf[32];
+     AXIS2_ENV_CHECK(env, AXIS2_CRITICAL_FAILURE);
+     if (socket < 0)
+@@ -203,7 +203,7 @@
+     }
+     shutdown(socket, AXIS2_SHUT_WR);
+     axutil_network_handler_set_sock_option(env, socket, SO_RCVTIMEO, 1);
+-    i = recv(socket, buf, 32, 0);
++    recv(socket, buf, 32, 0);
+     AXIS2_CLOSE_SOCKET(socket);
+     return AXIS2_SUCCESS;
+ }
+--- a/axiom/src/parser/libxml2/libxml2_writer_wrapper.c
++++ b/axiom/src/parser/libxml2/libxml2_writer_wrapper.c
+@@ -1201,9 +1201,7 @@
+     const axutil_env_t * env,
+     axis2_char_t * uri)
+ {
+-    axis2_libxml2_writer_wrapper_impl_t *writer_impl = NULL;
+     AXIS2_PARAM_CHECK(env->error, uri, NULL);
+-    writer_impl = AXIS2_INTF_TO_IMPL(writer);
+     if (!uri || axutil_strcmp(uri, "") == 0)
+     {
+         return NULL;
+@@ -1218,15 +1216,12 @@
+     axis2_char_t * prefix,
+     axis2_char_t * uri)
+ {
+-    axis2_libxml2_writer_wrapper_impl_t *writer_impl = NULL;
+-
+     axis2_bool_t is_declared = AXIS2_FALSE;
+     axis2_char_t key[1024];
+ 
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, prefix, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, uri, AXIS2_FAILURE);
+-    writer_impl = AXIS2_INTF_TO_IMPL(writer);
+     if (axutil_strcmp(uri, "") == 0)
+     {
+         return AXIS2_FAILURE;
+@@ -1273,10 +1268,8 @@
+     axis2_char_t * text,
+     int in_attr)
+ {
+-    axis2_libxml2_writer_wrapper_impl_t *writer_impl = NULL;
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+     AXIS2_PARAM_CHECK(env->error, text, AXIS2_FAILURE);
+-    writer_impl = AXIS2_INTF_TO_IMPL(writer);
+     return AXIS2_FAILURE;
+ }
+ 
+@@ -1289,8 +1282,6 @@
+     writer_impl = AXIS2_INTF_TO_IMPL(writer);
+     if (writer_impl->writer_type == AXIS2_XML_PARSER_TYPE_BUFFER)
+     {
+-        int output_bytes = 0;
+-        output_bytes = xmlTextWriterFlush(writer_impl->xml_writer);
+         return writer_impl->buffer->content;
+     }
+     else if (writer_impl->writer_type == AXIS2_XML_PARSER_TYPE_DOC)

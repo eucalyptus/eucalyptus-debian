@@ -1,0 +1,594 @@
+Description: Adapts build process to Debian.
+ In particular, makes use of the packaged Java libraries when available, and
+ prevents redistribution of redundant code copies.
+Authors: Thierry Carrez <thierry.carrez@ubuntu.com>, Charles Plessy <plessy@debian.org>
+Forwarded: no
+
+Index: gwt-debian/common.ant.xml
+===================================================================
+--- gwt-debian.orig/common.ant.xml	2011-12-21 12:06:16.832747948 +0100
++++ gwt-debian/common.ant.xml	2011-12-21 12:06:19.940747693 +0100
+@@ -35,6 +35,7 @@
+   </condition>
+   <property name="gwt.tools" location="${gwt.tools.check}" />
+   <property name="gwt.tools.lib" location="${gwt.tools}/lib" />
++  <property name="gwt.exttools.lib" location="${env.GWT_EXTTOOLS}/lib" />
+   <property name="gwt.tools.antlib" location="${gwt.tools}/antlib" />
+   <property name="gwt.tools.redist" location="${gwt.tools}/redist" />
+   <property name="gwt.build" location="${gwt.root}/build" />
+@@ -43,11 +44,11 @@
+   <property name="gwt.build.jni" location="${gwt.build}/jni" />
+   <property name="gwt.build.staging" location="${gwt.build}/staging" />
+   <property name="gwt.build.dist" location="${gwt.build}/dist" />
+-  <!-- gwt.threadsPerProcessor supercedes gwt.threadCount unless set to 0 --> 
++  <!-- gwt.threadsPerProcessor supercedes gwt.threadCount unless set to 0 -->
+   <property name="gwt.threadsPerProcessor" value="1" />
+   <property name="gwt.threadCount" value="1" />
+   <property name="project.build" location="${gwt.build.out}/${project.tail}" />
+-  <property name="project.lib" location="${gwt.build.lib}/gwt-${ant.project.name}.jar" />
++  <property name="project.lib" location="${target.dir}/gwt-${ant.project.name}-${artifactVersion}.jar" />
+   <property name="project.jni" location="${gwt.build}/${project.tail}" />
+   <property name="javac.out" location="${project.build}/bin" />
+   <property name="javac.junit.out" location="${project.build}/bin-test" />
+@@ -61,10 +62,21 @@
+   <property name="junit.out" location="${project.build}/test" />
+   <property name="emma.dir" value="${gwt.tools.redist}/emma" />
+   <property name="emma.filter.exclude" value="" />
+-  
++
+   <!-- Sanity check -->
+   <available file="${gwt.tools}" type="dir" property="gwt.tools.exists" />
+-  <fail unless="gwt.tools.exists" message="Cannot find '${gwt.tools}' tools directory; perhaps you should define the GWT_TOOLS environment variable" />
++  <fail message="Cannot find '${gwt.tools}' tools directory; perhaps you should define the GWT_TOOLS environment variable">
++     <condition>
++       <and>
++         <not>
++           <isset property="gwt.tools.exists"/>
++         </not>
++         <not>
++           <isset property="gwt.vendor.builddeps"/>
++         </not>
++       </and>
++     </condition>
++  </fail>
+ 
+   <!-- Platform identification -->
+   <condition property="build.host.islinux">
+@@ -96,16 +108,16 @@
+     <isset property="build.host.iswindows" />
+   </condition>
+   <fail unless="build.host.platform" message="Building on ${os.name} is not supported" />
+-  
++
+   <!-- JVM -->
+   <condition property="build.jvm.is15">
+      <equals arg1="${ant.java.version}" arg2="1.5"/>
+-  </condition>  
++  </condition>
+ 
+   <condition property="build.jvm.is16">
+      <equals arg1="${ant.java.version}" arg2="1.6"/>
+-  </condition> 
+-  
++  </condition>
++
+   <!-- JUnit support -->
+   <property name="gwt.dev.staging.jar" location="${gwt.build.staging}/gwt-${gwt.version}/gwt-dev.jar" />
+   <property name="gwt.junit.port" value="8888" />
+@@ -125,23 +137,24 @@
+   <!-- Pulls in tasks defined in ant-contrib, i.e. foreach -->
+   <taskdef resource="net/sf/antcontrib/antlib.xml">
+     <classpath>
+-      <pathelement location="${gwt.tools.antlib}/ant-contrib-1.0b3.jar" />
++      <pathelement location="/usr/share/java/ant-contrib.jar" />
+     </classpath>
+   </taskdef>
+-  
+-  
++
++
+   <!-- Pulls in tasks defined in antcount, i.e. countfilter -->
+   <taskdef resource="net/sf/antcount/antlib.xml">
+     <classpath>
+       <pathelement location="${gwt.tools.antlib}/antcount-1.2.jar" />
+     </classpath>
+   </taskdef>
+-  
++
+ 
+   <!-- Global Custom Tasks -->
+   <presetdef name="gwt.ant">
+     <ant inheritall="false" target="${target}">
+       <propertyset>
++        <propertyref name="target.dir" />
+         <propertyref name="gwt.version" />
+         <propertyref name="gwt.junit.port" />
+         <propertyref name="gwt.remote.browsers" />
+@@ -260,7 +273,7 @@
+         </report>
+       </emma>
+ 
+-      <condition property="junit.stop.build" value="true"> 
++      <condition property="junit.stop.build" value="true">
+         <and>
+           <istrue value="@{haltonfailure}"/>
+           <isset property="junit.failure"/>
+@@ -295,16 +308,16 @@
+          be noticed as invalidating the previously-generated filter output.  This property
+          names where such a sentinel lives; it is tested with <available/> and created
+          with <touch/> -->
+-      <mkdir dir="${project.build}/sentinels" /> 
+-      <property name="filter.sentinel" 
+-          location="${project.build}/sentinels/gwt-${gwt.version}-svn-${gwt.svnrev.filename}" /> 
++      <mkdir dir="${project.build}/sentinels" />
++      <property name="filter.sentinel"
++          location="${project.build}/sentinels/gwt-${gwt.version}-svn-${gwt.svnrev.filename}" />
+     </sequential>
+   </macrodef>
+-  
++
+   <macrodef name="gwt.revfilter" description="Filters files for versioning">
+     <attribute name="todir" description="Destination for the filtered copy"/>
+-    
+-    <element name="src.fileset" implicit="true" 
++
++    <element name="src.fileset" implicit="true"
+       description="Source for the filtered copy"/>
+     <sequential>
+       <!-- These files must be filtered for versioning -->
+@@ -324,7 +337,7 @@
+     <attribute name="name"/>
+     <element name="timer.elements" implicit="true" optional="false"/>
+     <sequential>
+-      <taskdef name="timer" 
++      <taskdef name="timer"
+         classname="com.google.gwt.ant.taskdefs.Timer"
+         classpath="${gwt.build.lib}/ant-gwt.jar" />
+       <timer name="@{name}">
+@@ -380,7 +393,7 @@
+     </sequential>
+   </macrodef>
+ 
+-  <!-- Targets for emma support.  To run tests with emma enabled, use 
++  <!-- Targets for emma support.  To run tests with emma enabled, use
+        ant <test-target> -Demma.enabled=true -->
+   <path id="emma.taskdef.lib">
+     <pathelement location="${emma.dir}/emma-2.0.5312-patched.jar" />
+Index: gwt-debian/dev/build.xml
+===================================================================
+--- gwt-debian.orig/dev/build.xml	2011-12-21 12:06:16.884746052 +0100
++++ gwt-debian/dev/build.xml	2011-12-21 12:14:31.592744885 +0100
+@@ -6,6 +6,20 @@
+   <import file="${gwt.root}/platforms.ant.xml" />
+   <import file="${gwt.root}/common.ant.xml" />
+ 
++  <path id="gwt.dev.build.classpath">
++    <pathelement location="${ant.jar}" />
++    <pathelement location="${commons-collections3.jar}" />
++    <pathelement location="${servlet-api.jar}" />
++    <pathelement location="${htmlunit.jar}" />
++    <pathelement location="${htmlunit-core-js.jar}" />
++    <pathelement location="${jetty.jar}" />
++    <pathelement location="${jetty-util.jar}" />
++    <pathelement location="${protobuf.jar}" />
++    <pathelement location="${commons-logging.jar}" />
++    <pathelement location="${jdt.jar}" />
++    <pathelement location="${guava.jar}" />
++  </path>
++
+   <property name="alldeps.jar" location="${project.build}/alldeps.jar" />
+   <property name="gwt.junit.testcase.dev.core.includes" value="**/com/google/**/*Test.class" />
+   <!-- BrowserManagerTest is brought in from user and is not instantiable. -->
+@@ -19,32 +33,42 @@
+     </delete>
+   </target>
+ 
+-  <target name="compile.tests" depends="build, compile.emma.if.enabled, build.alldeps.jar" description="Compiles the test code for this project">
++  <target name="compile.tests" depends="build, compile.emma.if.enabled" description="Compiles the test code for this project">
+     <mkdir dir="${javac.junit.out}" />
+     <gwt.javac srcdir="" destdir="${javac.junit.out}">
+       <src path="core/src" />
+       <src path="core/test" />
+       <classpath>
+         <pathelement location="${javac.out}" />
+-        <pathelement location="${alldeps.jar}" />
+-        <pathelement location="${gwt.tools.lib}/junit/junit-4.8.2.jar" />
++        <path refid="gwt.dev.build.classpath" />
++        <pathelement location="${gwt.exttools.lib}/tomcat/catalina-1.0.jar" />
++        <pathelement location="${gwt.exttools.lib}/tomcat/catalina-optional-1.0.jar" />
++        <pathelement location="${gwt.exttools.lib}/tomcat/naming-common-1.0.jar" />
++        <pathelement location="${gwt.exttools.lib}/tomcat/naming-resources-1.0.jar" />
++        <pathelement location="${gwt.exttools.lib}/tomcat/tomcat-util-5.1.jar" />
+       </classpath>
+     </gwt.javac>
+     <gwt.javac srcdir="${gwt.root}/user/src" destdir="${javac.junit.out}"
+       excludes="**/super/**">
+       <classpath>
+         <pathelement location="${javac.out}" />
+-        <pathelement location="${gwt.tools.lib}/tomcat/servlet-api-2.5.jar" />
+-        <pathelement location="${gwt.tools.lib}/junit/junit-4.8.2.jar" />
+-        <pathelement location="${gwt.tools.lib}/jfreechart/jfreechart-1.0.3.jar" />
+-        <pathelement location="${gwt.tools.lib}/selenium/selenium-java-client-driver.jar" />
+-        <pathelement location="${gwt.tools.lib}/w3c/sac/sac-1.3.jar" />
+-        <pathelement location="${gwt.tools.lib}/w3c/flute/flute-1.3-gg2.jar" />
+-        <pathelement location="${gwt.tools}/redist/json/r2_20080312/json-1.5.jar" />
+-        <pathelement location="${gwt.tools.lib}/hibernate/validator/hibernate-validator-4.1.0.Final.jar" />
+-        <pathelement location="${gwt.tools.lib}/javax/validation/validation-api-1.0.0.GA.jar" />
+-        <pathelement location="${gwt.build.lib}/gwt-dev-${build.host.platform}.jar" />
+-        <pathelement location="${alldeps.jar}" />
++        <pathelement location="${servlet-api.jar}" />
++        <pathelement location="${jetty.jar}" />
++        <pathelement location="${jetty-util.jar}" />
++        <pathelement location="${icu4j.jar}" />
++        <pathelement location="${htmlunit.jar}" />
++        <pathelement location="${htmlunit-core-js.jar}" />
++        <pathelement location="${guava.jar}" />
++        <pathelement location="${jsilver.jar}" />
++        <pathelement location="${junit4.jar}" />
++        <pathelement location="${jfreechart.jar}" />
++        <pathelement location="${gwt.exttools.lib}/selenium/selenium-java-client-driver.jar" />
++        <pathelement location="${sac.jar}" />
++        <pathelement location="${flute.jar}" />
++        <pathelement location="${json-simple.jar}" />
++        <pathelement location="${hibernate-validator.jar}" />
++        <pathelement location="${geronimo-validation.jar}" />
++        <pathelement location="${target.dir}/gwt-dev-${artifactVersion}.jar" />
+       </classpath>
+     </gwt.javac>
+ 
+@@ -117,66 +141,6 @@
+       <targetfiles>
+         <fileset file="${alldeps.jar}"/>
+       </targetfiles>
+-      <sequential>
+-        <gwt.jar destfile="${alldeps.jar}">
+-          <zipfileset src="${gwt.tools.lib}/apache/tapestry-util-text-4.0.2.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/ant-1.6.5.jar" />
+-          <zipfileset src="${gwt.tools.lib}/eclipse/jdt-3.4.2.jar" />
+-          <zipfileset src="${gwt.tools.lib}/guava/guava-r06/guava-r06-rebased-2.jar" />
+-          <zipfileset src="${gwt.tools.lib}/jetty/jetty-6.1.11.jar" />
+-          <zipfileset src="${gwt.tools.lib}/icu4j/4.4.2/icu4j.jar" />
+-          <zipfileset src="${gwt.tools.lib}/protobuf/protobuf-2.2.0/protobuf-java-rebased-2.2.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/streamhtmlparser/streamhtmlparser-jsilver-r10/streamhtmlparser-jsilver-r10-1.5-rebased.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/ant-launcher-1.6.5.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/catalina-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/catalina-optional-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-beanutils-1.6.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-collections-3.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-digester-1.5.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-el-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-logging-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/commons-modeler-1.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/jakarta-regexp-1.3.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/jasper-compiler-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/jasper-runtime-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/jsp-api-2.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/mx4j-jmx-1.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/naming-common-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/naming-factory-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/naming-java-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/naming-resources-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/servlet-api-2.5.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/servlet-api-2.4.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/servlets-common-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/servlets-default-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/servlets-invoker-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/tomcat-coyote-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/tomcat-http11-1.0.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/tomcat-jk2-2.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/tomcat/tomcat-util-5.1.jar" />
+-          <!-- htmlunit dependencies not already included: BEGIN -->
+-          <zipfileset src="${gwt.tools.lib}/apache/http/httpclient-4.0.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/http/httpcore-4.0.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/http/httpmime-4.0.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/james/apache-mime4j-0.6.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/commons/commons-codec-1.3.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/commons/commons-io-1.4.jar" />
+-          <zipfileset src="${gwt.tools.lib}/apache/commons/commons-lang-2.4.jar" />
+-          <zipfileset src="${gwt.tools.lib}/cssparser/cssparser-0.9.5.jar" />
+-          <zipfileset src="${gwt.tools.lib}/htmlunit/htmlunit-r5940/htmlunit-r5940.jar" />
+-          <zipfileset src="${gwt.tools.lib}/htmlunit/htmlunit-r5940/htmlunit-core-js-r5940.jar" />
+-          <zipfileset src="${gwt.tools.lib}/nekohtml/nekohtml-1.9.13.jar" />
+-          <zipfileset src="${gwt.tools.lib}/cup/java-cup-11a.jar" />
+-          <zipfileset src="${gwt.tools.lib}/xalan/xalan-2.7.1-nocup.jar" />
+-          <zipfileset src="${gwt.tools.lib}/xerces/xerces-2_9_1/serializer.jar" />
+-          <zipfileset src="${gwt.tools.lib}/xerces/xerces-2_9_1/xercesImpl-NoMetaInf.jar" />
+-          <zipfileset src="${gwt.tools.lib}/xerces/xerces-2_9_1/xml-apis.jar" />
+-          <zipfileset src="${gwt.tools.lib}/w3c/sac/sac-1.3.jar" />
+-          <!-- htmlunit dependencies not already included: END -->
+-          <zipfileset src="${gwt.tools.lib}/sun/swingworker/swing-worker-1.1.jar" />
+-          <zipfileset src="${gwt.tools.lib}/guava/guava-r06/guava-r06-rebased-2.jar" />
+-        </gwt.jar>
+-      </sequential>
+     </outofdate>
+   </target>
+ 
+@@ -212,37 +176,21 @@
+       <include name="com/google/gwt/util/**"/>
+       <include name="org/eclipse/jdt/**"/>
+       <classpath>
+-          <pathelement location="${gwt.tools.lib}/apache/ant-1.6.5.jar" />
+-          <pathelement location="${gwt.tools.lib}/eclipse/jdt-3.4.2.jar" />
+-          <pathelement location="${gwt.tools.lib}/tomcat/commons-collections-3.1.jar" />
+-          <pathelement location="${gwt.tools.lib}/guava/guava-r06/guava-r06-rebased-2.jar" />
++        <path refid="gwt.dev.build.classpath" />
+       </classpath>
+     </gwt.javac>
+   </target>
+-  
+-  <target name="compile" depends="compiler.standalone, build.alldeps.jar" description="Compiles this project">
++
++  <target name="compile" depends="compiler.standalone" description="Compiles this project">
+     <gwt.javac srcdir="" excludes="${filter.pattern}">
+       <src path="core/src" />
+       <classpath>
+-        <pathelement location="${alldeps.jar}" />
++        <path refid="gwt.dev.build.classpath" />
+       </classpath>
+     </gwt.javac>
+     <copy todir="${javac.out}">
+       <fileset dir="core/src" includes="**/*.properties" excludes="${filter.pattern}"/>
+     </copy>
+-
+-    <!-- Files with hardcoded version information must be filtered -->
+-    <gwt.getsvninfo />
+-    <condition property="filter.uptodate">
+-      <and>
+-        <available file="${filter.sentinel}" />
+-        <uptodate>
+-          <srcfiles dir="core/src" includes="${filter.pattern}" />
+-          <globmapper from="*" to="${javac.out}/*" />
+-        </uptodate>
+-      </and>
+-    </condition>
+-    <antcall target="-filter.props" />
+   </target>
+ 
+   <target name="generate.remotemessageproto.java">
+@@ -251,13 +199,13 @@
+         <arg value="--java_out=core/src"/>
+         <arg value="./core/src/com/google/gwt/dev/shell/remoteui/remotemessage.proto"/>
+     </exec>
+-      
++
+     <!-- Rebase the java code to match the rebased protobuf library -->
+     <replace file="./core/src/com/google/gwt/dev/shell/remoteui/RemoteMessageProto.java">
+         <replacefilter token="com.google.protobuf" value="com.google.gwt.dev.protobuf"/>
+     </replace>
+   </target>
+-      
++
+   <target name="checkstyle" description="Static analysis of source">
+     <gwt.checkstyle>
+       <fileset dir="core/src">
+@@ -302,6 +250,7 @@
+   <property.ensure name="gwt.tools.soyc" location="${gwt.root}/tools/soyc-vis" />
+   <target name="build" depends="compile" description="Build and package this project">
+     <mkdir dir="${gwt.build.lib}" />
++    <mkdir dir="${target.dir}" />
+     <outofdate>
+       <sourcefiles>
+         <fileset dir="core/src">
+@@ -311,7 +260,6 @@
+         <fileset dir="core/super" excludes="**/package.html" />
+         <fileset dir="${javac.out}" />
+         <fileset dir="${project.build}/bin" />
+-        <fileset file="${project.build}/alldeps.jar" />
+         <fileset file="${gwt.tools.soyc}/classLevel.css"/>
+         <fileset file="${gwt.tools.soyc}/roundedCorners.css"/>
+       </sourcefiles>
+@@ -319,22 +267,25 @@
+         <fileset file="${project.lib}"/>
+       </targetfiles>
+       <sequential>
+-        <gwt.jar>
++        <pathconvert property="manifest.class.path" pathsep=" ">
++          <path refid="gwt.dev.build.classpath" />
++        </pathconvert>
++        <jar destfile="${project.lib}">
+           <fileset dir="core/src">
+             <exclude name="**/package.html"/>
+             <exclude name="**/*.properties"/> <!-- copied and/or filtered into bin -->
+           </fileset>
+           <fileset dir="core/super" excludes="**/package.html" />
+           <fileset dir="${javac.out}" />
+-          <zipfileset src="${alldeps.jar}" />
+ 
+           <zipfileset file="${gwt.tools.soyc}/classLevel.css" prefix="com/google/gwt/soyc/resources/"/>
+           <zipfileset file="${gwt.tools.soyc}/roundedCorners.css" prefix="com/google/gwt/soyc/resources/"/>
+ 
+           <manifest>
+             <attribute name="Main-Class" value="com.google.gwt.dev.GWTMain" />
++            <attribute name="Class-Path" value="${manifest.class.path}"/>
+           </manifest>
+-        </gwt.jar>
++        </jar>
+       </sequential>
+     </outofdate>
+   </target>
+Index: gwt-debian/dev/common.ant.xml
+===================================================================
+--- gwt-debian.orig/dev/common.ant.xml	2011-12-21 12:06:16.868746242 +0100
++++ gwt-debian/dev/common.ant.xml	2011-12-21 12:06:19.964745406 +0100
+@@ -8,15 +8,16 @@
+   <target name="compile" description="Compile all java files">
+     <mkdir dir="${javac.out}" />
+     <gwt.javac>
++      <exclude name="com/google/gwt/dev/shell/moz/BrowserWidgetMoz.java" />
++      <exclude name="org/eclipse/**" />
+       <classpath>
+         <pathelement location="${gwt.core.build}/bin" />
+-        <pathelement location="${gwt.core.build}/alldeps.jar" />
+       </classpath>
+     </gwt.javac>
+   </target>
+ 
+   <target name="build" depends="compile" description="Build and package this project">
+-    <mkdir dir="${gwt.build.lib}" />
++    <mkdir dir="${target.dir}" />
+     <outofdate>
+       <sourcefiles>
+         <fileset dir="src" excludes="**/package.html"/>
+@@ -42,7 +43,6 @@
+           <fileset dir="${gwt.core.root}/super" excludes="**/package.html" />
+           <fileset dir="${javac.out}" />
+           <fileset dir="${gwt.core.build}/bin" />
+-          <zipfileset src="${gwt.core.build}/alldeps.jar" />
+ 
+           <manifest>
+             <attribute name="Main-Class" value="com.google.gwt.dev.GWTMain" />
+Index: gwt-debian/user/build.xml
+===================================================================
+--- gwt-debian.orig/user/build.xml	2011-12-21 12:06:16.856749605 +0100
++++ gwt-debian/user/build.xml	2011-12-21 12:13:50.729248038 +0100
+@@ -31,7 +31,7 @@
+   <property name="benchmark.timeout" value="30" />
+   <property name="gwt.benchmark.testcase.web.includes" value="${gwt.benchmark.testcase.includes}" />
+   <property name="gwt.benchmark.testcase.web.excludes" value="${gwt.benchmark.testcase.excludes}" />
+-  
++
+   <property name="gwt.tck.testcase.dev.includes" value="com/google/gwt/validation/tck/**/*GwtSuite.class" />
+   <property name="gwt.tct.testcase.dev.excludes" value="" />
+ 
+@@ -53,7 +53,23 @@
+   <property name="gwt.i18n.test.InnerClassChar" value="dollar"/>
+ 
+   <!-- Platform shouldn't matter here, just picking one -->
+-  <property.ensure name="gwt.dev.jar" location="${gwt.build.lib}/gwt-dev.jar" />
++  <property.ensure name="gwt.dev.jar" location="${target.dir}/gwt-dev-${artifactVersion}.jar" />
++
++  <path id="gwt.user.build.classpath">
++    <pathelement location="${jetty.jar}" />
++    <pathelement location="${jetty-util.jar}" />
++    <pathelement location="${guava.jar}" />
++    <pathelement location="${servlet-api.jar}" />
++    <pathelement location="${icu4j.jar}" />
++    <pathelement location="${jsilver.jar}" />
++    <pathelement location="${htmlunit.jar}" />
++    <pathelement location="${htmlunit-core-js.jar}" />
++    <pathelement location="${flute.jar}" />
++    <pathelement location="${json.jar}" />
++    <pathelement location="${geronimo-validation.jar}" />
++    <pathelement location="${hibernate-validator.jar}" />
++    <pathelement location="${gwt.dev.jar}" />
++  </path>
+ 
+   <!--
+     Classpaths added for test cases
+@@ -92,30 +108,17 @@
+       unless="compile.complete">
+     <mkdir dir="${javac.out}" />
+     <gwt.javac excludes="**/super/**">
++      <exclude name="com/google/gwt/junit/**" />
+       <classpath>
+-        <pathelement location="${gwt.tools.lib}/tomcat/servlet-api-2.5.jar" />
+-        <pathelement location="${gwt.tools.lib}/junit/junit-4.8.2.jar" />
+-        <pathelement location="${gwt.tools.lib}/jfreechart/jfreechart-1.0.3.jar" />
+-        <pathelement location="${gwt.tools.lib}/selenium/selenium-java-client-driver.jar" />
+-        <pathelement location="${gwt.tools.lib}/w3c/sac/sac-1.3.jar" />
+-        <pathelement location="${gwt.tools.lib}/w3c/flute/flute-1.3-gg2.jar" />
+-        <pathelement location="${gwt.tools}/redist/json/r2_20080312/json-1.5.jar" />
+-        <pathelement location="${gwt.tools.lib}/javax/validation/validation-api-1.0.0.GA.jar" />
++        <path refid="gwt.user.build.classpath" />
+         <!-- The source is included so validation is available from client code -->
+         <pathelement location="${gwt.tools.lib}/javax/validation/validation-api-1.0.0.GA-sources.jar" />
+       	<!-- Hibernate is included until we can provide the super source as an third party jar" -->
+-      	<pathelement location="${gwt.tools.lib}/hibernate/validator/hibernate-validator-4.1.0.Final.jar" />
+         <pathelement location="${gwt.tools.lib}/hibernate/validator/hibernate-validator-4.1.0.Final-sources.jar" />
+         <!-- Bootstrap support needed for obfuscated type tokens for JRE runtime -->
+         <pathelement location="${gwt.tools.lib}/requestfactory/requestfactory-apt.jar" />
+-        <pathelement location="${gwt.dev.jar}" />
+       </classpath>
+     </gwt.javac>
+-
+-    <!-- Build the BrowserManagerServer_Stub to allow remote browser testing -->
+-    <rmic base="${javac.out}"
+-        classname="com.google.gwt.junit.remote.BrowserManagerServer"
+-        stubversion="1.2"/>
+   </target>
+ 
+   <!--
+@@ -206,14 +209,17 @@
+   <target name="build" depends="compile"
+       description="Build and package this project">
+     <mkdir dir="${gwt.build.lib}" />
+-    <gwt.jar>
++    <pathconvert property="manifest.class.path" pathsep=" ">
++      <path refid="gwt.user.build.classpath" />
++    </pathconvert>
++    <jar destfile="${project.lib}">
+       <fileset dir="src" excludes="**/package.html" />
+       <fileset dir="super" excludes="**/package.html" />
+       <fileset dir="${javac.out}" />
+-      <zipfileset src="${gwt.tools.lib}/tomcat/servlet-api-2.5.jar" excludes="**/*.java"/>
+-      <zipfileset src="${gwt.tools.lib}/w3c/sac/sac-1.3.jar" />
+-      <zipfileset src="${gwt.tools.lib}/w3c/flute/flute-1.3-gg2.jar" />
+-    </gwt.jar>
++      <manifest>
++        <attribute name="Class-Path" value="${manifest.class.path}"/>
++      </manifest>
++    </jar>
+   </target>
+ 
+   <target name="checkstyle" description="Static analysis of source">
+Index: gwt-debian/servlet/build.xml
+===================================================================
+--- gwt-debian.orig/servlet/build.xml	2011-12-21 12:06:16.900746798 +0100
++++ gwt-debian/servlet/build.xml	2011-12-21 12:06:19.968744905 +0100
+@@ -13,7 +13,7 @@
+       location="${gwt.build.lib}/gwt-${ant.project.name}-deps.jar" />
+ 
+   <target name="build" description="Packages this project into a jar"
+-      depends="-servlet, -deps" />
++      depends="-servlet" />
+ 
+   <target name="clean" description="Cleans this project's intermediate and output files">
+     <delete file="${project.lib}" />
+@@ -22,7 +22,7 @@
+ 
+   <target name="-servlet" description="Packages this project into a jar">
+     <mkdir dir="${gwt.build.lib}" />
+-    <gwt.jar>
++    <jar destfile="${project.lib}">
+       <fileset dir="${gwt.dev.bin}">
+         <include name="com/google/gwt/dev/asm/**" />
+         <include name="com/google/gwt/dev/util/Name*.class" />
+@@ -43,7 +43,7 @@
+       </fileset>
+ 
+       <!-- additional dependencies (used by scripts). -->
+-    </gwt.jar>
++    </jar>
+   </target>
+ 
+   <target name="-deps" description="Packages this project's dependencies into a jar">
+Index: gwt-debian/tools.properties
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ gwt-debian/tools.properties	2011-12-21 12:06:19.968744905 +0100
+@@ -0,0 +1,25 @@
++ant-contrib.jar          = ${gwt.tools.antlib}/ant-contrib-1.0b3.jar
++
++# Common
++commons-collections3.jar = ${gwt.tools.lib}/tomcat/commons-collections-3.1.jar
++guava.jar                = ${gwt.tools.lib}/guava/guava-r06/guava-r06-rebased-2.jar
++servlet-api.jar          = ${gwt.tools.lib}/tomcat/servlet-api-2.5.jar
++htmlunit.jar             = /usr/share/java/htmlunit.jar
++htmlunit-core-js.jar     = /usr/share/java/htmlunit-core-js.jar
++jetty.jar                = /usr/share/java/jetty.jar
++jetty-util.jar           = /usr/share/java/jetty-util.jar
++
++# Dev
++ant.jar                  = ${gwt.tools.lib}/apache/ant-1.6.5.jar
++ecj.jar                  = /usr/share/java/ecj.jar
++jdt.jar                  = ${gwt.tools.lib}/eclipse/jdt-3.4.2.jar
++protobuf.jar             = /usr/share/java/protobuf.jar
++commons-logging.jar      = /usr/share/java/commons-logging.jar
++
++# User
++icu4j.jar                = /usr/share/java/icu4j.jar
++jsilver.jar              = /usr/share/java/jsilver.jar
++flute.jar                = ${gwt.tools.lib}/w3c/flute/flute-1.3-gg2.jar
++json.jar                 = ${gwt.tools}/redist/json/r2_20080312/json-1.5.jar
++geronimo-validation.jar  = ${gwt.tools.lib}/javax/validation/validation-api-1.0.0.GA.jar
++hibernate-validator.jar  = ${gwt.tools.lib}/hibernate/validator/hibernate-validator-4.1.0.Final.jar

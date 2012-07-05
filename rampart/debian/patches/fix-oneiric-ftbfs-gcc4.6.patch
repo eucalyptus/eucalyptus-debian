@@ -1,0 +1,1615 @@
+Description: Fix FTBFS with gcc-4.6 due to unused vars
+Origin: vendor, https://issues.apache.org/jira/secure/attachment/12489117/rampart_unusedVars.patch
+Author: Robert Schweikert
+Forwarded: no
+Reviewed-by: Daniel T Chen <crimsun@ubuntu.com>
+Bug-Apache: https://issues.apache.org/jira/browse/RAMPARTC-155
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=625427
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/rampart/+bug/829430
+Last-Update: 2011-08-26
+
+Index: rampart-1.3.0/src/omxmlsec/axiom.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/axiom.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/axiom.c	2011-08-26 07:33:51.000000000 -0400
+@@ -93,6 +93,10 @@
+         axiom_node_t *temp_node = NULL;
+         counter++;
+         temp_node = axiom_children_qname_iterator_next(qname_iter, env);
++	if (!temp_node)
++	{
++	    /*Ignore*/
++	}
+     }
+     axutil_qname_free(qname, env);
+     qname = NULL;
+@@ -356,6 +360,10 @@
+ 
+     /*Get the child*/
+     ele = axiom_element_get_first_child_with_qname(parent_ele, env, qname, parent, &node);
++    if (!ele)
++    {
++	return NULL;
++    }
+     axutil_qname_free(qname, env);
+     qname = NULL;
+     return node;
+Index: rampart-1.3.0/src/omxmlsec/buffer.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/buffer.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/buffer.c	2011-08-26 07:33:51.000000000 -0400
+@@ -78,6 +78,10 @@
+     AXIS2_ENV_CHECK(env, NULL);
+     buf =  oxs_buffer_create(env);
+     status = oxs_buffer_populate(buf, env, oxs_buffer_get_data(buffer, env), oxs_buffer_get_size(buffer, env));
++    if (AXIS2_FAILURE == status)
++    {
++	return NULL;
++    }
+     return buf;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/c14n/c14n.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/c14n/c14n.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/c14n/c14n.c	2011-08-26 07:33:51.000000000 -0400
+@@ -577,7 +577,7 @@
+     axis2_status_t status = AXIS2_SUCCESS;
+     axiom_element_t *root_ele = NULL;
+     /*axiom_children_iterator_t *child_itr = NULL;*/
+-    axutil_stream_t *outstream = NULL;
++    /*axutil_stream_t *outstream = NULL;*/
+ 
+     ctx = c14n_init(env, doc, comments, NULL, stream, exclusive, ns_prefixes,
+                     AXIS2_TRUE, node);
+@@ -591,6 +591,10 @@
+         /* shouldn't the called method's document be const?*/
+ 
+         root_ele = axiom_node_get_data_element(root_node, env);
++	if (!root_ele)
++	{
++	    /*Ignore*/
++	}
+         status = c14n_apply_on_node((node ? node : root_node), ctx);
+ 
+         if (!status)
+@@ -599,7 +603,7 @@
+             ctx->outstream = NULL;
+         }
+ 
+-        outstream = ctx->outstream;
++        /*outstream = ctx->outstream;*/
+ 
+ #ifdef TEST
+         printf("--------------\n");
+@@ -974,8 +978,6 @@
+ )
+ {
+     c14n_ctx_t *ctx = (c14n_ctx_t *)context;
+-    axiom_attribute_t *attr1 = NULL;
+-    axiom_attribute_t *attr2 = NULL;
+     axiom_namespace_t *ns1 = NULL;
+     axiom_namespace_t *ns2 = NULL;
+     int res;
+@@ -984,8 +986,6 @@
+     if (!a1) return -1;
+     if (!a2) return 1;
+ 
+-    attr1 = (axiom_attribute_t *)a1;
+-    attr2 = (axiom_attribute_t *)a2;
+     ns1 = axiom_attribute_get_namespace((axiom_attribute_t *)a1, ctx->env);
+     ns2 = axiom_attribute_get_namespace((axiom_attribute_t *)a2, ctx->env);
+ 
+Index: rampart-1.3.0/src/omxmlsec/derivation.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/derivation.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/derivation.c	2011-08-26 07:33:51.000000000 -0400
+@@ -182,6 +182,10 @@
+     str_token = oxs_token_build_security_token_reference_element(env, NULL); 
+     ref_token = oxs_token_build_reference_element(env, str_token, uri, stref_val_type); 
+     AXIS2_FREE(env->allocator, uri);
++    if (!ref_token)
++    {
++        return NULL;
++    }
+     return oxs_derivation_build_derived_key_token_with_stre(
+         env, derived_key, parent, str_token, wsc_ns_uri); 
+ }
+@@ -202,7 +206,7 @@
+     axis2_char_t *dk_id = NULL;
+     axis2_char_t *dk_name = NULL;
+     axis2_char_t *nonce = NULL;
+-	axis2_char_t *label = NULL;
++    /*axis2_char_t *label = NULL;*/
+     int offset = -1;
+     int length = 0; 
+ 
+@@ -217,6 +221,10 @@
+     if(offset > -1)
+     {
+         offset_token = oxs_token_build_offset_element(env, dk_token, offset, wsc_ns_uri);
++	if (!offset_token)
++	{
++	    /*Now what?*/
++	}
+     }
+ 
+     /* Create length */
+@@ -224,6 +232,10 @@
+     if(length > 0)
+     {
+         length_token = oxs_token_build_length_element(env, dk_token, length, wsc_ns_uri);
++	if (!length_token)
++	{
++            /*Now what?*/
++	}
+     }
+     
+     /* Create nonce */
+@@ -231,10 +243,14 @@
+     if(nonce)
+     {
+         nonce_token = oxs_token_build_nonce_element(env, dk_token, nonce, wsc_ns_uri);
++	if (!nonce_token)
++	{
++            /*Now what?*/
++	}
+     }
+ 
+     /* Create label. Hmm we dont need to send the label. Use the default. */
+-    label = oxs_key_get_label(derived_key, env);
++    /*label = oxs_key_get_label(derived_key, env);*/
+     /*if(label)
+     {
+         label_token = oxs_token_build_label_element(env, dk_token, label, wsc_ns_uri);
+Index: rampart-1.3.0/src/omxmlsec/encryption.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/encryption.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/encryption.c	2011-08-26 07:33:51.000000000 -0400
+@@ -262,6 +262,10 @@
+         
+         ret = axutil_base64_encode(encoded_str, 
+                 (const char *)oxs_buffer_get_data(out_buf, env), enclen);
++	if (ret == -1)
++	{
++	    /*Ignore*/
++	}
+ 
+         status = oxs_buffer_populate(result, env, 
+                     (unsigned char*)encoded_str,
+@@ -292,6 +296,10 @@
+ 
+         ret = axutil_base64_decode_binary(decoded_encrypted_str, 
+                                    (char*)oxs_buffer_get_data(input, env));
++	if (ret == -1)
++	{
++	    /*Ignore*/
++	}
+ 
+         dec_enc_buf = oxs_buffer_create(env);
+         oxs_buffer_populate(dec_enc_buf, env, decoded_encrypted_str, ret);
+@@ -314,5 +322,5 @@
+ 		return AXIS2_FAILURE;
+     }
+ 
+-    return AXIS2_SUCCESS;
++    return status;
+ }
+Index: rampart-1.3.0/src/omxmlsec/key.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/key.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/key.c	2011-08-26 07:33:51.000000000 -0400
+@@ -342,14 +342,14 @@
+                           axis2_char_t *name,
+                           int usage)
+ {
+-    int ret;
++    axis2_status_t ret;
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+ 
+     ret = oxs_key_set_name(key, env, name);
+     ret = oxs_key_set_usage(key, env, usage);
+ 
+     ret = oxs_buffer_populate(key->buf, env,  oxs_buffer_get_data(buffer, env), oxs_buffer_get_size(buffer, env));
+-    return AXIS2_SUCCESS;
++    return ret;
+ }
+ 
+ AXIS2_EXTERN axis2_status_t AXIS2_CALL
+@@ -360,16 +360,24 @@
+                  int size,
+                  int usage)
+ {
+-    int ret;
++    axis2_status_t ret;
+ 
+     AXIS2_ENV_CHECK(env, AXIS2_FAILURE);
+ 
+     ret = oxs_key_set_name(key, env, name);
++    if (AXIS2_FAILURE == ret)
++    {
++	return ret;
++    }
+     ret = oxs_key_set_usage(key, env, usage);
++    if (AXIS2_FAILURE == ret)
++    {
++	return ret;
++    }
+ 
+     ret = oxs_buffer_populate(key->buf, env, data, size);
+ 
+-    return AXIS2_SUCCESS;
++    return ret;
+ }
+ 
+ 
+Index: rampart-1.3.0/src/omxmlsec/key_mgr.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/key_mgr.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/key_mgr.c	2011-08-26 07:33:51.000000000 -0400
+@@ -776,6 +776,10 @@
+ 
+     /*load private key from buf*/
+     status = openssl_pem_buf_read_pkey(env, pem_string, password, OPENSSL_PEM_PKEY_TYPE_PRIVATE_KEY, &prvkey);
++    if (AXIS2_FAILURE == status)
++    {
++	return NULL;
++    }
+ 
+     /*Populate*/
+     if(prvkey){
+@@ -800,6 +804,10 @@
+ 
+     /*Read EVP_PKEY*/
+     status = openssl_pem_read_pkey(env, filename, password, OPENSSL_PEM_PKEY_TYPE_PRIVATE_KEY, &prvkey);
++    if (AXIS2_FAILURE == status)
++    {
++        return NULL;
++    }
+ 
+     /*Populate*/
+     if(prvkey){
+Index: rampart-1.3.0/src/omxmlsec/openssl/crypt.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/openssl/crypt.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/openssl/crypt.c	2011-08-26 07:33:51.000000000 -0400
+@@ -190,6 +190,9 @@
+     }else{
+         return -1;
+     }
+-
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/openssl/pem.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/openssl/pem.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/openssl/pem.c	2011-08-26 07:33:51.000000000 -0400
+@@ -111,6 +111,10 @@
+     /*Reset before FREE*/
+     ret = BIO_reset(bio);
+     ret = BIO_free(bio);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     bio = NULL;
+     if(!*pkey){
+         return AXIS2_FAILURE;
+Index: rampart-1.3.0/src/omxmlsec/openssl/pkey.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/openssl/pkey.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/openssl/pkey.c	2011-08-26 07:33:51.000000000 -0400
+@@ -183,6 +183,10 @@
+     {
+         /*If prv key is not found then read the public key*/
+         ret  = BIO_reset(bio);
++	if (ret == -1)
++	{
++	    /*Ignore*/
++	}
+         pk = PEM_read_bio_PUBKEY(bio, NULL, 0 , password);
+         if (!pk)
+         {
+@@ -200,7 +204,7 @@
+     }
+ 
+     status = openssl_pkey_populate(pkey, env,  pk, filename, type) ;
+-    return AXIS2_SUCCESS;
++    return status;
+ }
+ 
+ axis2_status_t AXIS2_CALL
+@@ -220,7 +224,7 @@
+     status = openssl_pkey_set_name(pkey, env, name);
+     status = openssl_pkey_set_type(pkey, env, type);
+ 
+-    return AXIS2_SUCCESS;
++    return status;
+ }
+ 
+ axis2_status_t AXIS2_CALL
+Index: rampart-1.3.0/src/omxmlsec/openssl/sign.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/openssl/sign.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/openssl/sign.c	2011-08-26 07:33:51.000000000 -0400
+@@ -59,6 +59,10 @@
+ 
+     /*Sign init*/
+     ret = EVP_SignInit(&md_ctx, digest);
++    if (ret == -1)
++    {
++        /*Ignore*/
++    }
+     AXIS2_LOG_DEBUG(env->log, AXIS2_LOG_SI, "[openssl][sig] Signing content %s", oxs_buffer_get_data(input_buf, env) );
+     EVP_SignUpdate (&md_ctx, oxs_buffer_get_data(input_buf, env), oxs_buffer_get_size(input_buf, env));
+     sig_len = sizeof(sig_buf);
+Index: rampart-1.3.0/src/omxmlsec/openssl/util.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/openssl/util.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/openssl/util.c	2011-08-26 07:33:51.000000000 -0400
+@@ -55,7 +55,7 @@
+     status = oxs_buffer_populate(buffer, env, (unsigned char*)temp_buffer, size);
+ 
+ #endif
+-    return AXIS2_SUCCESS;
++    return status;
+ }
+ 
+ 
+Index: rampart-1.3.0/src/omxmlsec/saml/response.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/saml/response.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/saml/response.c	2011-08-26 07:33:51.000000000 -0400
+@@ -346,6 +346,10 @@
+ 			child_node = axiom_child_element_iterator_next(iterator, env);
+ 			element = (axiom_element_t *)axiom_node_get_data_element(child_node, env);
+ 			t = axiom_node_to_string(child_node, env);
++			if (!t)
++			{
++			    /* Now what? */
++			}
+ 			if(element != NULL && !(axutil_strcmp(axiom_element_get_localname(element, env),
+ 																		SAML_SIGNATURE)))
+ 			{
+@@ -419,6 +423,10 @@
+ 			return NULL;
+ 		}
+ 		t = axiom_node_to_string(n, env);
++		if (!t)
++		{
++		    /* Now what? */
++		}
+ 		if(response->request_response_id && response->recepient)
+ 		{
+ 			attr = axiom_attribute_create(env, SAML_IN_RESPONSE_TO, response->request_response_id, NULL);
+@@ -641,7 +649,11 @@
+ 		 }
+ 	 }
+ 	id = axiom_node_to_string(node, env);
+-	 oxs_xml_sig_sign(env, response->sig_ctx, node, &n);
++	if (!id)
++	{
++	    /*Now what?*/
++	}
++	oxs_xml_sig_sign(env, response->sig_ctx, node, &n);
+ 	id = axiom_node_to_string(node, env);
+ 	id = axiom_node_to_string(n, env);
+ 
+Index: rampart-1.3.0/src/omxmlsec/signature.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/signature.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/signature.c	2011-08-26 07:33:51.000000000 -0400
+@@ -64,6 +64,10 @@
+     encoded_str = AXIS2_MALLOC(env->allocator, encodedlen);
+     ret = axutil_base64_encode(encoded_str, (const char *)
+             oxs_buffer_get_data(signed_result_buf, env), signedlen);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     status = oxs_buffer_populate(output, env, (unsigned char*)encoded_str,
+                                  encodedlen);
+ 
+@@ -111,6 +115,10 @@
+     encoded_str = AXIS2_MALLOC(env->allocator, encodedlen);
+     ret = axutil_base64_encode(encoded_str, (const char *)
+             oxs_buffer_get_data(signed_result_buf, env), signedlen);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     status = oxs_buffer_populate(output, env, (unsigned char*)encoded_str,
+                                  encodedlen);
+ 
+@@ -122,7 +130,7 @@
+     AXIS2_FREE(env->allocator, encoded_str);
+     encoded_str = NULL;
+ 
+-    return AXIS2_SUCCESS;
++    return status;
+ }
+ 
+ 
+@@ -189,6 +197,7 @@
+ 		oxs_buffer_free(output_buf, env);
+         return AXIS2_FAILURE;
+     }
++    return status;
+ }
+ 
+ AXIS2_EXTERN axis2_status_t AXIS2_CALL
+@@ -250,13 +259,17 @@
+     /*Create the signature buffer*/
+     sig_buf = oxs_buffer_create(env);
+     ret = oxs_buffer_populate(sig_buf, env, decoded_data, decoded_len);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+ 
+     /*Create the input buffer*/
+     in_buf = oxs_buffer_create(env);
+     status = oxs_buffer_populate(in_buf, env, (unsigned char*)content,
+                                  axutil_strlen(content));
+ 
+-	AXIS2_FREE(env->allocator, decoded_data);
++    AXIS2_FREE(env->allocator, decoded_data);
+ 
+     /* Get the public key. See.. this method is trickey. It might take the
+      * public key from the certificate, only if
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_binary_security_token.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_binary_security_token.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_binary_security_token.c	2011-08-26 07:33:51.000000000 -0400
+@@ -88,6 +88,10 @@
+         ret = axiom_element_set_text(
+             binary_security_token_ele, env, data, binary_security_token_node);
+     }
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+ 
+     return binary_security_token_node;
+ }
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_c14n_method.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_c14n_method.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_c14n_method.c	2011-08-26 07:33:51.000000000 -0400
+@@ -53,6 +53,10 @@
+ 
+     algo_attr =  axiom_attribute_create(env, OXS_ATTR_ALGORITHM, algorithm, NULL);
+     ret = axiom_element_add_attribute(c14n_method_ele, env, algo_attr, c14n_method_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return c14n_method_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_cipher_value.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_cipher_value.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_cipher_value.c	2011-08-26 07:33:51.000000000 -0400
+@@ -58,6 +58,12 @@
+     if (cipher_val)
+     {
+         ret  = axiom_element_set_text(cipher_value_ele, env, cipher_val, cipher_value_node);
++	if (AXIS2_FAILURE == ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI, "[rampart]Error set cipher test.");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return cipher_value_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_data_reference.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_data_reference.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_data_reference.c	2011-08-26 07:33:51.000000000 -0400
+@@ -50,6 +50,10 @@
+ 
+     data_ref_attr =  axiom_attribute_create(env, OXS_ATTR_URI , data_ref, NULL);
+     ret = axiom_element_add_attribute(data_reference_ele, env, data_ref_attr, data_reference_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return data_reference_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_derived_key_token.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_derived_key_token.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_derived_key_token.c	2011-08-26 07:33:51.000000000 -0400
+@@ -72,6 +72,10 @@
+ 
+     id_attr = axiom_attribute_create(env, OXS_ATTR_ID, id,ns);
+     ret = axiom_element_add_attribute(derived_key_token_ele, env, id_attr, derived_key_token_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return derived_key_token_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_digest_method.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_digest_method.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_digest_method.c	2011-08-26 07:33:51.000000000 -0400
+@@ -51,6 +51,10 @@
+ 
+     algo_attr =  axiom_attribute_create(env, OXS_ATTR_ALGORITHM, algorithm, NULL);
+     ret = axiom_element_add_attribute(digest_method_ele, env, algo_attr, digest_method_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return digest_method_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_digest_value.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_digest_value.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_digest_value.c	2011-08-26 07:33:51.000000000 -0400
+@@ -57,6 +57,12 @@
+     if(digest_val)
+     {
+         ret  = axiom_element_set_text(digest_value_ele, env, digest_val, digest_value_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI, "[rampart]Error failed to set text.");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return digest_value_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_ds_reference.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_ds_reference.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_ds_reference.c	2011-08-26 07:33:51.000000000 -0400
+@@ -64,7 +64,10 @@
+         type_attr =  axiom_attribute_create(env, OXS_ATTR_TYPE , type, NULL);
+         ret = axiom_element_add_attribute(ds_reference_ele, env, type_attr, ds_reference_node);
+     }
+-
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return ds_reference_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_embedded.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_embedded.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_embedded.c	2011-08-26 07:33:51.000000000 -0400
+@@ -49,6 +49,10 @@
+ 
+     id_attr =  axiom_attribute_create(env, OXS_ATTR_ID, id, NULL);
+     ret = axiom_element_add_attribute(embedded_ele, env, id_attr, embedded_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return embedded_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_encrypted_data.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_encrypted_data.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_encrypted_data.c	2011-08-26 07:33:51.000000000 -0400
+@@ -56,6 +56,10 @@
+     }
+     id_attr = axiom_attribute_create(env, OXS_ATTR_ID, id, NULL );
+     ret = axiom_element_add_attribute(encrypted_data_ele, env, id_attr, encrypted_data_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+ 
+     return encrypted_data_node;
+ }
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_encrypted_header.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_encrypted_header.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_encrypted_header.c	2011-08-26 07:33:51.000000000 -0400
+@@ -46,6 +46,10 @@
+     {
+         id_attr = axiom_attribute_create(env, OXS_ATTR_ID, id, NULL);
+         ret = axiom_element_add_attribute(enc_header_ele, env, id_attr, enc_header_node);
++	if (ret == -1)
++	{
++	    /*Ignore*/
++	}
+     }
+ 
+     return enc_header_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_encryption_method.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_encryption_method.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_encryption_method.c	2011-08-26 07:33:51.000000000 -0400
+@@ -51,6 +51,10 @@
+ 
+     algo_attr =  axiom_attribute_create(env, OXS_ATTR_ALGORITHM, algorithm, NULL);
+     ret = axiom_element_add_attribute(encryption_method_ele, env, algo_attr, encryption_method_node);
++    if (!ret)
++    {
++        /*Ignore*/
++    }
+     return encryption_method_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_generation.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_generation.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_generation.c	2011-08-26 07:33:51.000000000 -0400
+@@ -64,6 +64,13 @@
+     if (generation_val)
+     {
+         ret  = axiom_element_set_text(generation_ele, env, generation_val, generation_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+     return generation_node;
+ }
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_key_identifier.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_key_identifier.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_key_identifier.c	2011-08-26 07:33:51.000000000 -0400
+@@ -61,7 +61,10 @@
+     {
+         ret  = axiom_element_set_text(ki_ele, env, value, ki_node);
+     }
+-
++    if (ret == -1)
++    {
++        /*Ignore*/
++    }
+     return ki_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_key_name.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_key_name.c	2011-08-26 07:33:45.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_key_name.c	2011-08-26 07:33:51.000000000 -0400
+@@ -41,6 +41,10 @@
+     }
+ 
+     ret  = axiom_element_set_text(key_name_ele, env, key_name_val, key_name_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return key_name_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_label.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_label.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_label.c	2011-08-26 07:33:51.000000000 -0400
+@@ -63,6 +63,13 @@
+     if(label_val)
+     {
+         ret  = axiom_element_set_text(label_ele, env, label_val, label_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set label text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return label_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_length.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_length.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_length.c	2011-08-26 07:33:51.000000000 -0400
+@@ -70,7 +70,14 @@
+     if(length_val)
+     {
+         ret  = axiom_element_set_text(length_ele, env, length_val, length_node);
+-		AXIS2_FREE(env->allocator, length_val);
++	AXIS2_FREE(env->allocator, length_val);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set length text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return length_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_nonce.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_nonce.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_nonce.c	2011-08-26 07:33:51.000000000 -0400
+@@ -63,6 +63,13 @@
+     if (nonce_val)
+     {
+         ret  = axiom_element_set_text(nonce_ele, env, nonce_val, nonce_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return nonce_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_offset.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_offset.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_offset.c	2011-08-26 07:33:51.000000000 -0400
+@@ -72,7 +72,14 @@
+     if (offset_val)
+     {
+         ret  = axiom_element_set_text(offset_ele, env, offset_val, offset_node);
+-		AXIS2_FREE(env->allocator, offset_val);
++	AXIS2_FREE(env->allocator, offset_val);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set offset text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return offset_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_properties.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_properties.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_properties.c	2011-08-26 07:33:51.000000000 -0400
+@@ -64,6 +64,13 @@
+     if (properties_val)
+     {
+         ret  = axiom_element_set_text(properties_ele, env, properties_val, properties_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++                            "[rampart]Error failed to set text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return properties_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_reference.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_reference.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_reference.c	2011-08-26 07:33:51.000000000 -0400
+@@ -56,6 +56,10 @@
+         value_type_attr =  axiom_attribute_create(env, OXS_ATTR_VALUE_TYPE , value_type, NULL);
+         ret = axiom_element_add_attribute(reference_ele, env, value_type_attr, reference_node);
+     }
++    if (ret == -1)
++    {
++        /*Ignore*/
++    }
+     return reference_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_saml.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_saml.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_saml.c	2011-08-26 07:33:51.000000000 -0400
+@@ -41,6 +41,10 @@
+     }
+     key_id = oxs_token_build_key_identifier_element(env, stre, NULL, 
+                                         OXS_ST_KEY_ID_VALUE_TYPE, id);
++    if (!key_id)
++    {
++	/*Ignore*/
++    }
+     return stre;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_signature.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_signature.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_signature.c	2011-08-26 07:33:51.000000000 -0400
+@@ -45,6 +45,10 @@
+     {
+         id_attr = axiom_attribute_create(env, OXS_ATTR_ID, id, NULL);
+         ret = axiom_element_add_attribute(signature_ele, env, id_attr, signature_node);
++	if (ret == -1)
++	{
++            /*Ignore*/
++	}
+     }
+ 
+     return signature_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_signature_confirmation.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_signature_confirmation.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_signature_confirmation.c	2011-08-26 07:33:51.000000000 -0400
+@@ -115,6 +115,13 @@
+         id_attr =  axiom_attribute_create(env, OXS_ATTR_ID, id, NULL);
+         ret = axiom_element_add_attribute(
+             signature_confirmation_ele, env, id_attr, signature_confirmation_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to add attribute");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+     
+     if (val)
+@@ -122,6 +129,13 @@
+         val_attr =  axiom_attribute_create(env, OXS_ATTR_VALUE, val, NULL);
+         ret = axiom_element_add_attribute(
+             signature_confirmation_ele, env, val_attr, signature_confirmation_node);
++	if (AXIS2_SUCCESS != ret)
++        {
++            AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++                            "[rampart]Error failed to add attribute");
++            axiom_namespace_free(ns_obj, env);
++            return NULL;
++        }
+     }
+ 
+     return signature_confirmation_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_signature_method.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_signature_method.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_signature_method.c	2011-08-26 07:33:51.000000000 -0400
+@@ -49,6 +49,10 @@
+ 
+     algo_attr =  axiom_attribute_create(env, OXS_ATTR_ALGORITHM, algorithm, NULL);
+     ret = axiom_element_add_attribute(signature_method_ele, env, algo_attr, signature_method_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+     return signature_method_node;
+ }
+ 
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_signature_value.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_signature_value.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_signature_value.c	2011-08-26 07:33:51.000000000 -0400
+@@ -55,6 +55,12 @@
+     if (signature_val)
+     {
+         ret  = axiom_element_set_text(signature_value_ele, env, signature_val, signature_value_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI, "[rampart]Error failed to set text.");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return signature_value_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_transform.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_transform.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_transform.c	2011-08-26 07:33:51.000000000 -0400
+@@ -49,6 +49,10 @@
+ 
+     algo_attr =  axiom_attribute_create(env, OXS_ATTR_ALGORITHM, algorithm, NULL);
+     ret = axiom_element_add_attribute(transform_ele, env, algo_attr, transform_node);
++    if (ret == -1)
++    {
++	/*Ignore*/
++    }
+    
+     if (!axutil_strcmp(algorithm, OXS_HREF_TRANSFORM_STR_TRANSFORM))
+     {
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_x509_certificate.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_x509_certificate.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_x509_certificate.c	2011-08-26 07:33:51.000000000 -0400
+@@ -57,6 +57,13 @@
+     if (cert_data)
+     {
+         ret  = axiom_element_set_text(x509_certificate_ele, env, cert_data, x509_certificate_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[rampart]Error failed to set text.");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return x509_certificate_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_x509_issuer_name.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_x509_issuer_name.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_x509_issuer_name.c	2011-08-26 07:33:51.000000000 -0400
+@@ -57,6 +57,12 @@
+     if (value)
+     {
+         ret  = axiom_element_set_text(issuer_name_ele, env, value, issuer_name_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI, "[rampart]Error setting text");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return issuer_name_node;
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_x509_issuer_serial.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_x509_issuer_serial.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_x509_issuer_serial.c	2011-08-26 07:33:51.000000000 -0400
+@@ -36,12 +36,20 @@
+     {
+         x509_issuer_name_node = oxs_token_build_issuer_name_element(
+             env, x509_issuer_serial_node, issuer_name);
++	if (!x509_issuer_name_node)
++	{
++	    /*Ignore*/
++	}
+     }
+ 
+     if(serial_number)
+     {
+         x509_serial_number_node = oxs_token_build_serial_number_element(
+             env, x509_issuer_serial_node, serial_number);
++	if (!x509_serial_number_node)
++	{
++            /*Ignore*/
++	}
+     }
+     return x509_issuer_serial_node;
+ }
+Index: rampart-1.3.0/src/omxmlsec/tokens/token_x509_serial_number.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/tokens/token_x509_serial_number.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/tokens/token_x509_serial_number.c	2011-08-26 07:33:51.000000000 -0400
+@@ -56,6 +56,12 @@
+     if (value)
+     {
+         ret  = axiom_element_set_text(serial_number_ele, env, value, serial_number_node);
++	if (AXIS2_SUCCESS != ret)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,"[rampart]Error failed to set text.");
++	    axiom_namespace_free(ns_obj, env);
++	    return NULL;
++	}
+     }
+ 
+     return serial_number_node;
+Index: rampart-1.3.0/src/omxmlsec/utility.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/utility.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/utility.c	2011-08-26 07:33:51.000000000 -0400
+@@ -34,6 +34,10 @@
+ 
+     buffer = oxs_buffer_create(env);
+     status = openssl_generate_random_data(env, buffer, length);
++    if (AXIS2_FAILURE == status)
++    {
++	return NULL;
++    }
+     rand_str = (char*)oxs_buffer_get_data(buffer, env);
+     encoded_str = AXIS2_MALLOC(env->allocator, sizeof(char) * (axutil_base64_encode_len(length)+1));
+     axutil_base64_encode(encoded_str, rand_str, oxs_buffer_get_size(buffer, env));
+Index: rampart-1.3.0/src/omxmlsec/xml_encryption.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/xml_encryption.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/xml_encryption.c	2011-08-26 07:33:51.000000000 -0400
+@@ -72,6 +72,10 @@
+     key_identifier_node = oxs_token_build_key_identifier_element(
+                               env, stref_node, OXS_ENCODING_BASE64BINARY,
+                               val_type, key_identifier);
++    if (!key_identifier_node)
++    {
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -108,11 +112,18 @@
+ 
+     /*Build BinarySecurityToken as a child of parent(wsse:Security)*/
+     bst_node = oxs_token_build_binary_security_token_element(env, parent, id, OXS_ENCODING_BASE64BINARY, OXS_VALUE_X509V3, bst_data);
++    if (!bst_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*Build a Reference to above BST*/
+     ref_id = axutil_stracat(env, OXS_LOCAL_REFERENCE_PREFIX, id);
+     ref_node = oxs_token_build_reference_element(env, stref_node, ref_id, OXS_VALUE_X509V3);
+-
++    if (!ref_node)
++    {
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ /**
+@@ -144,6 +155,10 @@
+     embedded_node = oxs_token_build_embedded_element(env, stref_node, NULL);
+     /*Build BinarySecurityToken*/
+     bst_node = oxs_token_build_binary_security_token_element(env, embedded_node, NULL, OXS_ENCODING_BASE64BINARY, OXS_VALUE_X509V3, bst_data);
++    if (!bst_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     return AXIS2_SUCCESS;
+ }
+@@ -184,6 +199,10 @@
+     /*Build x509Data*/
+     x509_data_node = oxs_token_build_x509_data_element(env, stref_node);
+     issuer_serial_node = oxs_token_build_x509_issuer_serial_with_data(env, x509_data_node, issuer_name, serial_number);
++    if (!issuer_serial_node)
++    {
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -279,6 +298,10 @@
+ 
+     /*Determine the key to be used*/
+     sym_key = oxs_ctx_get_key(enc_ctx, env);
++    if (!sym_key)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*Set the operation to encrypt*/
+     oxs_ctx_set_operation(enc_ctx, env, OXS_CTX_OPERATION_ENCRYPT);
+@@ -287,9 +310,17 @@
+     result_buf = oxs_buffer_create(env);
+     /*Call encryption. Result should be base64 encoded*/
+     ret = oxs_encryption_symmetric_crypt(env, enc_ctx, content_buf, result_buf);
++    if (AXIS2_SUCCESS != ret)
++    {
++	return ret;
++    }
+ 
+     /*Create EncryptionMethod*/
+     enc_mtd_node = oxs_token_build_encryption_method_element(env, *enc_type_node, sym_algo);
++    if (!enc_mtd_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*If security_token_reference_node is given, then use it to build the key info*/
+     /*if we are using any trust/sct related token, then the key reference is given with the token
+@@ -310,11 +341,19 @@
+         key_info_node = oxs_token_build_key_info_element(env, *enc_type_node);
+         str_node = oxs_token_build_security_token_reference_element(env, key_info_node);
+         ref_node = oxs_token_build_reference_element(env, str_node, oxs_ctx_get_ref_key_name(enc_ctx, env), NULL);
++	if (!ref_node)
++	{
++	    return AXIS2_FAILURE;
++	}
+     }
+ 
+     /*Create CipherData element and populate*/
+     cd_node = oxs_token_build_cipher_data_element(env, *enc_type_node);
+     cv_node = oxs_token_build_cipher_value_element(env, cd_node, (axis2_char_t*)oxs_buffer_get_data(result_buf, env));
++    if (!cv_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*Free buffers*/
+     oxs_buffer_free(result_buf, env);
+@@ -356,6 +395,10 @@
+ 
+     /*Replace the encrypted node with the de-serialized node*/
+     parent_of_enc_node = axiom_node_get_parent(enc_type_node, env);
++    if (!parent_of_enc_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     axiom_node_insert_sibling_after(enc_type_node, env, deserialized_node);
+     axiom_node_detach(enc_type_node, env);
+@@ -487,6 +530,10 @@
+     encrypted_key_node = oxs_token_build_encrypted_key_element(env, parent);
+     algorithm = oxs_asym_ctx_get_algorithm(asym_ctx, env);
+     enc_mtd_node = oxs_token_build_encryption_method_element(env, encrypted_key_node, algorithm);
++    if (!enc_mtd_node)
++    {
++	return AXIS2_FAILURE;
++    }
+     key_info_node = oxs_token_build_key_info_element(env, encrypted_key_node);
+ 
+     stref_node = oxs_token_build_security_token_reference_element(env, key_info_node);
+@@ -510,6 +557,10 @@
+     }
+     cd_node = oxs_token_build_cipher_data_element(env, encrypted_key_node);
+     cv_node = oxs_token_build_cipher_value_element(env, cd_node,  encrypted_key_data);
++    if (!cv_node)
++    {
++	return AXIS2_FAILURE;
++    }
+     /*If and only if the id_list the present, we create the reference list*/
+     if(id_list){
+         oxs_token_build_data_reference_list(env, encrypted_key_node, id_list);
+Index: rampart-1.3.0/src/omxmlsec/xml_key_info_builder.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/xml_key_info_builder.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/xml_key_info_builder.c	2011-08-26 07:33:51.000000000 -0400
+@@ -71,6 +71,10 @@
+ 
+     /*Now build the X509Certificate node*/
+     x509_certificate_node = oxs_token_build_x509_certificate_element(env, x509_data_node, cert_data);
++    if (!x509_certificate_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     return AXIS2_SUCCESS;
+ }
+@@ -99,6 +103,10 @@
+     /*Build tokens*/
+     x509_data_node = oxs_token_build_x509_data_element(env, parent);
+     x509_issuer_serial_node = oxs_token_build_x509_issuer_serial_with_data(env, x509_data_node, issuer, serial_num);
++    if (!x509_issuer_serial_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     return AXIS2_SUCCESS;
+ 
+Index: rampart-1.3.0/src/omxmlsec/xml_signature.c
+===================================================================
+--- rampart-1.3.0.orig/src/omxmlsec/xml_signature.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/omxmlsec/xml_signature.c	2011-08-26 07:33:51.000000000 -0400
+@@ -218,6 +218,11 @@
+     AXIS2_FREE(env->allocator, digest);
+     digest = NULL;
+ 
++    if (!digest_mtd_node || !digest_value_node)
++    {
++	return AXIS2_FAILURE;
++    }
++
+     return AXIS2_SUCCESS;
+ }
+ /**
+@@ -271,6 +276,11 @@
+     oxs_buffer_free(output_buf, env);
+     output_buf = NULL;
+ 
++    if (!signature_val_node)
++    {
++	return AXIS2_FAILURE;
++    }
++
+     return status;
+ }
+ 
+@@ -305,10 +315,18 @@
+     /*Construct the <CanonicalizationMethod> */
+     c14n_algo = oxs_sign_ctx_get_c14n_mtd(sign_ctx, env);
+     c14n_mtd_node = oxs_token_build_c14n_method_element(env, signed_info_node, c14n_algo);
++    if (!c14n_mtd_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*Construct the <SignatureMethod>  */
+     sign_algo = oxs_sign_ctx_get_sign_mtd_algo(sign_ctx, env);
+     signature_mtd_node = oxs_token_build_signature_method_element(env, signed_info_node, sign_algo);
++    if (!signature_mtd_node)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+     /*Look for signature parts*/
+     sign_parts = oxs_sign_ctx_get_sign_parts(sign_ctx , env);
+Index: rampart-1.3.0/src/secconv/security_context_token.c
+===================================================================
+--- rampart-1.3.0.orig/src/secconv/security_context_token.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/secconv/security_context_token.c	2011-08-26 07:33:51.000000000 -0400
+@@ -344,6 +344,12 @@
+             str_token = oxs_token_build_security_token_reference_element(env, NULL); 
+             ref_token = oxs_token_build_reference_element(
+                 env, str_token, sct->local_id, value_type); 
++	    if (!ref_token)
++	    {
++		AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart]Security unable to build ref element");
++		return NULL;
++	    }
+         }
+         else
+         {
+@@ -396,6 +402,12 @@
+             str_token = oxs_token_build_security_token_reference_element(env, NULL); 
+             ref_token = oxs_token_build_reference_element(
+                 env, str_token, sct->global_id, value_type); 
++	    if (!ref_token)
++	    {
++		AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart]Security unable to build ref element");
++		return NULL;
++	    }
+         }
+         else
+         {
+Index: rampart-1.3.0/src/trust/rst.c
+===================================================================
+--- rampart-1.3.0.orig/src/trust/rst.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/trust/rst.c	2011-08-26 07:33:51.000000000 -0400
+@@ -492,6 +492,12 @@
+     if(desired_encryption_ele)
+     {                
+         desired_encryption_key_ele = axiom_element_get_first_element(desired_encryption_ele, env, desired_encryption_node, &desired_encryption_key_node);
++	if (!desired_encryption_key_ele)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[trust] no desirede key element found");
++	    return AXIS2_FAILURE;
++	}
+         rst->desired_encryption = desired_encryption_key_node;      
+     }
+ 	axutil_qname_free(desired_encryption_qname, env);
+@@ -507,6 +513,12 @@
+     if(proof_encryption_ele)
+     {                
+         proof_encryption_key_ele = axiom_element_get_first_element(proof_encryption_ele, env, proof_encryption_node, &proof_encryption_key_node);
++	if (!proof_encryption_key_ele)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[trust] ProofEncryption no key element found");
++	    return AXIS2_FAILURE;
++	}
+         rst->proof_encryption = proof_encryption_key_node;             
+         
+     }
+@@ -524,6 +536,12 @@
+     if(use_key_ele)
+     {
+         usekey_key_ele = axiom_element_get_first_element(use_key_ele, env, use_key_node, &usekey_key_node);
++	if (!usekey_key_ele)
++	{
++	    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			    "[trust] no key element available");
++	    return AXIS2_FAILURE;
++	}
+         rst->usekey = usekey_key_node;
+     }
+ 	axutil_qname_free(use_key_qname, env);
+Index: rampart-1.3.0/src/trust/sts_client.c
+===================================================================
+--- rampart-1.3.0.orig/src/trust/sts_client.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/trust/sts_client.c	2011-08-26 07:33:51.000000000 -0400
+@@ -654,6 +654,10 @@
+             return NULL;
+ 
+         compute_key_algo = oxs_axiom_get_node_content(env, proof_token);
++	if (!compute_key_algo)
++	{
++	    return NULL;
++	}
+ 
+         buffer = oxs_buffer_create(env);
+         requester_nonce = trust_entropy_get_binary_secret(requester_entropy, env);
+Index: rampart-1.3.0/src/trust/trust_util.c
+===================================================================
+--- rampart-1.3.0.orig/src/trust/trust_util.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/trust/trust_util.c	2011-08-26 07:33:51.000000000 -0400
+@@ -1417,6 +1417,10 @@
+ 
+ 		/*Inside <binarysecret> element*/
+ 		binary_secret_node = trust_util_create_binary_secret_element(env, wst_ns_uri, requested_prooft_node, base64_encoded_key, TRUST_KEY_TYPE_SYMM_KEY);
++		if (!binary_secret_node)
++		{
++		    return NULL;
++		}
+ 
+ 		return requested_prooft_node;
+ 	}
+Index: rampart-1.3.0/src/util/rampart_crypto_util.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_crypto_util.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_crypto_util.c	2011-08-26 07:33:51.000000000 -0400
+@@ -49,6 +49,10 @@
+         decoded_nonce_length = axutil_base64_decode_len(nonce);
+         decoded_nonce = AXIS2_MALLOC(env->allocator, decoded_nonce_length);
+         ret = axutil_base64_decode_binary((unsigned char *)decoded_nonce, nonce);
++	if (ret == -1)
++	{
++	    /*Ignore*/
++	}
+     }
+ 
+     if ((!nonce) && (!created))
+Index: rampart-1.3.0/src/util/rampart_encryption.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_encryption.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_encryption.c	2011-08-26 07:33:51.000000000 -0400
+@@ -469,6 +469,12 @@
+                     key_reference_node = oxs_token_build_security_token_reference_element(env, NULL); 
+                     identifier_token = oxs_token_build_key_identifier_element(env, key_reference_node, 
+                                         OXS_ENCODING_BASE64BINARY, OXS_X509_ENCRYPTED_KEY_SHA1, encrypted_key_hash);
++		    if (!identifier_token)
++		    {
++			AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++				"[rampart][rampart_encryption] unable to build idetntifier element");
++			return AXIS2_FAILURE;
++		    }
+                 }
+                 else
+                 {
+@@ -677,6 +683,12 @@
+                     key_reference_node = oxs_token_build_security_token_reference_element(env, NULL); 
+                     identifier_token = oxs_token_build_key_identifier_element(env, key_reference_node, 
+                                         OXS_ENCODING_BASE64BINARY, OXS_X509_ENCRYPTED_KEY_SHA1, encrypted_key_hash);
++		    if (!identifier_token)
++		    {
++			AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++				"[rampart][rampart_encryption] unable to build idetntifier element");
++			return AXIS2_FAILURE;
++		    }
+                     dk_node = oxs_derivation_build_derived_key_token_with_stre(env, dk, sec_node, key_reference_node, derived_key_version);
+                 }
+                 else
+@@ -1190,6 +1202,12 @@
+             key_reference_node = oxs_token_build_security_token_reference_element(env, NULL); 
+             identifier_token = oxs_token_build_key_identifier_element(env, key_reference_node, 
+                                 OXS_ENCODING_BASE64BINARY, OXS_X509_ENCRYPTED_KEY_SHA1, encrypted_key_hash);
++	    if (!identifier_token)
++	    {
++		AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart][rampart_encryption] unable to build idetntifier element");
++		return AXIS2_FAILURE;
++	    }
+         }
+         else
+         {
+@@ -1215,6 +1233,10 @@
+         derived_key = oxs_key_create(env);
+         oxs_key_set_length(derived_key, env, rampart_context_get_encryption_derived_key_len(rampart_context, env));
+         status = oxs_derivation_derive_key(env, session_key, derived_key, AXIS2_TRUE);
++	if (AXIS2_FAILURE == status)
++	{
++	    return status;
++	}
+ 
+         /*Set the derived key for the encryption*/
+         oxs_ctx_set_key(enc_ctx, env, derived_key);
+@@ -1279,7 +1301,12 @@
+                 /*We need to prepend # to the id in the list to create the reference*/
+                 mod_id = axutil_stracat(env, OXS_LOCAL_REFERENCE_PREFIX,id);
+                 data_ref_node = oxs_token_build_data_reference_element(env, ref_list_node, mod_id);
+-
++		if (!data_ref_node)
++		{
++		    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++                                    "[rampart][rampart_encryption] unable to build data ref element");
++		    return AXIS2_FAILURE;
++		}
+             }
+             else
+             {
+Index: rampart-1.3.0/src/util/rampart_policy_validator.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_policy_validator.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_policy_validator.c	2011-08-26 07:33:51.000000000 -0400
+@@ -164,8 +164,19 @@
+     soap_envelope = axis2_msg_ctx_get_soap_envelope(msg_ctx, env);
+     status = rampart_context_get_nodes_to_encrypt( 
+         rampart_context, env, soap_envelope, nodes_to_encrypt);
++    if (AXIS2_FAILURE == status)
++    {
++        AXIS2_LOG_INFO(env->log, AXIS2_LOG_SI, "[rampart]No nodes to encrypt");
++        return AXIS2_SUCCESS;
++    }
+     status = rampart_context_get_elements_to_encrypt(
+                   rampart_context, env, soap_envelope, nodes_to_encrypt);
++    if (AXIS2_FAILURE == status)
++    {
++        AXIS2_LOG_INFO(env->log, AXIS2_LOG_SI,
++		       "[rampart]No elements to encrypt");
++        return AXIS2_SUCCESS;
++    }
+ 
+     /* See if the body need to be encrypted */
+     if(nodes_to_encrypt && (axutil_array_list_size(nodes_to_encrypt, env) > 0))
+@@ -229,8 +240,18 @@
+     nodes_to_sign = axutil_array_list_create(env, 0);
+     soap_envelope = axis2_msg_ctx_get_soap_envelope(msg_ctx, env);
+     status = rampart_context_get_nodes_to_sign(rampart_context, env, soap_envelope, nodes_to_sign);
++    if (AXIS2_FAILURE == status)
++    {
++        AXIS2_LOG_INFO(env->log, AXIS2_LOG_SI, "[rampart]No nodes to sign");
++        return AXIS2_SUCCESS;
++    }
+     status = rampart_context_get_elements_to_sign(
+         rampart_context, env, soap_envelope, nodes_to_sign);
++    if (AXIS2_FAILURE == status)
++    {
++        AXIS2_LOG_INFO(env->log, AXIS2_LOG_SI, "[rampart]No elements to sign");
++        return AXIS2_SUCCESS;
++    }
+ 
+     signature_verified = (axis2_char_t*)rampart_get_security_processed_result(
+         env, msg_ctx, RAMPART_SPR_SIG_VERIFIED);
+Index: rampart-1.3.0/src/util/rampart_sec_header_builder.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_sec_header_builder.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_sec_header_builder.c	2011-08-26 07:33:51.000000000 -0400
+@@ -285,7 +285,7 @@
+                                     rampart_context_t *rampart_context,
+                                     axiom_node_t* sec_node)
+ {
+-    axis2_bool_t signature_protection = AXIS2_FALSE;
++    /*axis2_bool_t signature_protection = AXIS2_FALSE;*/
+     axis2_bool_t is_encrypt_before_sign = AXIS2_FALSE;
+     axiom_node_t *sig_node = NULL;
+     axiom_node_t *enc_key_node = NULL;
+@@ -296,7 +296,7 @@
+     axiom_node_t* first_protection_item = NULL;
+     int i = 0;
+ 
+-    signature_protection = rampart_context_is_encrypt_signature(rampart_context, env);
++    /*signature_protection = rampart_context_is_encrypt_signature(rampart_context, env);*/
+     is_encrypt_before_sign = rampart_context_is_encrypt_before_sign(rampart_context, env);
+ 
+     dk_list = axutil_array_list_create(env, 5);
+@@ -441,6 +441,10 @@
+     soap_header_node = axiom_soap_header_get_base_node(soap_header, env);
+     soap_header_ele = (axiom_element_t *)axiom_node_get_data_element(
+                           soap_header_node, env);
++    if (!soap_header_ele)
++    {
++	return AXIS2_FAILURE;
++    }
+ 
+ 
+     sec_ns_obj =  axiom_namespace_create(env, RAMPART_WSSE_XMLNS,
+@@ -463,6 +467,10 @@
+     sec_node = axiom_soap_header_block_get_base_node(sec_header_block, env);
+     sec_ele = (axiom_element_t *)
+               axiom_node_get_data_element(sec_node, env);
++    if (!sec_ele)
++    {
++	/*Now what?*/
++    }
+ 
+     sign_parts_list = axutil_array_list_create(env, 4);
+     /*Timestamp Inclusion*/
+Index: rampart-1.3.0/src/util/rampart_sec_header_processor.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_sec_header_processor.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_sec_header_processor.c	2011-08-26 07:33:51.000000000 -0400
+@@ -874,6 +874,10 @@
+ 
+         /*This need to be done in order to build the soap body.Do not remove.*/
+         soap_body = axiom_soap_envelope_get_body(soap_envelope, env);
++	if (!soap_body)
++	{
++	    return AXIS2_FAILURE;
++	}
+ 
+         /*Get the i-th element and decrypt it */
+         id = (axis2_char_t*)axutil_array_list_get(reference_list, env, i);
+@@ -1021,6 +1025,10 @@
+         axiom_node_t *key_info_node = NULL;
+ 
+         soap_body = axiom_soap_envelope_get_body(soap_envelope, env);
++	if (!soap_body)
++	{
++	    return AXIS2_FAILURE;
++	}
+ 
+         id = (axis2_char_t*)axutil_array_list_get(reference_list, env, i);
+ 
+Index: rampart-1.3.0/src/util/rampart_signature.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_signature.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_signature.c	2011-08-26 07:34:15.000000000 -0400
+@@ -106,7 +106,12 @@
+     
+     reference_node = oxs_token_build_reference_element(env, str_node,
+                         id_ref, value_type );   
+-     
++    if (!reference_node)
++    {
++	AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampartc]Unable to build oxs refrence element");
++        return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -202,7 +207,7 @@
+         cert_id = NULL;
+     }
+ 
+-    return AXIS2_FAILURE;
++    return status;
+ }
+ 
+ 
+@@ -698,6 +703,12 @@
+                 key_reference_node = oxs_token_build_security_token_reference_element(env, NULL); 
+                 identifier_token = oxs_token_build_key_identifier_element(env, key_reference_node, 
+                                     OXS_ENCODING_BASE64BINARY, OXS_X509_ENCRYPTED_KEY_SHA1, encrypted_key_hash);
++		if (!identifier_token)
++		{
++		    AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++				    "[rampart][rampart_signature] Unable to build key identifier element" );
++		    return AXIS2_FAILURE;
++		}
+ 
+                 if(0 == axutil_strcmp(oxs_key_get_name(session_key, env), oxs_key_get_name(signed_key, env))) 
+                 {
+Index: rampart-1.3.0/src/util/rampart_token_builder.c
+===================================================================
+--- rampart-1.3.0.orig/src/util/rampart_token_builder.c	2011-08-26 07:33:46.000000000 -0400
++++ rampart-1.3.0/src/util/rampart_token_builder.c	2011-08-26 07:33:51.000000000 -0400
+@@ -109,6 +109,12 @@
+     bst_id = oxs_util_generate_id(env, RAMPART_BST_ID_PREFIX);
+     bst_node =  oxs_token_build_binary_security_token_element(
+         env, embedded_node, bst_id ,OXS_ENCODING_BASE64BINARY, OXS_VALUE_X509V3, data);
++    if (!bst_node)
++    {
++	AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart] Unable to build security token");
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -141,6 +147,12 @@
+ 
+     ki_node = oxs_token_build_key_identifier_element(
+         env, parent, OXS_ENCODING_BASE64BINARY, OXS_X509_SUBJ_KI, ki);
++    if (!ki_node)
++    {
++	AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart]Unable to build key identifier element");
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 
+@@ -178,6 +190,12 @@
+ 
+     x509_data_node = oxs_token_build_x509_data_element(env, parent);
+     x509_cert_node = oxs_token_build_x509_certificate_element(env, x509_data_node, data);
++    if (!x509_cert_node)
++    {
++	AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart]Unable to build x509 cert element");
++	return AXIS2_FAILURE;
++    }
+ 
+     return AXIS2_SUCCESS;
+ }
+@@ -232,7 +250,12 @@
+     x509_data_node = oxs_token_build_x509_data_element(env, parent);
+     x509_issuer_serial_node = oxs_token_build_x509_issuer_serial_with_data(
+         env, x509_data_node, issuer, serial_no);
+-
++    if (!x509_issuer_serial_node)
++    {
++	AXIS2_LOG_ERROR(env->log, AXIS2_LOG_SI,
++			"[rampart]Unable to build x509 issuer serial data");
++	return AXIS2_FAILURE;
++    }
+     return AXIS2_SUCCESS;
+ }
+ 

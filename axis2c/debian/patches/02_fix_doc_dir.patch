@@ -1,0 +1,29 @@
+--- axis2c-1.5.0.orig/Makefile.am
++++ axis2c-1.5.0/Makefile.am
+@@ -43,6 +43,7 @@
+ 	rm -rf axis2c-bin-${PACKAGE_VERSION}-linux
+ 
+ install-data-hook:
+-	cp -r docs $(docsdir)
+-	rm -rf `find $(docsdir)/ -type d -name .svn`
+-	rm $(docsdir)/README
++	mkdir -p $(DESTDIR)$(docsdir)
++	cp -r docs $(DESTDIR)$(docsdir)
++	rm -rf `find $(DESTDIR)$(docsdir)/ -type d -name .svn`
++	rm $(DESTDIR)$(docsdir)/README
+--- axis2c-1.5.0.orig/Makefile.in
++++ axis2c-1.5.0/Makefile.in
+@@ -832,9 +832,10 @@
+ 	rm -rf axis2c-bin-${PACKAGE_VERSION}-linux
+ 
+ install-data-hook:
+-	cp -r docs $(docsdir)
+-	rm -rf `find $(docsdir)/ -type d -name .svn`
+-	rm $(docsdir)/README
++	mkdir -p $(DESTDIR)$(docsdir)
++	cp -r docs $(DESTDIR)$(docsdir)
++	rm -rf `find $(DESTDIR)$(docsdir)/ -type d -name .svn`
++	rm $(DESTDIR)$(docsdir)/README
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:

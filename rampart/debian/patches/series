@@ -1,0 +1,7 @@
+01-destdir.patch
+02-autoconf-quoting.patch
+token-processor-segfault.patch
+rampart-memleak.patch
+fix-natty-ftbfs.patch
+xml-security.patch
+fix-oneiric-ftbfs-gcc4.6.patch

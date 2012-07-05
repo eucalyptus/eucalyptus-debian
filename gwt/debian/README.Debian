@@ -1,0 +1,24 @@
+In order to run the test suite, you will need to checkout GWT TOOLS somewhere on your system:
+
+svn checkout http://google-web-toolkit.googlecode.com/svn/tools
+
+You will then need to compile ant-gwt:
+
+cd build-tools/ant-gwt && ant
+
+Lastly, the samples directory was intentionally stripped from the orig.tar.gz
+as it contained binary JAR files.  However, these JARs are needed for certain
+test cases.  You may download them official GWT build from Google here:
+
+http://code.google.com/webtoolkit/download.html
+
+You are now ready to run the test suites!  For the development test suite:
+
+GWT_EXTTOOLS=/path/to/gwt/tools ant -propertyfile debian/ant.properties -propertyfile tools.properties -DartifactVersion=2.4.0 -f dev/build.xml test
+
+For the runtime test suite (please note, it will take a while):
+
+GWT_EXTTOOLS=/path/to/gwt/tools ant -propertyfile debian/ant.properties -propertyfile tools.properties -DartifactVersion=2.4.0 -f user/build.xml test
+
+Please note that certain date tests will fail as the format of the string
+output appears to have changed.

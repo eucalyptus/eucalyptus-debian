@@ -1,0 +1,28 @@
+jsilver (1.0.0.dfsg-1) sid; urgency=low
+
+  * Upload to Debian (Closes: #677569)
+  * Remove unlicenced file AOptimizedMultipleCommand.java from upstream
+    tarball and add .dfsg to version. Add orig-tar.sh to recreate tarball.
+    Add patch remove-nonfree-sablecc to build without the file.
+  * Set maintainer to Eucalyptus packaging team with Alexandre & myself
+    as uploaders
+  * Include guava in classpath
+  * Install examples to docs directory
+
+ -- Chris Halls <halls@debian.org>  Tue, 19 Jun 2012 16:35:39 +0100
+
+jsilver (1.0.0-0ubuntu2) precise; urgency=low
+
+  * Added missing ant build-dep
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Thu, 09 Feb 2012 23:00:49 -0500
+
+jsilver (1.0.0-0ubuntu1) precise; urgency=low
+
+  [ Brian Thomason ]
+  * Added debian/orig-tar.sh
+
+  [ Alexandre Rossi ]
+  * Initial release
+
+ -- Brian Thomason <brian.thomason@eucalyptus.com>  Thu, 09 Feb 2012 21:46:08 +0000

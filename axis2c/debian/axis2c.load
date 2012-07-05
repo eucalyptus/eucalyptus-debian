@@ -1,0 +1,1 @@
+LoadModule axis2_module /usr/lib/apache2/modules/libmod_axis2.so

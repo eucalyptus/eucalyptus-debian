@@ -1,0 +1,25 @@
+guava-libraries (11.0.2-1) unstable; urgency=low
+
+  * Team upload.
+  * New upstream release.
+
+ -- Damien Raude-Morvan <drazzib@debian.org>  Wed, 22 Feb 2012 23:04:40 +0100
+
+guava-libraries (09-2) unstable; urgency=low
+
+  * Team upload.
+
+  [ James Page ]
+  * Fix FTBFS with OpenJDK7 (LP: #888939) (Closes: #651408):
+    - d/rules: Specify source/target as 1.5 for javac and javadoc to 
+      ensure backwards compatibility and work around Java 7 encoding
+      errors. 
+
+ -- Damien Raude-Morvan <drazzib@debian.org>  Fri, 09 Dec 2011 20:05:25 +0100
+
+guava-libraries (09-1) unstable; urgency=low
+
+  [ Miguel Landaeta ]
+  * Initial release. (Closes: #555684).
+
+ -- James Page <james.page@canonical.com>  Thu, 02 Jun 2011 21:35:47 +0100

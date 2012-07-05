@@ -1,0 +1,11 @@
+Directories specified in debian/exclude contained .doc, .pdf, .jar and other
+files that are either not relevant for the functionality of this package
+and/or that are not shipped with their sources. Those were omitted
+from a redistribution with Debian. We added ‘+svntag’ to the filename since
+it contains extra files compared to the released archive in ZIP format. One
+may argue that the subversion repository was not the best of all possible
+sources for this package, but for those interested to contribute back
+to upstream, this may well serve as a strong stimulus.
+
+ -- Steffen Moeller <moeller@debian.org>   Wed, 10 Feb 2010 17:07:52 +0100
+ -- Charles Plessy <plessy@debian.org>  Fri, 12 Feb 2010 12:51:16 +0900

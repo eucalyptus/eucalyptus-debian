@@ -1,0 +1,59 @@
+Source: rampart
+Section: libs
+Priority: extra
+DM-Upload-Allowed: yes
+Maintainer: Brian Thomason <brian.thomason@eucalyptus.com>
+Uploaders: Graziano Obertelli <graziano@eucalyptus.com>, Chris Grzegorczyk <grze@eucalyptus.com>, Kyo Lee <kyo.lee@eucalyptus.com>
+Build-Depends: cdbs,
+ debhelper (>= 7.0.50~),
+ autotools-dev,
+ libxml2-dev,
+ libapr1-dev,
+ apache2-threaded-dev,
+ libaxis2c-dev,
+ quilt
+Standards-Version: 3.9.2
+Vcs-Svn: svn://svn.debian.org/svn/pkg-eucalyptus/rampart/trunk
+Vcs-Browser: http://svn.debian.org/wsvn/pkg-java/rampart/trunk
+Homepage: http://axis.apache.org/axis2/c/rampart
+
+Package: librampart0
+Architecture: any
+Depends: libaxis2c0 (>= 1.6.0-0ubuntu7), ${shlibs:Depends}, ${misc:Depends}
+Description: Apache web services security engine - Runtime
+ Apache Rampart/C is the security module for Apache Axis2/C. It
+ features in many ways to protect SOAP messages exchanged. This
+ includes SOAP message encryption and signature as specified in
+ WS-Security Specification. In addition Apache Rampart/C
+ configurations are based on security policy assertions as per
+ WS-Security Policy specificatoin
+ . 
+ This package contains the runtime library files.
+
+Package: librampart-dev
+Architecture: any
+Section: libdevel
+Depends: librampart0 (= ${binary:Version}), ${misc:Depends}
+Description: Apache web services security engine - Development
+ Apache Rampart/C is the security module for Apache Axis2/C. It
+ features in many ways to protect SOAP messages exchanged. This
+ includes SOAP message encryption and signature as specified in
+ WS-Security Specification. In addition Apache Rampart/C
+ configurations are based on security policy assertions as per
+ WS-Security Policy specificatoin
+ . 
+ This package contains the development files.
+
+Package: librampart-doc
+Architecture: all
+Section: doc
+Suggests: librampart0 (= ${binary:Version}), ${misc:Depends}
+Description: Apache web services security engine - Documentation
+ Apache Rampart/C is the security module for Apache Axis2/C. It
+ features in many ways to protect SOAP messages exchanged. This
+ includes SOAP message encryption and signature as specified in
+ WS-Security Specification. In addition Apache Rampart/C
+ configurations are based on security policy assertions as per
+ WS-Security Policy specificatoin
+ . 
+ This package contains the documentation files.
