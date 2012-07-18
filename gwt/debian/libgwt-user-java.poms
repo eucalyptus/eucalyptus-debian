@@ -1,0 +1,2 @@
+debian/libgwt-user-java.pom.xml --usj-name=gwt-user
+debian/libgwt-servlet-java.pom.xml --usj-name=gwt-servlet
