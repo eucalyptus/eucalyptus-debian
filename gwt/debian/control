@@ -27,7 +27,7 @@ Build-Depends-Indep: default-jdk,
  libhibernate3-java,
  libjsilver-java,
  libxerces2-java
-Build-Depends: ant, ant-contrib, debhelper (>= 5), cdbs (>= 0.4.5.3), javahelper
+Build-Depends: ant, ant-contrib, debhelper (>= 5), cdbs (>= 0.4.5.3), javahelper, maven-repo-helper
 Standards-Version: 3.9.3
 Vcs-Svn: svn://svn.debian.org/pkg-eucalyptus/gwt/trunk
 Vcs-Browser: http://svn.debian.org/websvn/pkg-eucalyptus/gwt
